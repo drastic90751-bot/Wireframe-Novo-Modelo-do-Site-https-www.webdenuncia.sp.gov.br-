@@ -1,698 +1,904 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebDenúncia – SP</title>
-  <link rel="stylesheet" href="js/script.js"/>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<!-- ========== NAV ========== -->
-<nav>
-  <a class="nav-logo" href="#" onclick="showPage('inicio')">
-    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="3" x2="21" y2="21"/><line x1="21" y1="3" x2="3" y2="21"/></svg>
-    <span>WEB<b>DENÚNCIA</b></span>
-  </a>
-  <div class="nav-links">
-    <a href="#" id="nav-inicio" class="active" onclick="showPage('inicio'); return false;">Início</a>
-    <a href="#" id="nav-denuncia" onclick="openDenuncia(); return false;">Fazer Denúncia</a>
-    <a href="#" id="nav-acompanhar" onclick="showPage('acompanhar'); return false;">Acompanhar</a>
-  </div>
-</nav>
-
-<!-- ========== MODAL: AVISO ========== -->
-<div class="modal-overlay" id="modal-aviso">
-  <div class="modal-box">
-    <h2>Aviso Importante Antes de Continuar</h2>
-
-    <div class="modal-section">
-      <div class="modal-icon">🚔</div>
-      <div>
-        <h3>Crime em Andamento</h3>
-        <p>SE O CRIME ESTÁ ACONTECENDO AGORA, ESTE FORMULÁRIO NÃO É O MELHOR CAMINHO.</p>
-        <p class="big-number">Pare e ligue imediatamente: Polícia Militar: 190</p>
-        <p>O WebDenúncia é para investigações, não para emergências imediatas.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebDenúncia – SP</title>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ========== NAV ========== -->
+    <nav>
+      <a class="nav-logo" href="#" onclick="showPage('inicio')">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="1" />
+          <line x1="3" y1="3" x2="21" y2="21" />
+          <line x1="21" y1="3" x2="3" y2="21" />
+        </svg>
+        <span>WEB<b>DENÚNCIA</b></span>
+      </a>
+      <div class="nav-links">
+        <a
+          href="#"
+          id="nav-inicio"
+          class="active"
+          onclick="
+            showPage('inicio');
+            return false;
+          "
+          >Início</a
+        >
+        <a
+          href="#"
+          id="nav-denuncia"
+          onclick="
+            openDenuncia();
+            return false;
+          "
+          >Fazer Denúncia</a
+        >
+        <a
+          href="#"
+          id="nav-acompanhar"
+          onclick="
+            showPage('acompanhar');
+            return false;
+          "
+          >Acompanhar</a
+        >
       </div>
-    </div>
+    </nav>
 
-    <div class="modal-section">
-      <div class="modal-icon">🔒</div>
-      <div>
-        <h3>Confirmação de Segurança e Confiabilidade</h3>
-        <p><strong>Aqui o seu anonimato é total e confiável.</strong><br>
-        Todos os dados enviados são criptografados e não registramos seu IP ou informações pessoais.<br>
-        O telefone que você fornecer para contato (Opcional) é usado <strong>APENAS</strong> para esclarecimentos e <strong>NUNCA</strong> será divulgado ou usado para identificação.</p>
-      </div>
-    </div>
+    <!-- ========== MODAL: AVISO ========== -->
+    <div class="modal-overlay" id="modal-aviso">
+      <div class="modal-box">
+        <h2>Aviso Importante Antes de Continuar</h2>
 
-    <div class="modal-actions">
-      <button class="btn-emergency" onclick="closeModal()">Voltar e Ligar 190 (Emergência)</button>
-      <button class="btn-proceed" onclick="proceedToDenuncia()">Entendi e já liguei para 190 (ou não é emergência) – Ir para o Formulário</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== PAGE: INÍCIO ========== -->
-<main class="page active" id="page-inicio">
-
-  <div class="hero">
-    <div class="hero-tabs">
-      <button class="hero-tab-btn" onclick="alert('Sobre o Serviço')">Sobre o Serviço</button>
-      <button class="hero-tab-btn primary" onclick="openDenuncia()">Fazer Denúncia</button>
-      <button class="hero-tab-btn" onclick="alert('Perguntas Frequentes')">Perguntas Frequentes</button>
-    </div>
-
-    <div class="sidebar">
-      <h3>Acompanhar sua Denúncia</h3>
-      <label>Número de Protocolo</label>
-      <input type="text" class="form-input" placeholder="Ex: 2026-ABC-123" id="sidebar-protocolo" />
-      <label>Senha</label>
-      <input type="password" class="form-input" placeholder="Sua senha de 6 dígitos" id="sidebar-senha" />
-      <button class="btn-primary" onclick="consultarSidebar()">Consultar</button>
-    </div>
-  </div>
-
-  <div class="main-content">
-    <div class="categories">
-      <h2>Categorias Principais</h2>
-      <div class="category-grid">
-
-        <div class="category-card" onclick="openDenunciaCategoria('Tráfico')">
-          <svg viewBox="0 0 48 48">
-            <rect x="6" y="10" width="36" height="28" rx="2"/>
-            <circle cx="16" cy="32" r="4"/>
-            <circle cx="32" cy="32" r="4"/>
-            <path d="M6 22h36"/>
-            <path d="M20 10v12h14l-6-12H20z"/>
-            <circle cx="33" cy="17" r="3"/>
-            <line x1="33" y1="11" x2="33" y2="14"/>
-          </svg>
-          <span>Tráfico de Drogas</span>
-        </div>
-
-        <div class="category-card" onclick="openDenunciaCategoria('Violência')">
-          <svg viewBox="0 0 48 48">
-            <circle cx="24" cy="14" r="8"/>
-            <path d="M12 40c0-8 5-14 12-14s12 6 12 14"/>
-            <path d="M36 20l4 4-4 4"/>
-            <line x1="32" y1="24" x2="40" y2="24"/>
-          </svg>
-          <span>Violência Doméstica</span>
-        </div>
-
-        <div class="category-card" onclick="openDenunciaCategoria('Crimes Ambientais')">
-          <svg viewBox="0 0 48 48">
-            <path d="M24 8c-8 4-14 10-14 20h28c0-10-6-16-14-20z"/>
-            <path d="M24 8v24"/>
-            <path d="M10 28c4-4 8-4 14 0s10 4 14 0"/>
-            <circle cx="38" cy="14" r="6"/>
-            <line x1="38" y1="8" x2="38" y2="6"/>
-            <line x1="44" y1="14" x2="46" y2="14"/>
-          </svg>
-          <span>Crimes Ambientais</span>
-        </div>
-
-        <div class="category-card" onclick="openDenunciaCategoria('DEPA (Animais)')">
-          <svg viewBox="0 0 48 48">
-            <ellipse cx="24" cy="28" rx="12" ry="10"/>
-            <circle cx="14" cy="18" r="4"/>
-            <circle cx="34" cy="18" r="4"/>
-            <ellipse cx="24" cy="24" rx="6" ry="4"/>
-            <circle cx="20" cy="26" r="2"/>
-            <circle cx="28" cy="26" r="2"/>
-            <path d="M20 30c1 2 3 3 4 3s3-1 4-3"/>
-          </svg>
-          <span>DEPA (Animais)</span>
-        </div>
-
-        <div class="category-card" onclick="openDenunciaCategoria('Corrupção')">
-          <svg viewBox="0 0 48 48">
-            <circle cx="24" cy="24" r="14"/>
-            <path d="M24 14v4M24 30v4M14 24h4M30 24h4"/>
-            <circle cx="24" cy="24" r="6"/>
-            <line x1="18" y1="18" x2="20" y2="20"/>
-            <line x1="30" y1="18" x2="28" y2="20"/>
-          </svg>
-          <span>Corrupção</span>
-        </div>
-
-        <div class="category-card" onclick="openDenunciaCategoria('Outros')">
-          <svg viewBox="0 0 48 48">
-            <circle cx="24" cy="24" r="18"/>
-            <circle cx="16" cy="24" r="2" fill="currentColor"/>
-            <circle cx="24" cy="24" r="2" fill="currentColor"/>
-            <circle cx="32" cy="24" r="2" fill="currentColor"/>
-          </svg>
-          <span>Outros</span>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="news-panel">
-      <h3>Notícias e Alertas</h3>
-      <div class="news-item">Alerta de segurança na região central — verifique as orientações.</div>
-      <div class="news-item">Nova funcionalidade: envio de áudio como evidência.</div>
-      <div class="news-item">Operação integrada resultou em 12 prisões este mês.</div>
-      <div class="news-item">WebDenúncia atinge 50.000 denúncias registradas.</div>
-    </div>
-  </div>
-
-  <footer>
-    <div>
-      <h4>Contactos</h4>
-      <p> (91) 9517-4090</p>
-      <p> (91) 9464-7900</p>
-      <p> webdenuncia.sp.gov.br</p>
-    </div>
-    <div>
-      <h4>Links Úteis</h4>
-      <a href="#">Polícia Civil</a>
-      <a href="#">Polícia Militar</a>
-      <a href="#">Polícia Rodoviária</a>
-      <a href="#">DEPA</a>
-    </div>
-    <div>
-      <h4>Segurança e Privacidade</h4>
-      <a href="#">Segurança e Privacidade</a>
-      <a href="#">Termos de Uso</a>
-    </div>
-    <div>
-      <h4>Sobre a Plataforma</h4>
-      <p>Governo do Estado de São Paulo</p>
-      <p>Plataforma contínua do Estado</p>
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path d="M24 10v14l8 8"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 24h16M24 16v16"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-  </footer>
-</main>
-
-<!-- ========== PAGE: FAZER DENÚNCIA ========== -->
-<main class="page" id="page-denuncia">
-
-  <!-- Stepper -->
-  <div class="stepper">
-    <div class="step active" id="step-tab-1">
-      <div class="step-check">1</div>
-      Etapa 1: Detalhes do Local
-    </div>
-    <div class="step" id="step-tab-2">
-      <div class="step-check">2</div>
-      Etapa 2: Descrição do Incidente
-    </div>
-    <div class="step" id="step-tab-3">
-      <div class="step-check">3</div>
-      Etapa 3: Arquivos e Evidências
-    </div>
-    <div class="step" id="step-tab-4">
-      <div class="step-check">4</div>
-      Etapa 4: Anonimato e Revisão
-    </div>
-  </div>
-
-  <!-- ETAPA 1 -->
-  <div class="step-form active" id="form-step-1">
-    <div class="step-label-side">Página Única – Evite Múltiplas Abas</div>
-    <div class="denuncia-body" style="flex:1">
-      <div class="form-section" style="max-width:420px">
-        <h2>Registrar Nova Denúncia – Detalhes Completos</h2>
-        <h3>1. Local do Incidente</h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Estado</label>
-            <select class="form-select">
-              <option>São Paulo</option>
-              <option>Rio de Janeiro</option>
-              <option>Minas Gerais</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Cidade</label>
-            <select class="form-select" id="cidade-select">
-              <option>Selecionar</option>
-              <option>São Paulo</option>
-              <option>Campinas</option>
-              <option>Santos</option>
-            </select>
+        <div class="modal-section">
+          <div class="modal-icon">🚔</div>
+          <div>
+            <h3>Crime em Andamento</h3>
+            <p>SE O CRIME ESTÁ ACONTECENDO AGORA, ESTE FORMULÁRIO NÃO É O MELHOR CAMINHO.</p>
+            <p class="big-number">Pare e ligue imediatamente: Polícia Militar: 190</p>
+            <p>O WebDenúncia é para investigações, não para emergências imediatas.</p>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Bairro</label>
-          <input type="text" class="form-input" placeholder="Nome do bairro" />
+        <div class="modal-section">
+          <div class="modal-icon">🔒</div>
+          <div>
+            <h3>Confirmação de Segurança e Confiabilidade</h3>
+            <p>
+              <strong>Aqui o seu anonimato é total e confiável.</strong><br />
+              Todos os dados enviados são criptografados e não registramos seu IP ou informações
+              pessoais.<br />
+              O telefone que você fornecer para contato (Opcional) é usado
+              <strong>APENAS</strong> para esclarecimentos e <strong>NUNCA</strong> será divulgado
+              ou usado para identificação.
+            </p>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Logradouro (Endereço)</label>
-          <input type="text" class="form-input" placeholder="Rua, Avenida, etc." />
-        </div>
-
-        <div class="form-group">
-          <input type="text" class="form-input" placeholder="Complemento (Opcional)" />
-        </div>
-
-        <div class="map-placeholder" style="height:160px; background:#e0e0de; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:0.85rem; border:1.5px solid #ccc;">
-          <span>📍 Mapa interativo</span>
-        </div>
-
-        <div class="form-group">
-          <label>Coordenadas Aproximadas</label>
-          <input type="text" class="form-input" placeholder="-23.5505, -46.6333" />
+        <div class="modal-actions">
+          <button class="btn-emergency" onclick="closeModal()">
+            Voltar e Ligar 190 (Emergência)
+          </button>
+          <button class="btn-proceed" onclick="proceedToDenuncia()">
+            Entendi e já liguei para 190 (ou não é emergência) – Ir para o Formulário
+          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ETAPA 2 -->
-  <div class="step-form" id="form-step-2">
-    <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 2</div>
-    <div class="denuncia-body" style="flex:1">
-      <div class="form-section" style="max-width:320px">
-        <h2>2. Descrição do Incidente</h2>
-        <div class="form-group">
-          <label>Tipo de Incidente</label>
-          <select class="form-select" id="tipo-incidente">
-            <option>Tráfico</option>
-            <option>Violência</option>
-            <option>Crimes Ambientais</option>
-            <option>DEPA (Animais)</option>
-            <option>Corrupção</option>
-            <option>Outros</option>
-          </select>
+    <!-- ========== PAGE: INÍCIO ========== -->
+    <main class="page active" id="page-inicio">
+      <div class="hero">
+        <div class="hero-tabs">
+          <button class="hero-tab-btn" onclick="alert('Sobre o Serviço')">Sobre o Serviço</button>
+          <button class="hero-tab-btn primary" onclick="openDenuncia()">Fazer Denúncia</button>
+          <button class="hero-tab-btn" onclick="alert('Perguntas Frequentes')">
+            Perguntas Frequentes
+          </button>
+        </div>
+
+        <div class="sidebar">
+          <h3>Acompanhar sua Denúncia</h3>
+          <label>Número de Protocolo</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Ex: 2026-ABC-123"
+            id="sidebar-protocolo"
+          />
+          <label>Senha</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Sua senha de 6 dígitos"
+            id="sidebar-senha"
+          />
+          <button class="btn-primary" onclick="consultarSidebar()">Consultar</button>
         </div>
       </div>
 
-      <div class="form-section">
-        <div class="form-group">
-          <label>Conte o que Aconteceu</label>
-          <textarea class="form-textarea" id="descricao-textarea"
-            placeholder="Descreva em suas próprias palavras o incidente, incluindo datas, horários e detalhes relevantes. Forneça características físicas de pessoas se houver."
-            maxlength="2500" oninput="updateCharCount()" style="min-height:180px"></textarea>
-          <div class="char-count" id="char-count">Caracteres restantes: 2500</div>
-        </div>
-
-        <h3>Pessoas Envolvidas</h3>
-        <p style="font-size:0.78rem; color:var(--light); margin-bottom:10px;">Se você conhece a identidade, insira abaixo. (Opcional)</p>
-
-        <div id="pessoas-container">
-          <div class="pessoa-row">
-            <div class="form-group">
-              <input type="text" class="form-input" placeholder="Nome Completo (ou apelido)" />
+      <div class="main-content">
+        <div class="categories">
+          <h2>Categorias Principais</h2>
+          <div class="category-grid">
+            <div class="category-card" onclick="openDenunciaCategoria('Tráfico')">
+              <svg viewBox="0 0 48 48">
+                <rect x="6" y="10" width="36" height="28" rx="2" />
+                <circle cx="16" cy="32" r="4" />
+                <circle cx="32" cy="32" r="4" />
+                <path d="M6 22h36" />
+                <path d="M20 10v12h14l-6-12H20z" />
+                <circle cx="33" cy="17" r="3" />
+                <line x1="33" y1="11" x2="33" y2="14" />
+              </svg>
+              <span>Tráfico de Drogas</span>
             </div>
-            <div class="form-group" style="max-width:220px">
-              <select class="form-select">
-                <option>Papel (Denunciado, Vítima, Outro)</option>
-                <option>Denunciado</option>
-                <option>Vítima</option>
-                <option>Outro</option>
+
+            <div class="category-card" onclick="openDenunciaCategoria('Violência')">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="14" r="8" />
+                <path d="M12 40c0-8 5-14 12-14s12 6 12 14" />
+                <path d="M36 20l4 4-4 4" />
+                <line x1="32" y1="24" x2="40" y2="24" />
+              </svg>
+              <span>Violência Doméstica</span>
+            </div>
+
+            <div class="category-card" onclick="openDenunciaCategoria('Crimes Ambientais')">
+              <svg viewBox="0 0 48 48">
+                <path d="M24 8c-8 4-14 10-14 20h28c0-10-6-16-14-20z" />
+                <path d="M24 8v24" />
+                <path d="M10 28c4-4 8-4 14 0s10 4 14 0" />
+                <circle cx="38" cy="14" r="6" />
+                <line x1="38" y1="8" x2="38" y2="6" />
+                <line x1="44" y1="14" x2="46" y2="14" />
+              </svg>
+              <span>Crimes Ambientais</span>
+            </div>
+
+            <div class="category-card" onclick="openDenunciaCategoria('DEPA (Animais)')">
+              <svg viewBox="0 0 48 48">
+                <ellipse cx="24" cy="28" rx="12" ry="10" />
+                <circle cx="14" cy="18" r="4" />
+                <circle cx="34" cy="18" r="4" />
+                <ellipse cx="24" cy="24" rx="6" ry="4" />
+                <circle cx="20" cy="26" r="2" />
+                <circle cx="28" cy="26" r="2" />
+                <path d="M20 30c1 2 3 3 4 3s3-1 4-3" />
+              </svg>
+              <span>DEPA (Animais)</span>
+            </div>
+
+            <div class="category-card" onclick="openDenunciaCategoria('Corrupção')">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="14" />
+                <path d="M24 14v4M24 30v4M14 24h4M30 24h4" />
+                <circle cx="24" cy="24" r="6" />
+                <line x1="18" y1="18" x2="20" y2="20" />
+                <line x1="30" y1="18" x2="28" y2="20" />
+              </svg>
+              <span>Corrupção</span>
+            </div>
+
+            <div class="category-card" onclick="openDenunciaCategoria('Outros')">
+              <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="18" />
+                <circle cx="16" cy="24" r="2" fill="currentColor" />
+                <circle cx="24" cy="24" r="2" fill="currentColor" />
+                <circle cx="32" cy="24" r="2" fill="currentColor" />
+              </svg>
+              <span>Outros</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="news-panel">
+          <h3>Notícias e Alertas</h3>
+          <div class="news-item">
+            Alerta de segurança na região central — verifique as orientações.
+          </div>
+          <div class="news-item">Nova funcionalidade: envio de áudio como evidência.</div>
+          <div class="news-item">Operação integrada resultou em 12 prisões este mês.</div>
+          <div class="news-item">WebDenúncia atinge 50.000 denúncias registradas.</div>
+        </div>
+      </div>
+
+      <footer>
+        <div>
+          <h4>Contactos</h4>
+          <p>(91) 9517-4090</p>
+          <p>(91) 9464-7900</p>
+          <p>webdenuncia.sp.gov.br</p>
+        </div>
+        <div>
+          <h4>Links Úteis</h4>
+          <a href="#">Polícia Civil</a>
+          <a href="#">Polícia Militar</a>
+          <a href="#">Polícia Rodoviária</a>
+          <a href="#">DEPA</a>
+        </div>
+        <div>
+          <h4>Segurança e Privacidade</h4>
+          <a href="#">Segurança e Privacidade</a>
+          <a href="#">Termos de Uso</a>
+        </div>
+        <div>
+          <h4>Sobre a Plataforma</h4>
+          <p>Governo do Estado de São Paulo</p>
+          <p>Plataforma contínua do Estado</p>
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" />
+            <path d="M24 10v14l8 8" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <rect x="8" y="8" width="32" height="32" rx="4" />
+            <path d="M16 24h16M24 16v16" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+      </footer>
+    </main>
+
+    <!-- ========== PAGE: FAZER DENÚNCIA ========== -->
+    <main class="page" id="page-denuncia">
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step active" id="step-tab-1">
+          <div class="step-check">1</div>
+          Etapa 1: Detalhes do Local
+        </div>
+        <div class="step" id="step-tab-2">
+          <div class="step-check">2</div>
+          Etapa 2: Descrição do Incidente
+        </div>
+        <div class="step" id="step-tab-3">
+          <div class="step-check">3</div>
+          Etapa 3: Arquivos e Evidências
+        </div>
+        <div class="step" id="step-tab-4">
+          <div class="step-check">4</div>
+          Etapa 4: Anonimato e Revisão
+        </div>
+      </div>
+
+      <!-- ETAPA 1 -->
+      <div class="step-form active" id="form-step-1">
+        <div class="step-label-side">Página Única – Evite Múltiplas Abas</div>
+        <div class="denuncia-body" style="flex: 1">
+          <div class="form-section" style="max-width: 420px">
+            <h2>Registrar Nova Denúncia – Detalhes Completos</h2>
+            <h3>1. Local do Incidente</h3>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Estado</label>
+                <select class="form-select">
+                  <option>São Paulo</option>
+                  <option>Rio de Janeiro</option>
+                  <option>Minas Gerais</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Cidade</label>
+                <select class="form-select" id="cidade-select">
+                  <option>Selecionar</option>
+                  <option>São Paulo</option>
+                  <option>Campinas</option>
+                  <option>Santos</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Bairro</label>
+              <input type="text" class="form-input" placeholder="Nome do bairro" />
+            </div>
+
+            <div class="form-group">
+              <label>Logradouro (Endereço)</label>
+              <input type="text" class="form-input" placeholder="Rua, Avenida, etc." />
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-input" placeholder="Complemento (Opcional)" />
+            </div>
+
+            <div
+              class="map-placeholder"
+              style="
+                height: 160px;
+                background: #e0e0de;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #aaa;
+                font-size: 0.85rem;
+                border: 1.5px solid #ccc;
+              "
+            >
+              <span>📍 Mapa interativo</span>
+            </div>
+
+            <div class="form-group">
+              <label>Coordenadas Aproximadas</label>
+              <input type="text" class="form-input" placeholder="-23.5505, -46.6333" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAPA 2 -->
+      <div class="step-form" id="form-step-2">
+        <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 2</div>
+        <div class="denuncia-body" style="flex: 1">
+          <div class="form-section" style="max-width: 320px">
+            <h2>2. Descrição do Incidente</h2>
+            <div class="form-group">
+              <label>Tipo de Incidente</label>
+              <select class="form-select" id="tipo-incidente">
+                <option>Tráfico</option>
+                <option>Violência</option>
+                <option>Crimes Ambientais</option>
+                <option>DEPA (Animais)</option>
+                <option>Corrupção</option>
+                <option>Outros</option>
               </select>
             </div>
           </div>
-        </div>
 
-        <button class="btn-add-pessoa" onclick="adicionarPessoa()">+ Adicionar Pessoa</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ETAPA 3 -->
-  <div class="step-form" id="form-step-3">
-    <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 3</div>
-    <div class="denuncia-body" style="flex:1">
-      <div class="form-section">
-        <h2>3. Arquivos e Evidências</h2>
-
-        <div class="upload-area" onclick="document.getElementById('file-input').click()">
-          <p>Arraste e solte arquivos aqui (fotos, vídeos, áudios, documentos)</p>
-          <button class="btn-secondary" type="button">Selecionar Arquivos</button>
-          <input type="file" id="file-input" multiple style="display:none" onchange="handleFiles(event)" accept=".jpg,.jpeg,.png,.mp4,.mp3,.pdf" />
-        </div>
-
-        <table class="file-table" id="file-table">
-          <thead>
-            <tr>
-              <th>Tipo de Arquivo</th>
-              <th>Nome do Arquivo</th>
-              <th>Tamanho</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="file-list"></tbody>
-        </table>
-
-        <div class="notes-box">
-          <h4>Notas sobre Arquivos</h4>
-          <p>Formatos aceitos: JPG, PNG, MP4, MP3, PDF.</p>
-          <p>Tamanho máximo por arquivo: 100MB.</p>
-          <p>Número máximo de arquivos: 10.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ETAPA 4 -->
-  <div class="step-form" id="form-step-4">
-    <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 4</div>
-    <div class="denuncia-body" style="flex:1; gap:20px">
-
-      <!-- Resumo -->
-      <div class="form-section" style="max-width:280px">
-        <h2>Registrar Nova Denúncia – Finalizar e Revisar</h2>
-        <h3>4. Anonimato e Revisão</h3>
-        <p style="font-size:0.8rem; font-weight:700; font-family:'Barlow Condensed', sans-serif; letter-spacing:0.06em; text-transform:uppercase; margin-top:8px;">Resumo da Denúncia</p>
-        <ul class="summary-list">
-          <li>Local: São Paulo, SP</li>
-          <li>Tipo: <span id="summary-tipo">—</span></li>
-          <li>Descrição do Incidente</li>
-          <li>Arquivos anexados</li>
-          <li>Configuração de anonimato</li>
-        </ul>
-        <label class="check-label" style="margin-top:12px">
-          <input type="checkbox" id="revisao-check" />
-          Revisou as informações?
-        </label>
-      </div>
-
-      <!-- Anonimato -->
-      <div class="form-section">
-        <p style="font-size:0.8rem; font-weight:700; font-family:'Barlow Condensed', sans-serif; letter-spacing:0.06em; text-transform:uppercase;">Opção de Anonimato</p>
-        <p style="font-size:0.78rem; color:var(--mid); margin-bottom:10px;">Escolha como deseja se identificar:</p>
-
-        <div class="radio-group">
-          <label class="radio-option">
-            <input type="radio" name="anonimato" value="total" checked />
-            <div class="radio-text">
-              <strong>Manter anonimato total (Recomendado)</strong>
-              Suas informações pessoais NÃO serão registradas.
+          <div class="form-section">
+            <div class="form-group">
+              <label>Conte o que Aconteceu</label>
+              <textarea
+                class="form-textarea"
+                id="descricao-textarea"
+                placeholder="Descreva em suas próprias palavras o incidente, incluindo datas, horários e detalhes relevantes. Forneça características físicas de pessoas se houver."
+                maxlength="2500"
+                oninput="updateCharCount()"
+                style="min-height: 180px"
+              ></textarea>
+              <div class="char-count" id="char-count">Caracteres restantes: 2500</div>
             </div>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="anonimato" value="contato" />
-            <div class="radio-text">
-              <strong>Permitir contato para esclarecimentos</strong>
-              (Fornecer telefone/email – não obrigatório)
+
+            <h3>Pessoas Envolvidas</h3>
+            <p style="font-size: 0.78rem; color: var(--light); margin-bottom: 10px">
+              Se você conhece a identidade, insira abaixo. (Opcional)
+            </p>
+
+            <div id="pessoas-container">
+              <div class="pessoa-row">
+                <div class="form-group">
+                  <input type="text" class="form-input" placeholder="Nome Completo (ou apelido)" />
+                </div>
+                <div class="form-group" style="max-width: 220px">
+                  <select class="form-select">
+                    <option>Papel (Denunciado, Vítima, Outro)</option>
+                    <option>Denunciado</option>
+                    <option>Vítima</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </label>
-        </div>
 
-        <div style="margin-top:16px">
-          <p style="font-size:0.8rem; font-weight:700; font-family:'Barlow Condensed', sans-serif; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px;">Avisos Legais</p>
-          <div class="legal-notices">
-            <p>O uso dos dados segue a legislação vigente de proteção de dados (LGPD).</p>
-            <p>Denúncias falsas podem acarretar responsabilidade legal.</p>
+            <button class="btn-add-pessoa" onclick="adicionarPessoa()">+ Adicionar Pessoa</button>
           </div>
         </div>
       </div>
 
-      <!-- Credenciais -->
-      <div class="form-section" style="max-width:280px">
-        <p style="font-size:0.8rem; font-weight:700; font-family:'Barlow Condensed', sans-serif; letter-spacing:0.06em; text-transform:uppercase;">Credenciais de Acesso (Para Acompanhar)</p>
+      <!-- ETAPA 3 -->
+      <div class="step-form" id="form-step-3">
+        <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 3</div>
+        <div class="denuncia-body" style="flex: 1">
+          <div class="form-section">
+            <h2>3. Arquivos e Evidências</h2>
 
-        <div class="protocol-box" style="margin-top:10px">
-          <div class="protocol-num">
-            <small>Número de Protocolo</small>
-            2026-ABC-123
-          </div>
-          <button class="btn-copy" title="Copiar" onclick="copiarProtocolo()">📋</button>
-        </div>
+            <div class="upload-area" onclick="document.getElementById('file-input').click()">
+              <p>Arraste e solte arquivos aqui (fotos, vídeos, áudios, documentos)</p>
+              <button class="btn-secondary" type="button">Selecionar Arquivos</button>
+              <input
+                type="file"
+                id="file-input"
+                multiple
+                style="display: none"
+                onchange="handleFiles(event)"
+                accept=".jpg,.jpeg,.png,.mp4,.mp3,.pdf"
+              />
+            </div>
 
-        <div class="form-group" style="margin-top:10px">
-          <input type="password" class="form-input" placeholder="Crie uma senha" />
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-input" placeholder="Confirme sua senha" />
-        </div>
+            <table class="file-table" id="file-table">
+              <thead>
+                <tr>
+                  <th>Tipo de Arquivo</th>
+                  <th>Nome do Arquivo</th>
+                  <th>Tamanho</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="file-list"></tbody>
+            </table>
 
-        <p style="font-size:0.72rem; color:var(--light); line-height:1.5; margin-top:6px;">
-          Anote ou memorize o protocolo e a senha. Eles serão necessários para consultar o andamento.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Nav botões -->
-  <div class="step-nav">
-    <button class="btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden">Voltar</button>
-    <button class="btn-next" id="btn-next" onclick="nextStep()">Próxima Etapa (Descrição) →</button>
-  </div>
-
-  <footer>
-    <div>
-      <h4>Contactos</h4>
-      <p>📞 (91) 9517-4090</p>
-      <p>💬 (91) 9464-7900</p>
-      <p>✉️ webdenuncia.sp.gov.br</p>
-    </div>
-    <div>
-      <h4>Links Úteis</h4>
-      <a href="#">Polícia Civil</a>
-      <a href="#">Polícia Militar</a>
-      <a href="#">Polícia Rodoviária</a>
-    </div>
-    <div>
-      <h4>Segurança e Privacidade</h4>
-      <a href="#">Segurança e Privacidade</a>
-    </div>
-    <div>
-      <h4>Sobre a Plataforma</h4>
-      <p>Governo do Estado de São Paulo</p>
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path d="M24 10v14l8 8"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 24h16M24 16v16"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-  </footer>
-</main>
-
-<!-- ========== PAGE: ACOMPANHAR ========== -->
-<main class="page" id="page-acompanhar">
-  <div class="acompanhar-wrapper">
-
-    <!-- Card de consulta -->
-    <div id="consulta-section">
-      <div class="consulta-card">
-        <h2>Consultar Status da Denúncia</h2>
-
-        <div class="form-group">
-          <label>Protocolo da Denúncia</label>
-          <div class="input-icon-wrap">
-            <span class="icon">X</span>
-            <input type="text" class="form-input" id="acomp-protocolo" placeholder="Número do Protocolo (ex: 2026-ABC-123)" />
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top:14px">
-          <label>Senha de Acesso</label>
-          <div class="input-icon-wrap">
-            <span class="icon">👁️</span>
-            <input type="password" class="form-input" id="acomp-senha" placeholder="Sua senha de 6 dígitos" />
-            <button class="btn-eye" onclick="toggleSenha()" title="Mostrar/ocultar">👁️</button>
-          </div>
-        </div>
-
-        <button class="btn-primary" style="margin-top:16px" onclick="consultarDenuncia()">Consultar Agora</button>
-        <p class="forgot-link" style="margin-top:12px">Esqueceu sua senha? Solicite uma nova</p>
-      </div>
-
-      <div class="info-panel" style="margin-top:0; margin-left:0; padding-left:0">
-        <!-- vazio aqui, usado internamente -->
-      </div>
-    </div>
-
-    <!-- Info lateral -->
-    <div class="info-panel" id="info-panel-acomp">
-      <h3>Informações Importantes</h3>
-      <div class="info-items">
-        <div class="info-item">
-          <span class="num">1.</span>
-          <p>Utilize o número de protocolo e a senha criados na Etapa 4 da denúncia.</p>
-        </div>
-        <div class="info-item">
-          <span class="num">2.</span>
-          <p>O seu anonimato é garantido e seguro.</p>
-        </div>
-        <div class="info-item">
-          <span class="num">3.</span>
-          <p>Se esqueceu sua senha, acione a opção abaixo do formulário.</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- STATUS DA DENÚNCIA (oculto até consulta) -->
-  <div style="padding:0 40px 32px; display:none" id="status-section">
-    <div class="status-card active">
-      <h2>Status da Sua Denúncia</h2>
-      <p class="protocol-info">Número do Protocolo: 2026-ABC-123 (Gerado em 01/01/2026) &nbsp;|&nbsp; Senha de Acesso: ••••••</p>
-
-      <p style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px;">Dashboard de Acompanhamento</p>
-
-      <!-- Progress -->
-      <div class="progress-track">
-        <div class="track-step done">
-          <div class="track-icon">✔</div>
-          <span>Registrada</span>
-        </div>
-        <div class="track-step done">
-          <div class="track-icon">X</div>
-          <span>Em Análise Inicial</span>
-        </div>
-        <div class="track-step done">
-          <div class="track-icon">X</div>
-          <span>Encaminhada à Delegacia</span>
-        </div>
-        <div class="track-step current">
-          <div class="track-icon">X</div>
-          <span>Investigação em Andamento</span>
-        </div>
-        <div class="track-step">
-          <div class="track-icon">✔</div>
-          <span>Concluída</span>
-        </div>
-      </div>
-
-      <div class="status-details">
-        <div class="detail-col">
-          <h4>Detalhes do Registro</h4>
-          <p><strong>Categoria:</strong> Tráfico de Drogas<br>
-          <strong>Local:</strong> São Paulo – SP<br>
-          <strong>Resumo:</strong> Venda de drogas na rua X, todas as noites, veículo de placa Y envolvido...<br>
-          <strong>Arquivos:</strong> 3 fotos, 1 vídeo, 1 áudio</p>
-        </div>
-        <div class="detail-col">
-          <h4>Histórico de Andamento</h4>
-          <div class="history-item">01/01/2026 – Denúncia Registrada e Confirmada</div>
-          <div class="history-item">02/01/2026 – Denúncia em Análise Inicial</div>
-          <div class="history-item">05/01/2026 – Encaminhada à Delegacia Especializada (DISE)</div>
-          <div class="history-item">08/01/2026 – Investigação Iniciada. Dados sob análise.</div>
-          <div class="history-item" style="color:var(--light);">Aguardando novas informações ou conclusão.</div>
-        </div>
-        <div class="detail-col">
-          <h4>Mensagem da Equipe</h4>
-          <div class="message-box">
-            Agradecemos o envio das informações. As imagens e o áudio fornecidos foram cruciais para a identificação do veículo.
-            A investigação está em andamento. Continue atento se novas informações surgirem.
+            <div class="notes-box">
+              <h4>Notas sobre Arquivos</h4>
+              <p>Formatos aceitos: JPG, PNG, MP4, MP3, PDF.</p>
+              <p>Tamanho máximo por arquivo: 100MB.</p>
+              <p>Número máximo de arquivos: 10.</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="complement-area">
-        <h4>Enviar Informação Complementar</h4>
-        <div class="complement-row">
-          <textarea class="form-textarea" placeholder="Adicione novos detalhes aqui (Opcional)"></textarea>
-          <button class="btn-next" style="align-self:flex-end; white-space:nowrap; padding:10px 16px">Enviar Complemento</button>
+      <!-- ETAPA 4 -->
+      <div class="step-form" id="form-step-4">
+        <div class="step-label-side">Página Única – Evite Múltiplas Abas – Etapa 4</div>
+        <div class="denuncia-body" style="flex: 1; gap: 20px">
+          <!-- Resumo -->
+          <div class="form-section" style="max-width: 280px">
+            <h2>Registrar Nova Denúncia – Finalizar e Revisar</h2>
+            <h3>4. Anonimato e Revisão</h3>
+            <p
+              style="
+                font-size: 0.8rem;
+                font-weight: 700;
+                font-family: 'Barlow Condensed', sans-serif;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                margin-top: 8px;
+              "
+            >
+              Resumo da Denúncia
+            </p>
+            <ul class="summary-list">
+              <li>Local: São Paulo, SP</li>
+              <li>Tipo: <span id="summary-tipo">—</span></li>
+              <li>Descrição do Incidente</li>
+              <li>Arquivos anexados</li>
+              <li>Configuração de anonimato</li>
+            </ul>
+            <label class="check-label" style="margin-top: 12px">
+              <input type="checkbox" id="revisao-check" />
+              Revisou as informações?
+            </label>
+          </div>
+
+          <!-- Anonimato -->
+          <div class="form-section">
+            <p
+              style="
+                font-size: 0.8rem;
+                font-weight: 700;
+                font-family: 'Barlow Condensed', sans-serif;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+              "
+            >
+              Opção de Anonimato
+            </p>
+            <p style="font-size: 0.78rem; color: var(--mid); margin-bottom: 10px">
+              Escolha como deseja se identificar:
+            </p>
+
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="anonimato" value="total" checked />
+                <div class="radio-text">
+                  <strong>Manter anonimato total (Recomendado)</strong>
+                  Suas informações pessoais NÃO serão registradas.
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="anonimato" value="contato" />
+                <div class="radio-text">
+                  <strong>Permitir contato para esclarecimentos</strong>
+                  (Fornecer telefone/email – não obrigatório)
+                </div>
+              </label>
+            </div>
+
+            <div style="margin-top: 16px">
+              <p
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 700;
+                  font-family: 'Barlow Condensed', sans-serif;
+                  letter-spacing: 0.06em;
+                  text-transform: uppercase;
+                  margin-bottom: 8px;
+                "
+              >
+                Avisos Legais
+              </p>
+              <div class="legal-notices">
+                <p>O uso dos dados segue a legislação vigente de proteção de dados (LGPD).</p>
+                <p>Denúncias falsas podem acarretar responsabilidade legal.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Credenciais -->
+          <div class="form-section" style="max-width: 280px">
+            <p
+              style="
+                font-size: 0.8rem;
+                font-weight: 700;
+                font-family: 'Barlow Condensed', sans-serif;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+              "
+            >
+              Credenciais de Acesso (Para Acompanhar)
+            </p>
+
+            <div class="protocol-box" style="margin-top: 10px">
+              <div class="protocol-num">
+                <small>Número de Protocolo</small>
+                2026-ABC-123
+              </div>
+              <button class="btn-copy" title="Copiar" onclick="copiarProtocolo()">📋</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px">
+              <input type="password" class="form-input" placeholder="Crie uma senha" />
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-input" placeholder="Confirme sua senha" />
+            </div>
+
+            <p style="font-size: 0.72rem; color: var(--light); line-height: 1.5; margin-top: 6px">
+              Anote ou memorize o protocolo e a senha. Eles serão necessários para consultar o
+              andamento.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div style="margin-top:14px; border-top:2px solid var(--border); padding-top:12px">
-        <p style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Anexar Novas Evidências</p>
-        <div class="upload-area" style="padding:16px" onclick="document.getElementById('file-input-acomp').click()">
-          <p>Clique ou arraste novos arquivos</p>
-          <input type="file" id="file-input-acomp" multiple style="display:none" />
+      <!-- Nav botões -->
+      <div class="step-nav">
+        <button class="btn-back" id="btn-back" onclick="prevStep()" style="visibility: hidden">
+          Voltar
+        </button>
+        <button class="btn-next" id="btn-next" onclick="nextStep()">
+          Próxima Etapa (Descrição) →
+        </button>
+      </div>
+
+      <footer>
+        <div>
+          <h4>Contactos</h4>
+          <p>📞 (91) 9517-4090</p>
+          <p>💬 (91) 9464-7900</p>
+          <p>✉️ webdenuncia.sp.gov.br</p>
+        </div>
+        <div>
+          <h4>Links Úteis</h4>
+          <a href="#">Polícia Civil</a>
+          <a href="#">Polícia Militar</a>
+          <a href="#">Polícia Rodoviária</a>
+        </div>
+        <div>
+          <h4>Segurança e Privacidade</h4>
+          <a href="#">Segurança e Privacidade</a>
+        </div>
+        <div>
+          <h4>Sobre a Plataforma</h4>
+          <p>Governo do Estado de São Paulo</p>
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" />
+            <path d="M24 10v14l8 8" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <rect x="8" y="8" width="32" height="32" rx="4" />
+            <path d="M16 24h16M24 16v16" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+      </footer>
+    </main>
+
+    <!-- ========== PAGE: ACOMPANHAR ========== -->
+    <main class="page" id="page-acompanhar">
+      <div class="acompanhar-wrapper">
+        <!-- Card de consulta -->
+        <div id="consulta-section">
+          <div class="consulta-card">
+            <h2>Consultar Status da Denúncia</h2>
+
+            <div class="form-group">
+              <label>Protocolo da Denúncia</label>
+              <div class="input-icon-wrap">
+                <span class="icon">X</span>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="acomp-protocolo"
+                  placeholder="Número do Protocolo (ex: 2026-ABC-123)"
+                />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px">
+              <label>Senha de Acesso</label>
+              <div class="input-icon-wrap">
+                <span class="icon">👁️</span>
+                <input
+                  type="password"
+                  class="form-input"
+                  id="acomp-senha"
+                  placeholder="Sua senha de 6 dígitos"
+                />
+                <button class="btn-eye" onclick="toggleSenha()" title="Mostrar/ocultar">👁️</button>
+              </div>
+            </div>
+
+            <button class="btn-primary" style="margin-top: 16px" onclick="consultarDenuncia()">
+              Consultar Agora
+            </button>
+            <p class="forgot-link" style="margin-top: 12px">
+              Esqueceu sua senha? Solicite uma nova
+            </p>
+          </div>
+
+          <div class="info-panel" style="margin-top: 0; margin-left: 0; padding-left: 0">
+            <!-- vazio aqui, usado internamente -->
+          </div>
+        </div>
+
+        <!-- Info lateral -->
+        <div class="info-panel" id="info-panel-acomp">
+          <h3>Informações Importantes</h3>
+          <div class="info-items">
+            <div class="info-item">
+              <span class="num">1.</span>
+              <p>Utilize o número de protocolo e a senha criados na Etapa 4 da denúncia.</p>
+            </div>
+            <div class="info-item">
+              <span class="num">2.</span>
+              <p>O seu anonimato é garantido e seguro.</p>
+            </div>
+            <div class="info-item">
+              <span class="num">3.</span>
+              <p>Se esqueceu sua senha, acione a opção abaixo do formulário.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="status-footer">
-        <button class="btn-link" onclick="window.print()">Imprimir este Status</button>
-        <button class="btn-link" onclick="encerrarSessao()">Encerrar Sessão</button>
+      <!-- STATUS DA DENÚNCIA (oculto até consulta) -->
+      <div style="padding: 0 40px 32px; display: none" id="status-section">
+        <div class="status-card active">
+          <h2>Status da Sua Denúncia</h2>
+          <p class="protocol-info">
+            Número do Protocolo: 2026-ABC-123 (Gerado em 01/01/2026) &nbsp;|&nbsp; Senha de Acesso:
+            ••••••
+          </p>
+
+          <p
+            style="
+              font-family: 'Barlow Condensed', sans-serif;
+              font-size: 0.75rem;
+              font-weight: 800;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              margin-bottom: 14px;
+            "
+          >
+            Dashboard de Acompanhamento
+          </p>
+
+          <!-- Progress -->
+          <div class="progress-track">
+            <div class="track-step done">
+              <div class="track-icon">✔</div>
+              <span>Registrada</span>
+            </div>
+            <div class="track-step done">
+              <div class="track-icon">X</div>
+              <span>Em Análise Inicial</span>
+            </div>
+            <div class="track-step done">
+              <div class="track-icon">X</div>
+              <span>Encaminhada à Delegacia</span>
+            </div>
+            <div class="track-step current">
+              <div class="track-icon">X</div>
+              <span>Investigação em Andamento</span>
+            </div>
+            <div class="track-step">
+              <div class="track-icon">✔</div>
+              <span>Concluída</span>
+            </div>
+          </div>
+
+          <div class="status-details">
+            <div class="detail-col">
+              <h4>Detalhes do Registro</h4>
+              <p>
+                <strong>Categoria:</strong> Tráfico de Drogas<br />
+                <strong>Local:</strong> São Paulo – SP<br />
+                <strong>Resumo:</strong> Venda de drogas na rua X, todas as noites, veículo de placa
+                Y envolvido...<br />
+                <strong>Arquivos:</strong> 3 fotos, 1 vídeo, 1 áudio
+              </p>
+            </div>
+            <div class="detail-col">
+              <h4>Histórico de Andamento</h4>
+              <div class="history-item">01/01/2026 – Denúncia Registrada e Confirmada</div>
+              <div class="history-item">02/01/2026 – Denúncia em Análise Inicial</div>
+              <div class="history-item">
+                05/01/2026 – Encaminhada à Delegacia Especializada (DISE)
+              </div>
+              <div class="history-item">08/01/2026 – Investigação Iniciada. Dados sob análise.</div>
+              <div class="history-item" style="color: var(--light)">
+                Aguardando novas informações ou conclusão.
+              </div>
+            </div>
+            <div class="detail-col">
+              <h4>Mensagem da Equipe</h4>
+              <div class="message-box">
+                Agradecemos o envio das informações. As imagens e o áudio fornecidos foram cruciais
+                para a identificação do veículo. A investigação está em andamento. Continue atento
+                se novas informações surgirem.
+              </div>
+            </div>
+          </div>
+
+          <div class="complement-area">
+            <h4>Enviar Informação Complementar</h4>
+            <div class="complement-row">
+              <textarea
+                class="form-textarea"
+                placeholder="Adicione novos detalhes aqui (Opcional)"
+              ></textarea>
+              <button
+                class="btn-next"
+                style="align-self: flex-end; white-space: nowrap; padding: 10px 16px"
+              >
+                Enviar Complemento
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; border-top: 2px solid var(--border); padding-top: 12px">
+            <p
+              style="
+                font-family: 'Barlow Condensed', sans-serif;
+                font-size: 0.75rem;
+                font-weight: 800;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+              "
+            >
+              Anexar Novas Evidências
+            </p>
+            <div
+              class="upload-area"
+              style="padding: 16px"
+              onclick="document.getElementById('file-input-acomp').click()"
+            >
+              <p>Clique ou arraste novos arquivos</p>
+              <input type="file" id="file-input-acomp" multiple style="display: none" />
+            </div>
+          </div>
+
+          <div class="status-footer">
+            <button class="btn-link" onclick="window.print()">Imprimir este Status</button>
+            <button class="btn-link" onclick="encerrarSessao()">Encerrar Sessão</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <footer>
-    <div>
-      <h4>Contactos</h4>
-      <p>📞 (91) 9517-4090</p>
-      <p>💬 (91) 9464-7900</p>
-      <p>✉️ webdenuncia.sp.gov.br</p>
-    </div>
-    <div>
-      <h4>Links Úteis</h4>
-      <a href="#">Polícia Civil</a>
-      <a href="#">Polícia Militar</a>
-      <a href="#">Polícia Rodoviária</a>
-    </div>
-    <div>
-      <h4>Segurança e Privacidade</h4>
-      <a href="#">Segurança e Privacidade</a>
-    </div>
-    <div>
-      <h4>Sobre a Plataforma</h4>
-      <p>Governo do Estado de São Paulo</p>
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path d="M24 10v14l8 8"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-    <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 24h16M24 16v16"/></svg>
-      Governo do Estado<br>de São Paulo
-    </div>
-  </footer>
-</main>
+      <footer>
+        <div>
+          <h4>Contactos</h4>
+          <p>📞 (91) 9517-4090</p>
+          <p>💬 (91) 9464-7900</p>
+          <p>✉️ webdenuncia.sp.gov.br</p>
+        </div>
+        <div>
+          <h4>Links Úteis</h4>
+          <a href="#">Polícia Civil</a>
+          <a href="#">Polícia Militar</a>
+          <a href="#">Polícia Rodoviária</a>
+        </div>
+        <div>
+          <h4>Segurança e Privacidade</h4>
+          <a href="#">Segurança e Privacidade</a>
+        </div>
+        <div>
+          <h4>Sobre a Plataforma</h4>
+          <p>Governo do Estado de São Paulo</p>
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" />
+            <path d="M24 10v14l8 8" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+        <div class="footer-logo">
+          <svg viewBox="0 0 48 48">
+            <rect x="8" y="8" width="32" height="32" rx="4" />
+            <path d="M16 24h16M24 16v16" />
+          </svg>
+          Governo do Estado<br />de São Paulo
+        </div>
+      </footer>
+    </main>
 
-<!-- ========== SUCCESS MODAL (pós-envio) ========== -->
-<div class="modal-overlay" id="modal-sucesso">
-  <div class="success-card active" style="max-height:90vh; overflow-y:auto;">
-    <div class="success-header">
-      <div class="success-icon">✔</div>
-      <h2>Denúncia Enviada com Sucesso!</h2>
-      <p class="subtitle">Sua denúncia foi registrada e está sendo avaliada pela equipe.</p>
-    </div>
+    <!-- ========== SUCCESS MODAL (pós-envio) ========== -->
+    <div class="modal-overlay" id="modal-sucesso">
+      <div class="success-card active" style="max-height: 90vh; overflow-y: auto">
+        <div class="success-header">
+          <div class="success-icon">✔</div>
+          <h2>Denúncia Enviada com Sucesso!</h2>
+          <p class="subtitle">Sua denúncia foi registrada e está sendo avaliada pela equipe.</p>
+        </div>
 
-    <div class="success-protocol">
-      <p class="label">Número do Protocolo</p>
-      <p class="num">2026-ABC-123</p>
-      <p class="hint">(Gerado em 01/01/2026)</p>
-      <p class="hint" style="margin-top:4px">(Anote ou memorize este número, ele é necessário para o acompanhamento.)<br>(A senha de acesso criada na Etapa 4 também é necessária).</p>
-    </div>
+        <div class="success-protocol">
+          <p class="label">Número do Protocolo</p>
+          <p class="num">2026-ABC-123</p>
+          <p class="hint">(Gerado em 01/01/2026)</p>
+          <p class="hint" style="margin-top: 4px">
+            (Anote ou memorize este número, ele é necessário para o acompanhamento.)<br />(A senha
+            de acesso criada na Etapa 4 também é necessária).
+          </p>
+        </div>
 
-    <div class="next-steps">
-      <h3>O que acontece agora?</h3>
-      <div class="next-step-item">
-        <span class="step-num">1.</span>
-        <div><strong>Análise Inicial:</strong> Nossos analistas estão verificando a denúncia para direcionar à unidade policial correta.</div>
-      </div>
-      <div class="next-step-item">
-        <span class="step-num">2.</span>
-        <div><strong>Acompanhamento é Essencial:</strong> Recomendamos fortemente que você mantenha contato com esta página de acompanhamento.
-          <br>• <strong>Verifique o status novamente em 1 ou 2 dias.</strong>
-          <br>• Sua senha e protocolo permitirão ver as atualizações.
+        <div class="next-steps">
+          <h3>O que acontece agora?</h3>
+          <div class="next-step-item">
+            <span class="step-num">1.</span>
+            <div>
+              <strong>Análise Inicial:</strong> Nossos analistas estão verificando a denúncia para
+              direcionar à unidade policial correta.
+            </div>
+          </div>
+          <div class="next-step-item">
+            <span class="step-num">2.</span>
+            <div>
+              <strong>Acompanhamento é Essencial:</strong> Recomendamos fortemente que você mantenha
+              contato com esta página de acompanhamento. <br />•
+              <strong>Verifique o status novamente em 1 ou 2 dias.</strong> <br />• Sua senha e
+              protocolo permitirão ver as atualizações.
+            </div>
+          </div>
+        </div>
+
+        <div class="privacy-note">
+          <span class="shield">🛡️</span>
+          <div>
+            <strong>Proteção e Anonimato</strong><br />
+            • Suas informações pessoais NÃO foram solicitadas e NÃO serão registradas.<br />
+            • Todo o processo é criptografado e seguro.
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button class="btn-link" onclick="window.print()">Imprimir este Status</button>
+          <button class="btn-link" onclick="fecharSucesso()">Encerrar Sessão</button>
+          <button class="btn-next" onclick="irParaAcompanhar()">
+            Ir para a Página de Acompanhamento →
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="privacy-note">
-      <span class="shield">🛡️</span>
-      <div>
-        <strong>Proteção e Anonimato</strong><br>
-        • Suas informações pessoais NÃO foram solicitadas e NÃO serão registradas.<br>
-        • Todo o processo é criptografado e seguro.
-      </div>
-    </div>
-
-    <div class="success-actions">
-      <button class="btn-link" onclick="window.print()">Imprimir este Status</button>
-      <button class="btn-link" onclick="fecharSucesso()">Encerrar Sessão</button>
-      <button class="btn-next" onclick="irParaAcompanhar()">Ir para a Página de Acompanhamento →</button>
-    </div>
-  </div>
-</div>
-
-<script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
