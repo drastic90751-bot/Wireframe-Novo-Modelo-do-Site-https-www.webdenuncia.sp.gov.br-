@@ -668,3 +668,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   goToStep(1);
 });
+
+// ============================================================
+// MOBILE NAV DRAWER
+// ============================================================
+function toggleDrawer() {
+  const drawer = document.getElementById('nav-drawer');
+  drawer.classList.toggle('open');
+}
+
+function closeDrawer() {
+  document.getElementById('nav-drawer').classList.remove('open');
+}
+
+// Close drawer when clicking outside
+document.addEventListener('click', function(e) {
+  const drawer = document.getElementById('nav-drawer');
+  const hamburger = document.getElementById('nav-hamburger');
+  if (drawer && hamburger && !drawer.contains(e.target) && !hamburger.contains(e.target)) {
+    drawer.classList.remove('open');
+  }
+});
+
+// Sync drawer active state with nav-links
+const _origShowPage = showPage;
+// Patch showPage to also update drawer links
+(function() {
+  const original = window.showPage;
+  window.showPage = function(page) {
+    original(page);
+    document.querySelectorAll('.nav-drawer a').forEach(a => a.classList.remove('active'));
+    const drawerLink = document.getElementById('drawer-' + page);
+    if (drawerLink) drawerLink.classList.add('active');
+    closeDrawer();
+  };
+})();

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebDenúncia – Governo do Estado de São Paulo</title>
     <link rel="stylesheet" href="css/style.css" />
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
   </head>
   <body>
     <!-- NAV -->
@@ -55,7 +55,21 @@
           >Acompanhar</a
         >
       </div>
+      <!-- Hamburger button (visible on mobile/tablet) -->
+      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+        <svg viewBox="0 0 24 24">
+          <line x1="3" y1="7" x2="21" y2="7" stroke-width="2"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke-width="2"/>
+          <line x1="3" y1="17" x2="21" y2="17" stroke-width="2"/>
+        </svg>
+      </button>
     </nav>
+    <!-- Mobile nav drawer -->
+    <div class="nav-drawer" id="nav-drawer">
+      <a href="#" id="drawer-inicio" class="active" onclick="showPage('inicio');closeDrawer();return false;">Início</a>
+      <a href="#" id="drawer-denuncia" onclick="openDenuncia();closeDrawer();return false;">Fazer Denúncia</a>
+      <a href="#" id="drawer-acompanhar" onclick="showPage('acompanhar');closeDrawer();return false;">Acompanhar</a>
+    </div>
 
     <!-- MODAL: AVISO EMERGÊNCIA -->
     <div class="modal-overlay" id="modal-aviso">
