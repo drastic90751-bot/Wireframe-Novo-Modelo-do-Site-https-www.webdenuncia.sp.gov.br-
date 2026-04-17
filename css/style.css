@@ -18,14 +18,17 @@
   --font-mono: 'Space Mono', monospace;
   --font-cond: 'Barlow Condensed', sans-serif;
 
+  /* Fitts — minimum touch target */
   --touch: 48px;
 
+  /* Spacing */
   --gap-xs: 6px;
   --gap-sm: 12px;
   --gap-md: 20px;
   --gap-lg: 32px;
   --gap-xl: 48px;
 
+  /* Accessibility */
   --font-scale: 1;
   --contrast: 0;
 }
