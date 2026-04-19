@@ -54,21 +54,68 @@
           "
           >Acompanhar</a
         >
+        <button class="btn-dark-mode" id="btn-dark-mode" onclick="toggleDarkMode()" title="Alternar modo escuro">
+          <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <span id="dark-mode-label">Escuro</span>
+        </button>
       </div>
-      <!-- Hamburger button (visible on mobile/tablet) -->
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
-        <svg viewBox="0 0 24 24">
-          <line x1="3" y1="7" x2="21" y2="7" stroke-width="2"/>
-          <line x1="3" y1="12" x2="21" y2="12" stroke-width="2"/>
-          <line x1="3" y1="17" x2="21" y2="17" stroke-width="2"/>
-        </svg>
-      </button>
     </nav>
-    <!-- Mobile nav drawer -->
-    <div class="nav-drawer" id="nav-drawer">
-      <a href="#" id="drawer-inicio" class="active" onclick="showPage('inicio');closeDrawer();return false;">Início</a>
-      <a href="#" id="drawer-denuncia" onclick="openDenuncia();closeDrawer();return false;">Fazer Denúncia</a>
-      <a href="#" id="drawer-acompanhar" onclick="showPage('acompanhar');closeDrawer();return false;">Acompanhar</a>
+
+    <!-- MODAL: TUTORIAL -->
+    <div class="modal-overlay" id="modal-tutorial">
+      <div class="modal-box" id="modal-tutorial-box">
+        <div class="modal-header">
+          <h2>Bem-vindo ao WebDenúncia</h2>
+          <button class="btn-x" onclick="closeTutorial()">&#10005;</button>
+        </div>
+        <div class="modal-body">
+          <p class="tutorial-intro">
+            Esta plataforma permite registrar denúncias de forma <strong>anônima e segura</strong> ao Governo do Estado de São Paulo. Veja como funciona em 4 etapas simples:
+          </p>
+          <div class="tutorial-steps">
+            <div class="tutorial-step">
+              <div class="tutorial-step-num">1</div>
+              <div class="tutorial-step-body">
+                <h4>Local do Incidente</h4>
+                <p>Informe o estado, cidade, bairro e logradouro onde o fato ocorreu. Quanto mais preciso, mais eficiente será o encaminhamento.</p>
+              </div>
+            </div>
+            <div class="tutorial-step">
+              <div class="tutorial-step-num">2</div>
+              <div class="tutorial-step-body">
+                <h4>Descrição do Incidente</h4>
+                <p>Selecione a categoria (ex: Tráfico, Violência Doméstica) e descreva detalhadamente o que aconteceu, incluindo data e horário aproximados.</p>
+              </div>
+            </div>
+            <div class="tutorial-step">
+              <div class="tutorial-step-num">3</div>
+              <div class="tutorial-step-body">
+                <h4>Evidências (Opcional)</h4>
+                <p>Anexe fotos, vídeos, áudios (MP3) ou documentos (PDF) que possam auxiliar na investigação. Até 10 arquivos de 100MB cada.</p>
+              </div>
+            </div>
+            <div class="tutorial-step">
+              <div class="tutorial-step-num">4</div>
+              <div class="tutorial-step-body">
+                <h4>Revisão e Senha</h4>
+                <p>Confira as informações, crie uma senha e anote o número do protocolo gerado. Você precisará deles para acompanhar sua denúncia.</p>
+              </div>
+            </div>
+          </div>
+          <div class="info-banner" style="margin-top:18px">
+            <strong>Emergência?</strong> Este sistema é para investigações. Em caso de crime em andamento, ligue <strong>190</strong> (Polícia Militar).
+          </div>
+          <div class="tutorial-check">
+            <input type="checkbox" id="tutorial-nao-mostrar" onchange="salvarPreferenciaTutorial()" />
+            <label for="tutorial-nao-mostrar">Não mostrar novamente neste dispositivo</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-emergency" onclick="closeTutorial()">Pular Tutorial</button>
+          <button class="btn-proceed" onclick="closeTutorialAndDenuncia()">Entendi — Fazer Denúncia</button>
+        </div>
+      </div>
     </div>
 
     <!-- MODAL: AVISO EMERGÊNCIA -->
@@ -1292,7 +1339,6 @@
               id="complemento-ok"
               style="
                 display: none;
-                color: #2d6a2d;
                 font-size: 0.82rem;
                 margin-top: 6px;
                 font-weight: 600;

@@ -312,11 +312,11 @@ function checkSenha() {
   if (/[^A-Za-z0-9]/.test(val)) score++;
 
   const levels = [
-    { pct: '20%', color: '#c0392b', text: 'Muito fraca' },
-    { pct: '40%', color: '#e67e22', text: 'Fraca' },
-    { pct: '60%', color: '#f1c40f', text: 'Razoável' },
-    { pct: '80%', color: '#27ae60', text: 'Boa' },
-    { pct: '100%', color: '#1a7a2e', text: 'Muito boa' },
+    { pct: '20%', color: '#aaaaaa', text: 'Muito fraca' },
+    { pct: '40%', color: '#888888', text: 'Fraca' },
+    { pct: '60%', color: '#666666', text: 'Razoável' },
+    { pct: '80%', color: '#444444', text: 'Boa' },
+    { pct: '100%', color: '#1a1a1a', text: 'Muito boa' },
   ];
   const lv = levels[Math.min(score - 1, 4)] || levels[0];
   fill.style.width = lv.pct;
@@ -658,9 +658,67 @@ function simpleHash(str) {
 }
 
 // ============================================================
+// DARK MODE
+// ============================================================
+function toggleDarkMode() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('wdTheme', newTheme);
+  updateDarkModeBtn(newTheme);
+}
+
+function updateDarkModeBtn(theme) {
+  const sun = document.getElementById('icon-sun');
+  const moon = document.getElementById('icon-moon');
+  const label = document.getElementById('dark-mode-label');
+  if (theme === 'dark') {
+    sun.style.display = 'block';
+    moon.style.display = 'none';
+    if (label) label.textContent = 'Claro';
+  } else {
+    sun.style.display = 'none';
+    moon.style.display = 'block';
+    if (label) label.textContent = 'Escuro';
+  }
+}
+
+// ============================================================
+// TUTORIAL
+// ============================================================
+function closeTutorial() {
+  closeModal('modal-tutorial');
+}
+
+function closeTutorialAndDenuncia() {
+  closeModal('modal-tutorial');
+  openDenuncia();
+}
+
+function salvarPreferenciaTutorial() {
+  const checked = document.getElementById('tutorial-nao-mostrar').checked;
+  if (checked) {
+    localStorage.setItem('wdTutorialSeen', '1');
+  } else {
+    localStorage.removeItem('wdTutorialSeen');
+  }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Restaurar tema salvo
+  const savedTheme = localStorage.getItem('wdTheme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateDarkModeBtn(savedTheme);
+
+  // Mostrar tutorial se não foi visto
+  const tutorialSeen = localStorage.getItem('wdTutorialSeen');
+  if (!tutorialSeen) {
+    setTimeout(() => openModal('modal-tutorial'), 400);
+  }
+
   // Definir data máxima como hoje
   const today = new Date().toISOString().split('T')[0];
   const dateField = document.getElementById('f-data');
@@ -668,38 +726,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   goToStep(1);
 });
-
-// ============================================================
-// MOBILE NAV DRAWER
-// ============================================================
-function toggleDrawer() {
-  const drawer = document.getElementById('nav-drawer');
-  drawer.classList.toggle('open');
-}
-
-function closeDrawer() {
-  document.getElementById('nav-drawer').classList.remove('open');
-}
-
-// Close drawer when clicking outside
-document.addEventListener('click', function(e) {
-  const drawer = document.getElementById('nav-drawer');
-  const hamburger = document.getElementById('nav-hamburger');
-  if (drawer && hamburger && !drawer.contains(e.target) && !hamburger.contains(e.target)) {
-    drawer.classList.remove('open');
-  }
-});
-
-// Sync drawer active state with nav-links
-const _origShowPage = showPage;
-// Patch showPage to also update drawer links
-(function() {
-  const original = window.showPage;
-  window.showPage = function(page) {
-    original(page);
-    document.querySelectorAll('.nav-drawer a').forEach(a => a.classList.remove('active'));
-    const drawerLink = document.getElementById('drawer-' + page);
-    if (drawerLink) drawerLink.classList.add('active');
-    closeDrawer();
-  };
-})();
