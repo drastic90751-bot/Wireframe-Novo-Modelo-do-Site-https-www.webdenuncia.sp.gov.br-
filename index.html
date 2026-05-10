@@ -11,6 +11,8 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <title>WebDenúncia – Governo do Estado de São Paulo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="microinteracoes.css" />
   <link rel="stylesheet" href="ui-responsivo.css" />
@@ -85,13 +87,9 @@
   <!-- NAV -->
   <nav role="banner" aria-label="Navegação principal">
    <a class="nav-logo" href="#" onclick="showPage('inicio'); closeMobileMenu(); return false;">
-    <svg viewBox="0 0 32 32" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
-     <!-- Shield -->
-     <path d="M16 2L4 7v9c0 6.5 5.1 12.6 12 14 6.9-1.4 12-7.5 12-14V7L16 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
-     <!-- Envelope body -->
-     <rect x="9" y="12" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
-     <!-- Envelope flap -->
-     <polyline points="9,13 16,19 23,13" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/>
+      <polyline points="8,12 11,15 16,9"/>
     </svg>
     <span>WEB<b>DENÚNCIA</b></span>
    </a>
@@ -102,16 +100,16 @@
     <a href="#" id="nav-denuncia" onclick="openDenuncia(); return false;">Fazer Denúncia</a>
     <a href="#" id="nav-acompanhar" onclick="showPage('acompanhar'); return false;">Acompanhar</a>
     <button class="btn-dark-mode" id="btn-dark-mode" onclick="toggleDarkMode()" title="Alternar modo escuro" aria-pressed="false" aria-label="Alternar modo escuro">
-     <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-     <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+     <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+     <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
      <span id="dark-mode-label">Escuro</span>
     </button>
    </div>
 
    <!-- Mobile: dark mode + hamburger -->
    <button class="btn-dark-mode btn-dark-mode-mobile-only" id="btn-dark-mode-mobile" onclick="toggleDarkMode()" title="Alternar modo escuro" style="display:none" aria-pressed="false" aria-label="Alternar modo escuro">
-    <svg id="icon-sun-m" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    <svg id="icon-moon-m" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    <svg id="icon-sun-m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+    <svg id="icon-moon-m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
    </button>
    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
     <span></span>
@@ -189,10 +187,10 @@
     <h2 id="aviso-title">Aviso Importante Antes de Continuar</h2>
     <div class="modal-section">
      <div class="modal-icon-box danger">
-      <svg viewBox="0 0 32 32">
-       <circle cx="16" cy="16" r="13" stroke-width="2" fill="none" />
-       <line x1="16" y1="9" x2="16" y2="18" stroke-width="2.5" />
-       <circle cx="16" cy="23" r="2" fill="currentColor" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
       </svg>
      </div>
      <div>
@@ -206,9 +204,9 @@
     </div>
     <div class="modal-section">
      <div class="modal-icon-box safe">
-      <svg viewBox="0 0 32 32">
-       <path d="M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7z" stroke-width="2" fill="none" />
-       <polyline points="10,16 14,20 22,12" stroke-width="2" fill="none" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/>
+        <polyline points="8,12 11,15 16,9"/>
       </svg>
      </div>
      <div>
@@ -434,8 +432,8 @@
     <div class="modal-body">
      <div class="success-check-row">
       <div class="success-circle">
-       <svg viewBox="0 0 32 32" width="26" height="26">
-        <polyline points="6,16 13,23 26,9" stroke-width="3" fill="none" stroke="white" />
+       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="4,12 9,17 20,7"/>
        </svg>
       </div>
       <p>Sua denúncia foi registrada e está sendo avaliada pela equipe.</p>
@@ -457,9 +455,9 @@
       <div><strong>Acompanhamento:</strong> Verifique o status em 1 a 2 dias usando seu protocolo e senha.</div>
      </div>
      <div class="privacy-strip">
-      <svg viewBox="0 0 24 24" width="18" height="18">
-       <path d="M12 2l8 3v7c0 5-4 9-8 10C8 21 4 17 4 12V5z" stroke-width="1.5" fill="none" />
-       <polyline points="8,12 11,15 16,9" stroke-width="1.5" fill="none" />
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/>
+        <polyline points="8,12 11,15 16,9"/>
       </svg>
       <span>Suas informações pessoais <strong>NÃO</strong> foram coletadas. Todo o processo é criptografado.</span>
      </div>
@@ -475,7 +473,7 @@
   <main class="page active" id="page-inicio" role="main" tabindex="-1">
    <!-- Emergency banner -->
    <div id="main-content" class="emergency-banner">
-    <svg viewBox="0 0 24 24" width="18" height="18" style="stroke:white;fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="white"/></svg>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="white" stroke="none"/></svg>
     Crime em andamento? Ligue <strong>&nbsp;190&nbsp;</strong> (Polícia Militar)
    </div>
 
@@ -501,72 +499,49 @@
      <h2>Categorias Principais</h2>
      <div class="category-grid">
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Tráfico')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Tráfico');event.preventDefault();}" aria-label="Fazer denúncia de Tráfico de Drogas">
-       <!-- Tráfico de Drogas: pílulas/cápsulas -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="10" y="20" width="28" height="12" rx="6" stroke-width="2"/>
-        <line x1="24" y1="20" x2="24" y2="32" stroke-width="2"/>
-        <circle cx="17" cy="14" r="3" stroke-width="2"/>
-        <line x1="17" y1="17" x2="17" y2="20" stroke-width="2"/>
-        <circle cx="31" cy="14" r="3" stroke-width="2"/>
-        <line x1="31" y1="17" x2="31" y2="20" stroke-width="2"/>
-        <path d="M20 26h-2M30 26h-2" stroke-width="2"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.5 20.5L3.5 13.5a4.95 4.95 0 017-7l7 7a4.95 4.95 0 01-7 7z"/>
+        <line x1="7" y1="10" x2="14" y2="17"/>
        </svg>
        <span>Tráfico de Drogas</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Violência')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Violência');event.preventDefault();}" aria-label="Fazer denúncia de Violência Doméstica">
-       <!-- Violência Doméstica: casa com sinal de alerta -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M8 22L24 8l16 14" stroke-width="2"/>
-        <path d="M13 22v16h22V22" stroke-width="2"/>
-        <path d="M20 38v-8h8v8" stroke-width="2"/>
-        <line x1="24" y1="18" x2="24" y2="27" stroke-width="2.5"/>
-        <circle cx="24" cy="30.5" r="1.2" fill="currentColor" stroke="none"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9,22 9,12 15,12 15,22"/>
        </svg>
        <span>Violência Doméstica</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Crimes Ambientais')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Crimes Ambientais');event.preventDefault();}" aria-label="Fazer denúncia de Crimes Ambientais">
-       <!-- Crimes Ambientais: árvore cortada/proibida -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M24 36V22" stroke-width="2"/>
-        <path d="M14 28l10-10 10 10H30l6 6H12l6-6z" stroke-width="2"/>
-        <path d="M14 22l-4-4h6l-4-6h8l-4-6 4 2" stroke-width="1.5"/>
-        <line x1="12" y1="36" x2="36" y2="36" stroke-width="2"/>
-        <line x1="34" y1="10" x2="40" y2="16" stroke-width="2.5" stroke="currentColor"/>
-        <line x1="40" y1="10" x2="34" y2="16" stroke-width="2.5" stroke="currentColor"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 8C8 10 5 16 5 20h14a7 7 0 00-2-12z"/>
+        <line x1="12" y1="20" x2="12" y2="13"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
        </svg>
        <span>Crimes Ambientais</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('DEPA (Animais)')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('DEPA (Animais)');event.preventDefault();}" aria-label="Fazer denúncia de Maus-tratos a Animais">
-       <!-- DEPA Animais: pata de animal com coração/proteção -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <ellipse cx="18" cy="16" rx="3.5" ry="4.5" stroke-width="2"/>
-        <ellipse cx="30" cy="16" rx="3.5" ry="4.5" stroke-width="2"/>
-        <ellipse cx="12" cy="22" rx="2.5" ry="3.5" stroke-width="2"/>
-        <ellipse cx="36" cy="22" rx="2.5" ry="3.5" stroke-width="2"/>
-        <path d="M15 30c0-5 3-8 9-8s9 3 9 8c0 3-2 6-9 6s-9-3-9-6z" stroke-width="2"/>
-        <path d="M21 33c1-2 2-3 3-3s2 1 3 3" stroke-width="1.5"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="9" cy="7" rx="2" ry="3"/>
+        <ellipse cx="15" cy="7" rx="2" ry="3"/>
+        <ellipse cx="5.5" cy="11.5" rx="1.5" ry="2.5"/>
+        <ellipse cx="18.5" cy="11.5" rx="1.5" ry="2.5"/>
+        <path d="M7 16.5c0-2.5 2-4 5-4s5 1.5 5 4c0 2-2 3.5-5 3.5s-5-1.5-5-3.5z"/>
        </svg>
        <span>DEPA (Animais)</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Corrupção')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Corrupção');event.preventDefault();}" aria-label="Fazer denúncia de Corrupção">
-       <!-- Corrupção: mão segurando dinheiro/moeda -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="24" cy="16" r="8" stroke-width="2"/>
-        <text x="24" y="20" text-anchor="middle" font-size="10" fill="currentColor" stroke="none" font-family="serif" font-weight="bold">$</text>
-        <path d="M10 34c0-4 6-6 14-6s14 2 14 6" stroke-width="2"/>
-        <path d="M8 34c-1 2-1 4 0 5h32c1-1 1-3 0-5" stroke-width="2"/>
-        <line x1="16" y1="30" x2="12" y2="38" stroke-width="1.5"/>
-        <line x1="32" y1="30" x2="36" y2="38" stroke-width="1.5"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
        </svg>
        <span>Corrupção</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Outros')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Outros');event.preventDefault();}" aria-label="Fazer denúncia de Outros crimes">
-       <!-- Outros: escudo com reticências -->
-       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M24 6L8 12v10c0 10 7 18.5 16 21 9-2.5 16-11 16-21V12L24 6z" stroke-width="2"/>
-        <circle cx="17" cy="25" r="1.8" fill="currentColor" stroke="none"/>
-        <circle cx="24" cy="25" r="1.8" fill="currentColor" stroke="none"/>
-        <circle cx="31" cy="25" r="1.8" fill="currentColor" stroke="none"/>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <circle cx="12" cy="16" r="0.8" fill="currentColor" stroke="none"/>
        </svg>
        <span>Outros</span>
       </div>
@@ -606,11 +581,11 @@
     </div>
     <div class="footer-logos-row">
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" stroke-width="1.5"/><path d="M24 10v14l8 8" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg>
       Governo do Estado<br />de São Paulo
      </div>
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 17-16 20C17 39 8 32 8 22V10z" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg>
       Governo do Estado<br />de São Paulo
      </div>
     </div>
@@ -667,7 +642,7 @@
        <input type="text" class="form-input" id="f-complemento" placeholder="Apto, bloco, referência..." />
       </div>
       <div class="map-placeholder">
-       <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#aaa"/></svg>
+       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
        <span>Mapa — integração com API disponível</span>
       </div>
       <div class="form-group">
@@ -748,9 +723,10 @@
        onclick="document.getElementById('file-input').click()"
        onkeydown="if(event.key==='Enter'||event.key===' '){document.getElementById('file-input').click();event.preventDefault();}" aria-label="Área de upload: clique ou arraste arquivos de evidência aqui">
        <div class="upload-svg">
-        <svg viewBox="0 0 48 48" width="36" height="36">
-         <path d="M24 8v24M14 18l10-10 10 10" stroke-width="2" fill="none" />
-         <path d="M8 36h32" stroke-width="2" />
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16,6 12,2 8,6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+          <path d="M20 17v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/>
         </svg>
        </div>
        <p>Toque para selecionar arquivos</p>
@@ -847,9 +823,8 @@
         <span id="protocolo-gerado">—</span>
        </div>
        <button class="btn-copy-icon" title="Copiar" onclick="copiarProtocolo()">
-        <svg viewBox="0 0 20 20" width="18" height="18">
-         <rect x="7" y="7" width="10" height="10" rx="1" stroke-width="1.5" fill="none" />
-         <path d="M13 7V4a1 1 0 00-1-1H4a1 1 0 00-1 1v8a1 1 0 001 1h3" stroke-width="1.5" fill="none" />
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
         </svg>
        </button>
       </div>
@@ -858,7 +833,7 @@
        <div class="input-icon-wrap">
         <input type="password" class="form-input" id="f-senha" aria-required="true" aria-describedby="err-senha senha-strength" placeholder="Mínimo 6 caracteres" oninput="checkSenha()" autocomplete="new-password" />
         <button class="btn-eye" onclick="toggleSenhaCriar('f-senha')" type="button">
-         <svg viewBox="0 0 20 20" width="16" height="16"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="2.5" stroke-width="1.5" fill="none"/></svg>
+         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
        </div>
        <div class="password-strength" id="senha-strength" style="display:none">
@@ -872,7 +847,7 @@
        <div class="input-icon-wrap">
         <input type="password" class="form-input" id="f-senha-conf" aria-required="true" aria-describedby="err-senha-conf" placeholder="Repita a senha" autocomplete="new-password" />
         <button class="btn-eye" onclick="toggleSenhaCriar('f-senha-conf')" type="button">
-         <svg viewBox="0 0 20 20" width="16" height="16"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="2.5" stroke-width="1.5" fill="none"/></svg>
+         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
        </div>
        <div class="field-error" id="err-senha-conf"></div>
@@ -911,11 +886,11 @@
     </div>
     <div class="footer-logos-row">
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" stroke-width="1.5"/><path d="M24 10v14l8 8" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg>
       Governo SP
      </div>
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 17-16 20C17 39 8 32 8 22V10z" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg>
       Governo SP
      </div>
     </div>
@@ -930,7 +905,7 @@
      <div class="form-group">
       <label>Protocolo da Denúncia</label>
       <div class="input-icon-wrap">
-       <svg class="input-icon-svg" viewBox="0 0 20 20"><path d="M10 1l7 3v6c0 5-3.5 8-7 9C6.5 18 3 15 3 10V4z" stroke-width="1.5" fill="none"/></svg>
+       <svg class="input-icon-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L3 5v5c0 4 3 7 7 8 4-1 7-4 7-8V5z"/></svg>
        <input type="text" class="form-input" id="acomp-protocolo" autocomplete="off" placeholder="Ex: 2026-ABC-123" autocomplete="off" />
       </div>
       <div class="field-error" id="err-acomp-protocolo"></div>
@@ -938,10 +913,10 @@
      <div class="form-group" style="margin-top:14px">
       <label>Senha de Acesso</label>
       <div class="input-icon-wrap">
-       <svg class="input-icon-svg" viewBox="0 0 20 20"><rect x="4" y="9" width="12" height="9" rx="1" stroke-width="1.5" fill="none"/><path d="M7 9V6a3 3 0 016 0v3" stroke-width="1.5" fill="none"/></svg>
+       <svg class="input-icon-svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="10" height="8" rx="1"/><path d="M7 9V7a3 3 0 016 0v2"/></svg>
        <input type="password" class="form-input" id="acomp-senha" placeholder="Sua senha" />
        <button class="btn-eye" onclick="toggleSenhaAcomp()" title="Mostrar/ocultar">
-        <svg viewBox="0 0 20 20" width="16" height="16"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="2.5" stroke-width="1.5" fill="none"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
        </button>
       </div>
       <div class="field-error" id="err-acomp-senha"></div>
@@ -976,23 +951,23 @@
      <p class="section-label" style="margin-bottom:14px">Dashboard de Acompanhamento</p>
      <div class="progress-track">
       <div class="track-step done">
-       <div class="track-icon"><svg viewBox="0 0 20 20" width="14" height="14"><polyline points="4,10 8,14 16,6" stroke-width="2.5" fill="none"/></svg></div>
+       <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,7"/></svg></div>
        <span>Registrada</span>
       </div>
       <div class="track-step done">
-       <div class="track-icon"><svg viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="4" stroke-width="1.5" fill="none"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2" stroke-width="1.5"/></svg></div>
+       <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></div>
        <span>Em Análise</span>
       </div>
       <div class="track-step done">
-       <div class="track-icon"><svg viewBox="0 0 20 20" width="14" height="14"><rect x="3" y="5" width="14" height="12" rx="1" stroke-width="1.5" fill="none"/><path d="M7 5V4a1 1 0 012 0v1M11 5V4a1 1 0 012 0v1" stroke-width="1.5"/></svg></div>
+       <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
        <span>Encaminhada</span>
       </div>
       <div class="track-step current">
-       <div class="track-icon"><svg viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="8" stroke-width="1.5" fill="none"/><path d="M10 6v5l3 2" stroke-width="1.5"/></svg></div>
+       <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg></div>
        <span>Investigação</span>
       </div>
       <div class="track-step">
-       <div class="track-icon"><svg viewBox="0 0 20 20" width="14" height="14"><polyline points="4,10 8,14 16,6" stroke-width="2.5" fill="none"/></svg></div>
+       <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,7"/></svg></div>
        <span>Concluída</span>
       </div>
      </div>
@@ -1059,11 +1034,11 @@
     </div>
     <div class="footer-logos-row">
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" stroke-width="1.5"/><path d="M24 10v14l8 8" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg>
       Governo SP
      </div>
      <div class="footer-logo">
-      <svg viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 17-16 20C17 39 8 32 8 22V10z" stroke-width="1.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg>
       Governo SP
      </div>
     </div>
