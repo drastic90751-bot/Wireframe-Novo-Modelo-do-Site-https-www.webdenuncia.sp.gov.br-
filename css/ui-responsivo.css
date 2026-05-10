@@ -1,0 +1,1333 @@
+/*
+ * ══════════════════════════════════════════════════════════════
+ *  WebDenúncia — UI Otimista + Design Responsivo
+ *  Adicione ao <head> DEPOIS de style.css (e microinteracoes.css se usar):
+ *  <link rel="stylesheet" href="ui-responsivo.css" />
+ *
+ *  Filosofia: "UI Otimista" — cada estado positivo é celebrado.
+ *  O site já tem excelente acessibilidade. Este arquivo adiciona:
+ *  1. Token de cor "esperança" (azul cívico) sem quebrar o dark mode
+ *  2. Hierarquia visual mais clara em todas as larguras
+ *  3. Layout refinado 320px → 480px → 640px → 900px → 1280px → 1600px
+ *  4. Estados de sucesso / feedback / progresso mais expressivos
+ *  5. Tipografia fluida com clamp()
+ *  6. Componentes grid aprimorados
+ * ══════════════════════════════════════════════════════════════
+ */
+
+/* ════════════════════════════════════════════════════════════
+   § 0 · TOKENS DE DESIGN — camada sobre as vars do style.css
+   ════════════════════════════════════════════════════════════ */
+:root {
+  /* Azul cívico — cor de ação positiva */
+  --civic:          #005fcc;
+  --civic-light:    #e8f0fc;
+  --civic-dark:     #004099;
+
+  /* Verde confirmação */
+  --confirm:        #166534;
+  --confirm-light:  #dcfce7;
+
+  /* Superfícies com profundidade */
+  --surface-1:      #ffffff;
+  --surface-2:      #f5f5f3;
+  --surface-3:      #ebebea;
+
+  /* Sombras otimistas */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:  0 10px 28px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+
+  /* Raio suave para cartões (sem afetar inputs/botões que usam border-radius:0) */
+  --radius-card: 4px;
+  --radius-pill: 999px;
+
+  /* Espaçamento responsivo */
+  --page-pad: clamp(16px, 4vw, 48px);
+  --section-gap: clamp(20px, 4vw, 48px);
+
+  /* Tipografia fluida */
+  --fs-xs:   clamp(0.72rem, 1.4vw, 0.82rem);
+  --fs-sm:   clamp(0.82rem, 1.6vw, 0.92rem);
+  --fs-base: clamp(0.92rem, 1.8vw, 1rem);
+  --fs-md:   clamp(1rem,    2vw,   1.1rem);
+  --fs-lg:   clamp(1.1rem,  2.4vw, 1.35rem);
+  --fs-xl:   clamp(1.35rem, 3vw,   1.7rem);
+  --fs-hero: clamp(1.6rem,  4.5vw, 2.4rem);
+}
+
+[data-theme="dark"] {
+  --civic:          #60a5fa;
+  --civic-light:    #1e3a5f;
+  --civic-dark:     #93c5fd;
+
+  --confirm:        #86efac;
+  --confirm-light:  #14532d;
+
+  --surface-1:      #242830;
+  --surface-2:      #1e2128;
+  --surface-3:      #191c22;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:  0 10px 28px rgba(0,0,0,.5);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 1 · BODY & SCROLL
+   ════════════════════════════════════════════════════════════ */
+body {
+  /* Previne overflow horizontal em mobile */
+  overflow-x: hidden;
+  /* Scroll suave nativo */
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar customizada — webkit */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mid); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 2 · NAV — mais limpa e expressiva
+   ════════════════════════════════════════════════════════════ */
+nav {
+  /* Backdrop blur para profundidade */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.95);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] nav {
+  background: rgba(36,40,48,0.96);
+}
+
+.nav-logo span {
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  letter-spacing: 0.02em;
+}
+
+/* Indicador ativo no desktop — linha embaixo mais refinada */
+@media (min-width: 900px) {
+  .nav-links a {
+    position: relative;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links a.active {
+    color: var(--civic);
+    background: transparent;
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    background: var(--civic);
+  }
+
+  .nav-links a:hover {
+    color: var(--civic);
+    background: var(--civic-light);
+  }
+
+  [data-theme="dark"] .nav-links a.active { color: var(--civic); }
+  [data-theme="dark"] .nav-links a:hover  { color: var(--civic); background: var(--civic-light); }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 3 · EMERGENCY BANNER — mais impactante
+   ════════════════════════════════════════════════════════════ */
+.emergency-banner {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  padding: 11px var(--page-pad);
+  text-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+.emergency-banner strong {
+  font-size: clamp(0.92rem, 2vw, 1.05rem);
+  background: rgba(255,255,255,.15);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  margin: 0 2px;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 4 · HERO — layout mais generoso
+   ════════════════════════════════════════════════════════════ */
+#page-inicio .hero {
+  padding: var(--page-pad);
+  gap: var(--section-gap);
+  background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+}
+
+/* Botões de ação do hero */
+.hero-tab-btn {
+  font-size: var(--fs-sm);
+  padding: clamp(14px, 2.5vw, 20px) clamp(12px, 2vw, 16px);
+  border-width: 2px;
+  letter-spacing: 0.1em;
+}
+
+.hero-tab-btn.primary {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  font-size: var(--fs-sm);
+  padding: clamp(16px, 3vw, 22px);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brilho sutil no primary */
+.hero-tab-btn.primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,.15);
+}
+
+[data-theme="dark"] .hero-tab-btn.primary {
+  background: linear-gradient(135deg, #dde1e7 0%, #c8cdd5 100%);
+}
+
+/* Sidebar de consulta */
+.sidebar {
+  background: var(--surface-1);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-card);
+}
+
+.sidebar h3 {
+  font-size: var(--fs-sm);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 5 · CATEGORIAS — cards com personalidade
+   ════════════════════════════════════════════════════════════ */
+.categories h2 {
+  font-size: var(--fs-md);
+  letter-spacing: 0.08em;
+}
+
+.category-card {
+  border-radius: var(--radius-card);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-sm);
+  border-color: transparent;
+  padding: clamp(14px, 2.5vw, 22px) clamp(10px, 2vw, 14px);
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faixa de cor no topo de cada card */
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--border);
+  transition: background 0.2s ease;
+}
+
+.category-card:hover { border-color: transparent; box-shadow: var(--shadow-md); }
+.category-card:hover::before { background: var(--civic); }
+
+/* Ícones com fundo suave */
+.category-card svg {
+  background: var(--surface-2);
+  padding: 8px;
+  border-radius: var(--radius-card);
+  width: clamp(40px, 8vw, 52px);
+  height: clamp(40px, 8vw, 52px);
+  box-sizing: content-box;
+}
+
+.category-card span {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+
+/* Grid responsivo refinado */
+.category-grid {
+  gap: clamp(8px, 2vw, 14px);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 6 · PAINEL DE NOTÍCIAS
+   ════════════════════════════════════════════════════════════ */
+.news-panel {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  border-color: transparent;
+}
+
+.news-panel h3 {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--mid);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.news-item {
+  font-size: var(--fs-sm);
+  padding: 13px 0;
+  gap: 10px;
+  transition: color 0.15s, padding-left 0.2s;
+}
+
+/* Indicador pontual */
+.news-item::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.2s;
+  margin-top: 1px;
+}
+
+.news-item:hover::before { background: var(--civic); }
+.news-item:hover { color: var(--dark); padding-left: 4px; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 7 · INPUTS E FORMULÁRIOS — mais legíveis
+   ════════════════════════════════════════════════════════════ */
+.form-input,
+.form-select,
+.form-textarea {
+  font-size: var(--fs-base);
+  background: var(--surface-1);
+  border-color: var(--border);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--civic);
+  box-shadow: 0 0 0 3px rgba(0,95,204,.15);
+  background: var(--surface-1);
+}
+
+/* Estado de sucesso no input */
+.form-input.valid,
+.form-textarea.valid {
+  border-color: var(--confirm);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20'%3E%3Cpolyline points='4,10 8,14 16,6' stroke='%23166534' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.form-group label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  color: var(--dark);
+}
+
+.field-hint {
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.field-error {
+  font-size: var(--fs-xs);
+}
+
+/* Row responsiva — empilha em telas muito pequenas */
+.form-row {
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  min-width: min(100%, 160px);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 8 · BOTÕES — hierarquia clara
+   ════════════════════════════════════════════════════════════ */
+
+/* Primary */
+.btn-primary {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #dde1e7 0%, #c8cdd5 100%);
+}
+
+/* Next */
+.btn-next {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.1em;
+  background: var(--civic);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-next:hover {
+  background: var(--civic-dark);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .btn-next {
+  background: var(--civic);
+  color: #fff;
+}
+
+[data-theme="dark"] .btn-next:hover {
+  background: var(--civic-dark);
+}
+
+/* Proceed */
+.btn-proceed {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.08em;
+  background: var(--civic);
+}
+
+.btn-proceed:hover {
+  background: var(--civic-dark);
+}
+
+[data-theme="dark"] .btn-proceed {
+  background: var(--civic);
+  color: #fff;
+}
+
+/* Emergency / back */
+.btn-emergency,
+.btn-back {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+}
+
+/* Add pessoa */
+.btn-add-pessoa {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  border-color: var(--civic);
+  color: var(--civic);
+}
+
+.btn-add-pessoa:hover {
+  border-color: var(--civic-dark);
+  color: var(--civic-dark);
+  background: var(--civic-light);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 9 · STEPPER — mais claro e orientador
+   ════════════════════════════════════════════════════════════ */
+.stepper {
+  padding: 0 var(--page-pad);
+  gap: 0;
+  background: var(--surface-1);
+  box-shadow: 0 2px 4px rgba(0,0,0,.06);
+}
+
+.step {
+  font-size: var(--fs-xs);
+  padding: clamp(10px, 2vw, 16px) clamp(12px, 2.5vw, 20px);
+  gap: 8px;
+  border-right-color: var(--border);
+}
+
+/* Step ativo — azul cívico */
+.step.active {
+  background: var(--civic);
+  color: #fff;
+}
+
+.step.active .step-check {
+  background: rgba(255,255,255,.25);
+  border-color: #fff;
+  color: #fff;
+}
+
+/* Step concluído — verde suave */
+.step.done {
+  color: var(--confirm);
+}
+
+.step.done .step-check {
+  background: var(--confirm);
+  border-color: var(--confirm);
+  color: #fff;
+}
+
+[data-theme="dark"] .step.active {
+  background: var(--civic);
+  color: #fff;
+}
+
+[data-theme="dark"] .step.done {
+  color: var(--confirm);
+}
+
+[data-theme="dark"] .step.done .step-check {
+  background: var(--confirm);
+  border-color: var(--confirm);
+  color: #1a1d21;
+}
+
+/* Label vertical no desktop */
+.step-label-side {
+  color: var(--civic);
+  border-right-color: var(--civic);
+  opacity: 0.5;
+  font-size: 0.6rem;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 10 · AREA DE UPLOAD — mais convidativa
+   ════════════════════════════════════════════════════════════ */
+.upload-area {
+  border-radius: var(--radius-card);
+  background: var(--surface-2);
+  border-color: var(--civic);
+  border-opacity: 0.4;
+  padding: clamp(24px, 5vw, 40px) 16px;
+  gap: 12px;
+  position: relative;
+}
+
+/* Gradiente de fundo sutil */
+.upload-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--civic-light) 0%, transparent 60%);
+  opacity: 0.4;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.upload-area:hover,
+.upload-area.drag-over {
+  border-color: var(--civic);
+  background: var(--surface-1);
+}
+
+.upload-area.drag-over::before {
+  opacity: 0.8;
+}
+
+.upload-area p {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--civic);
+  position: relative; /* Acima do ::before */
+}
+
+.upload-area .upload-svg svg {
+  stroke: var(--civic);
+  width: clamp(32px, 6vw, 44px);
+  height: clamp(32px, 6vw, 44px);
+  position: relative;
+}
+
+[data-theme="dark"] .upload-area::before {
+  background: linear-gradient(135deg, rgba(96,165,250,.1) 0%, transparent 60%);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 11 · PROTOCOL BOX — destaque especial
+   ════════════════════════════════════════════════════════════ */
+.protocol-box {
+  border-color: var(--civic);
+  background: var(--civic-light);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+}
+
+.protocol-num small {
+  color: var(--civic);
+  font-size: var(--fs-xs);
+}
+
+.protocol-num span {
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  color: var(--civic);
+  letter-spacing: 0.06em;
+}
+
+[data-theme="dark"] .protocol-box {
+  background: var(--civic-light);
+  border-color: var(--civic);
+}
+
+[data-theme="dark"] .protocol-num small,
+[data-theme="dark"] .protocol-num span { color: var(--civic); }
+
+.btn-copy-icon {
+  border-color: var(--civic);
+  color: var(--civic);
+  border-radius: var(--radius-card);
+}
+
+.btn-copy-icon:hover {
+  background: var(--civic);
+  color: #fff;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 12 · SUMMARY BOX — revisão clara
+   ════════════════════════════════════════════════════════════ */
+.summary-box {
+  border-radius: var(--radius-card);
+  border-color: var(--border);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.sum-row {
+  padding: 10px 12px;
+  font-size: var(--fs-sm);
+}
+
+.sum-row:hover {
+  background: var(--civic-light);
+}
+
+.sum-row span:first-child { color: var(--dark); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 13 · STEP NAV — fixo no fundo em mobile
+   ════════════════════════════════════════════════════════════ */
+.step-nav {
+  padding: 12px var(--page-pad);
+  background: var(--surface-1);
+  box-shadow: 0 -2px 8px rgba(0,0,0,.08);
+}
+
+@media (max-width: 599px) {
+  .step-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 14 · MODAIS — mais refinados
+   ════════════════════════════════════════════════════════════ */
+.modal-overlay {
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-box {
+  box-shadow: var(--shadow-lg);
+  border-width: 2px;
+}
+
+/* Em mobile, modal sobe mais */
+@media (max-width: 599px) {
+  .modal-box {
+    max-height: 96vh;
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+/* Alça de arraste (visual apenas) em mobile */
+@media (max-width: 599px) {
+  .modal-box::before {
+    content: '';
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    display: block;
+    margin: 8px auto -4px;
+    flex-shrink: 0;
+  }
+}
+
+.modal-header {
+  padding: 14px 20px;
+}
+
+.modal-header h2 {
+  font-size: var(--fs-md);
+  letter-spacing: 0.06em;
+}
+
+.modal-body {
+  padding: clamp(14px, 3vw, 24px);
+}
+
+.modal-body p {
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+/* Info banner dentro de modal */
+.info-banner {
+  border-radius: var(--radius-card);
+  font-size: var(--fs-sm);
+  border-left-width: 4px;
+  border-left-color: var(--civic);
+  background: var(--civic-light);
+  color: var(--civic-dark);
+}
+
+[data-theme="dark"] .info-banner {
+  background: var(--civic-light);
+  border-left-color: var(--civic);
+  color: var(--civic);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 15 · MODAL SUCESSO — celebração otimista
+   ════════════════════════════════════════════════════════════ */
+.success-circle {
+  background: var(--civic);
+  width: 52px;
+  height: 52px;
+  box-shadow: 0 0 0 6px var(--civic-light);
+}
+
+[data-theme="dark"] .success-circle {
+  background: var(--civic);
+  box-shadow: 0 0 0 6px var(--civic-light);
+}
+
+.success-check-row p {
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.success-proto-box {
+  border-color: var(--civic);
+  background: var(--civic-light);
+  border-radius: var(--radius-card);
+  padding: 16px 18px;
+}
+
+.proto-big {
+  font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+  color: var(--civic);
+  letter-spacing: 0.04em;
+}
+
+.label-sm { color: var(--civic); }
+
+.privacy-strip {
+  border-radius: var(--radius-card);
+  border-color: var(--confirm);
+  background: var(--confirm-light);
+  color: var(--confirm);
+}
+
+.privacy-strip svg { stroke: var(--confirm); }
+
+[data-theme="dark"] .privacy-strip {
+  background: var(--confirm-light);
+  border-color: var(--confirm);
+  color: var(--confirm);
+}
+
+.badge-num {
+  background: var(--civic);
+  box-shadow: 0 2px 6px rgba(0,95,204,.3);
+}
+
+[data-theme="dark"] .badge-num {
+  background: var(--civic);
+  color: #fff;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 16 · MODAL AVISO DE EMERGÊNCIA — reforço visual
+   ════════════════════════════════════════════════════════════ */
+.big-alert {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  letter-spacing: 0.04em;
+}
+
+.modal-icon-box.danger {
+  border-color: var(--danger);
+  background: rgba(185,28,28,.08);
+}
+
+.modal-icon-box.danger svg { stroke: var(--danger); }
+
+.modal-icon-box.safe {
+  border-color: var(--confirm);
+  background: var(--confirm-light);
+}
+
+.modal-icon-box.safe svg { stroke: var(--confirm); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 17 · PROGRESS TRACK — linha de status mais clara
+   ════════════════════════════════════════════════════════════ */
+.track-step.done .track-icon {
+  background: var(--confirm);
+  border-color: var(--confirm);
+}
+
+.track-step.current .track-icon {
+  background: var(--civic);
+  border-color: var(--civic);
+  box-shadow: 0 0 0 4px var(--civic-light);
+}
+
+.track-step.current span {
+  color: var(--civic);
+}
+
+[data-theme="dark"] .track-step.done .track-icon {
+  background: var(--confirm);
+  border-color: var(--confirm);
+}
+
+[data-theme="dark"] .track-step.current .track-icon {
+  background: var(--civic);
+  border-color: var(--civic);
+  box-shadow: 0 0 0 4px var(--civic-light);
+}
+
+.progress-track::before {
+  background: var(--border);
+  height: 3px;
+}
+
+/* Linha de progresso preenchida */
+.progress-track::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 44px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--confirm), var(--civic));
+  z-index: 0;
+}
+
+/* Largura baseada nos passos concluídos — JS pode setar data-progress="N" */
+.progress-track[data-progress="0"]::after { width: 0; }
+.progress-track[data-progress="1"]::after { width: calc(25% - 8px); }
+.progress-track[data-progress="2"]::after { width: calc(50% - 8px); }
+.progress-track[data-progress="3"]::after { width: calc(75% - 8px); }
+.progress-track[data-progress="4"]::after { width: calc(100% - 88px); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 18 · PÁGINA ACOMPANHAR — destaque no card
+   ════════════════════════════════════════════════════════════ */
+.consulta-card {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--civic);
+}
+
+.consulta-card h2 {
+  font-size: var(--fs-md);
+  color: var(--civic);
+  border-bottom-color: var(--border);
+}
+
+.status-card {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--confirm);
+}
+
+.status-card h2 {
+  color: var(--confirm);
+}
+
+.info-item {
+  border-radius: var(--radius-card);
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-item .num {
+  color: var(--civic);
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+}
+
+.message-box {
+  border-radius: var(--radius-card);
+  border-left: 4px solid var(--civic);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  background: var(--civic-light);
+  color: var(--dark);
+  font-size: var(--fs-sm);
+}
+
+[data-theme="dark"] .message-box {
+  background: var(--civic-light);
+  color: var(--civic);
+}
+
+.history-item {
+  font-size: var(--fs-sm);
+  padding: 8px 0;
+  position: relative;
+  padding-left: 14px;
+}
+
+.history-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--confirm);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 19 · FOOTER — limpo e legível
+   ════════════════════════════════════════════════════════════ */
+footer {
+  background: var(--surface-1);
+  padding: var(--page-pad);
+}
+
+footer h4 {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  color: var(--civic);
+  margin-bottom: 10px;
+}
+
+footer a {
+  font-size: var(--fs-xs);
+  text-decoration: none;
+  color: var(--mid);
+  min-height: 40px;
+  transition: color 0.15s;
+}
+
+footer a:hover { color: var(--civic); }
+
+.footer-logo {
+  font-size: var(--fs-xs);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 20 · FAQ LINKS — mais limpos
+   ════════════════════════════════════════════════════════════ */
+.faq-q {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.03em;
+  padding: 14px 0;
+}
+
+.faq-q[aria-expanded="true"] {
+  color: var(--civic);
+}
+
+.faq-a {
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+.link-card {
+  border-radius: var(--radius-card);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.link-card:hover {
+  border-color: var(--civic);
+  box-shadow: var(--shadow-sm);
+}
+
+.link-card strong {
+  font-size: var(--fs-sm);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 21 · RADIO OPTIONS — seleção clara
+   ════════════════════════════════════════════════════════════ */
+.radio-option {
+  border-radius: var(--radius-card);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.radio-option:has(input:checked) {
+  border-color: var(--civic);
+  background: var(--civic-light);
+}
+
+.radio-option:hover { border-color: var(--civic); }
+
+.radio-text strong { color: var(--civic); }
+
+[data-theme="dark"] .radio-option:has(input:checked) {
+  background: var(--civic-light);
+  border-color: var(--civic);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 22 · PASSWORD STRENGTH — cores com sentido
+   ════════════════════════════════════════════════════════════ */
+.strength-bar {
+  border-radius: 3px;
+  height: 7px;
+}
+
+#strength-fill {
+  border-radius: 3px;
+}
+
+/* Fraca */
+#strength-fill[data-level="1"] { background: var(--danger); }
+/* Média */
+#strength-fill[data-level="2"] { background: #d97706; }
+/* Boa */
+#strength-fill[data-level="3"] { background: #16a34a; }
+/* Forte */
+#strength-fill[data-level="4"] { background: var(--civic); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § 23 · NOTA BOX + SUMMARY — refinamento
+   ════════════════════════════════════════════════════════════ */
+.notes-box {
+  border-radius: var(--radius-card);
+  border-color: var(--border);
+  font-size: var(--fs-sm);
+  background: var(--surface-2);
+}
+
+.notes-box h4 {
+  color: var(--dark);
+  font-size: var(--fs-xs);
+  margin-bottom: 8px;
+}
+
+.check-label {
+  font-size: var(--fs-sm);
+  gap: 12px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.check-label:hover {
+  border-color: var(--civic);
+  background: var(--civic-light);
+}
+
+.check-label:has(input:checked) {
+  border-color: var(--confirm);
+  background: var(--confirm-light);
+}
+
+[data-theme="dark"] .check-label:has(input:checked) {
+  background: var(--confirm-light);
+  border-color: var(--confirm);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 24 · OFFLINE BANNER — topo mais elegante
+   ════════════════════════════════════════════════════════════ */
+#offline-banner {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  padding: 9px var(--page-pad);
+}
+
+#install-banner {
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--civic);
+  background: var(--surface-1);
+  font-size: var(--fs-sm);
+}
+
+#install-banner .btn-install {
+  background: var(--civic);
+  border-radius: var(--radius-card);
+  font-size: var(--fs-xs);
+}
+
+#install-banner .btn-install:hover {
+  background: var(--civic-dark);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 25 · BREAKPOINTS EXTRA — 480px e 1280px+
+   ════════════════════════════════════════════════════════════ */
+
+/* 480px — smartphone médio/grande */
+@media (min-width: 480px) {
+  .hero-action-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-tab-btn.primary {
+    grid-column: 1 / -1;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .modal-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+}
+
+/* 640px — tablet pequeno */
+@media (min-width: 640px) {
+  .hero-action-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-tab-btn.primary {
+    grid-column: auto;
+  }
+
+  .modal-overlay {
+    align-items: center;
+    padding: 24px;
+  }
+
+  .modal-box {
+    border-radius: var(--radius-card);
+    max-width: 540px;
+  }
+
+  .modal-lg {
+    max-width: 700px;
+  }
+
+  .modal-box::before {
+    display: none; /* Remove alça em tablet */
+  }
+
+  .form-row {
+    flex-wrap: nowrap;
+  }
+
+  .acompanhar-wrapper {
+    padding: 24px;
+  }
+}
+
+/* 900px (já coberto pelo style.css) — refinamentos */
+@media (min-width: 900px) {
+  body {
+    font-size: var(--fs-base);
+  }
+
+  #page-inicio .hero {
+    padding: 28px var(--page-pad);
+  }
+
+  .main-content {
+    padding: 28px var(--page-pad);
+    gap: 28px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .news-panel {
+    min-width: 200px;
+    max-width: 240px;
+    margin-left: 0;
+  }
+
+  .modal-box {
+    border-radius: var(--radius-card);
+    max-width: 640px;
+  }
+
+  .modal-lg {
+    max-width: 760px;
+  }
+
+  /* Denuncia body: step label + form lado a lado */
+  .denuncia-body {
+    padding: 28px var(--page-pad);
+    gap: 24px;
+  }
+
+  .form-section h2 {
+    font-size: var(--fs-lg);
+  }
+
+  .step-nav {
+    padding: 16px var(--page-pad);
+  }
+
+  .acompanhar-wrapper {
+    padding: 36px var(--page-pad);
+    gap: 36px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+/* 1280px — desktop largo */
+@media (min-width: 1280px) {
+  :root {
+    --page-pad: 56px;
+  }
+
+  #page-inicio .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Wrapper de conteúdo principal */
+  .main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Formulário mais largo */
+  .denuncia-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Footer com mais colunas */
+  footer {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+/* 1600px — ultra wide */
+@media (min-width: 1600px) {
+  :root {
+    --page-pad: 72px;
+  }
+
+  .category-grid {
+    gap: 18px;
+  }
+
+  nav {
+    padding: 0 72px;
+  }
+
+  .nav-logo {
+    padding: 0 32px;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 26 · PRINT — remoção de elementos desnecessários
+   ════════════════════════════════════════════════════════════ */
+@media print {
+  nav,
+  .step-nav,
+  .hero-action-grid,
+  .btn-primary,
+  .btn-next,
+  .btn-emergency,
+  .btn-back,
+  footer { display: none !important; }
+
+  .page { display: block !important; }
+  .modal-overlay { position: static !important; background: none !important; }
+  .modal-box { box-shadow: none !important; border: 1px solid #ccc !important; }
+  .status-card, .consulta-card { box-shadow: none !important; }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § 27 · ACESSIBILIDADE — reforços finais
+   ════════════════════════════════════════════════════════════ */
+
+/* Focus ring com cor cívica */
+:focus-visible {
+  outline: 3px solid var(--civic);
+  outline-offset: 2px;
+}
+
+/* Contraste do focus no dark */
+[data-theme="dark"] :focus-visible {
+  outline-color: var(--civic);
+}
+
+/* Redução de movimento — respeita sempre */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+  .btn-next,
+  .btn-proceed { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .step.active { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .protocol-box,
+  .success-proto-box { forced-color-adjust: none; }
+}
