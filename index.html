@@ -4,11 +4,77 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#1a1a1a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="WebDenúncia" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <title>WebDenúncia – Governo do Estado de São Paulo</title>
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/script.js"></script>
+    <style>
+      /* Banner offline */
+      #offline-banner {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 9999;
+        background: #b91c1c;
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 8px 16px;
+        letter-spacing: 0.03em;
+      }
+      #offline-banner.show { display: block; }
+      /* Banner instalação PWA */
+      #install-banner {
+        display: none;
+        position: fixed;
+        bottom: 16px; left: 50%; transform: translateX(-50%);
+        z-index: 9990;
+        background: var(--bg, #fff);
+        border: 2px solid var(--border, #e5e7eb);
+        border-radius: 10px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+        padding: 14px 20px;
+        display: none;
+        align-items: center;
+        gap: 14px;
+        max-width: 360px;
+        width: calc(100% - 32px);
+        font-size: 0.85rem;
+      }
+      #install-banner.show { display: flex; }
+      #install-banner p { margin: 0; flex: 1; line-height: 1.4; }
+      #install-banner .btn-install {
+        background: #1a1a1a; color: #fff;
+        border: none; border-radius: 6px;
+        padding: 8px 14px; font-weight: 700;
+        cursor: pointer; white-space: nowrap; font-size: 0.82rem;
+      }
+      #install-banner .btn-dismiss {
+        background: none; border: none;
+        color: var(--mid, #888); cursor: pointer;
+        font-size: 1.1rem; line-height: 1; padding: 4px;
+      }
+    </style>
   </head>
   <body>
+    <!-- BANNER OFFLINE -->
+    <div id="offline-banner" role="alert" aria-live="assertive">
+      ⚠️ Você está offline — os dados serão salvos e sincronizados quando a conexão for restaurada.
+    </div>
+
+    <!-- BANNER INSTALAÇÃO PWA -->
+    <div id="install-banner" role="complementary" aria-label="Instalar aplicativo">
+      <p>📲 <strong>Instale o WebDenúncia</strong> para usar mesmo sem internet.</p>
+      <button class="btn-install" id="btn-install-pwa">Instalar</button>
+      <button class="btn-dismiss" id="btn-dismiss-install" aria-label="Fechar">&#10005;</button>
+    </div>
+
     <!-- NAV -->
     <nav>
       <a class="nav-logo" href="#" onclick="showPage('inicio'); closeMobileMenu(); return false;">
@@ -1004,5 +1070,142 @@
       });
     </script>
     <script src="js/script.js"></script>
+
+    <!-- ============================================================
+         OFFLINE-FIRST: Service Worker + PWA Install
+    ============================================================ -->
+    <script>
+      // ----- Registro do Service Worker -----
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then((reg) => {
+              console.log('[SW] Registrado com sucesso. Scope:', reg.scope);
+            })
+            .catch((err) => {
+              console.warn('[SW] Falha no registro:', err);
+            });
+        });
+      }
+
+      // ----- Banner Offline/Online -----
+      const offlineBanner = document.getElementById('offline-banner');
+
+      function updateOnlineStatus() {
+        if (!navigator.onLine) {
+          offlineBanner.classList.add('show');
+          // Ajusta o nav para não ficar sobreposto
+          document.querySelector('nav') && (document.querySelector('nav').style.top = '36px');
+        } else {
+          offlineBanner.classList.remove('show');
+          document.querySelector('nav') && (document.querySelector('nav').style.top = '');
+        }
+      }
+
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      // Checar estado inicial
+      updateOnlineStatus();
+
+      // ----- Lógica de Instalação PWA (beforeinstallprompt) -----
+      let deferredPrompt = null;
+      const installBanner = document.getElementById('install-banner');
+      const btnInstall   = document.getElementById('btn-install-pwa');
+      const btnDismiss   = document.getElementById('btn-dismiss-install');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Só mostra se o usuário nunca dispensou
+        if (!localStorage.getItem('wdInstallDismissed')) {
+          installBanner.classList.add('show');
+        }
+      });
+
+      btnInstall && btnInstall.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBanner.classList.remove('show');
+        }
+        deferredPrompt = null;
+      });
+
+      btnDismiss && btnDismiss.addEventListener('click', () => {
+        installBanner.classList.remove('show');
+        localStorage.setItem('wdInstallDismissed', '1');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installBanner.classList.remove('show');
+        deferredPrompt = null;
+        console.log('[PWA] Aplicativo instalado.');
+      });
+
+      // ----- Salvar denúncias offline com IndexedDB -----
+      // Sobrescreve enviarDenuncia para salvar localmente se offline
+      document.addEventListener('DOMContentLoaded', () => {
+        const originalEnviar = window.enviarDenuncia;
+        window.enviarDenuncia = function() {
+          if (!navigator.onLine) {
+            // Coleta dados do formulário
+            const cidade = document.getElementById('f-cidade');
+            const cidadeText = cidade?.options[cidade.selectedIndex]?.text || '';
+            const payload = {
+              protocolo: sessionData?.protocolo || gerarProtocolo(),
+              tipo:      document.getElementById('f-tipo')?.value || '',
+              bairro:    document.getElementById('f-bairro')?.value.trim() || '',
+              cidade:    cidadeText,
+              data:      document.getElementById('f-data')?.value || '',
+              descricao: document.getElementById('f-descricao')?.value.trim() || '',
+              senha:     document.getElementById('f-senha')?.value || '',
+              timestamp: Date.now(),
+              synced:    false,
+            };
+
+            // Salva no IndexedDB
+            const req = indexedDB.open('webdenuncia-offline', 1);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains('pending')) {
+                db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+              }
+            };
+            req.onsuccess = (e) => {
+              const db = e.target.result;
+              const tx = db.transaction('pending', 'readwrite');
+              tx.objectStore('pending').add(payload);
+              tx.oncomplete = () => {
+                // Registra Background Sync se suportado
+                if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                  navigator.serviceWorker.ready.then((sw) => {
+                    sw.sync.register('sync-denuncia').catch(console.warn);
+                  });
+                }
+                // Exibe modal de sucesso normalmente
+                sessionData.protocolo = payload.protocolo;
+                document.getElementById('sucesso-protocolo-num').textContent = payload.protocolo;
+                openModal('modal-sucesso');
+                // Pequena nota extra
+                const box = document.querySelector('#modal-sucesso .privacy-strip');
+                if (box && !document.getElementById('offline-note')) {
+                  const note = document.createElement('p');
+                  note.id = 'offline-note';
+                  note.style.cssText = 'font-size:0.75rem;color:#b91c1c;margin-top:8px;font-weight:600';
+                  note.textContent = '⚠️ Salva localmente — será enviada automaticamente quando você ficar online.';
+                  box.parentNode.insertBefore(note, box.nextSibling);
+                }
+              };
+            };
+          } else {
+            // Online: fluxo original
+            if (typeof originalEnviar === 'function') {
+              originalEnviar.call(this);
+            }
+          }
+        };
+      });
+    </script>
   </body>
 </html>
