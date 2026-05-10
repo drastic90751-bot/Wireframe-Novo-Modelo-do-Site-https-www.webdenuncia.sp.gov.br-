@@ -227,6 +227,7 @@ nav {
 
 /* Desktop nav links (hidden on mobile) */
 .nav-links { display: none; }
+.btn-dark-mode-mobile-only { display: flex !important; }
 
 /* Mobile dropdown menu */
 .mobile-menu-panel {
@@ -1329,6 +1330,7 @@ footer a:hover { color: var(--dark); }
   .nav-links a.active { color: var(--dark); background: var(--bg); }
   .btn-dark-mode { font-size: 0.75rem; padding: 6px 12px; margin-left: 8px; margin-right: 8px; }
   #dark-mode-label { display: inline; }
+  .btn-dark-mode-mobile-only { display: none !important; }
 
   .mobile-menu-panel { display: none !important; }
 
