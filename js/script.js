@@ -726,3 +726,186 @@ document.addEventListener('DOMContentLoaded', () => {
 
   goToStep(1);
 });
+
+// ============================================================
+// WCAG: MELHORIAS DE ACESSIBILIDADE
+// ============================================================
+
+// Função para anunciar mensagens via live region
+function announce(msg, type = 'polite') {
+  const el = document.getElementById(type === 'alert' ? 'live-alert' : 'live-announcer');
+  if (el) {
+    el.textContent = '';
+    requestAnimationFrame(() => { el.textContent = msg; });
+  }
+}
+
+// Gerenciar foco em modais (WCAG 2.1 - Focus Management)
+function openModal(id) {
+  const modal = document.getElementById(id);
+  modal.classList.add('active');
+  // Mover foco para primeiro elemento focável do modal
+  setTimeout(() => {
+    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length) focusable[0].focus();
+  }, 50);
+  // Bloquear scroll do body
+  document.body.style.overflow = 'hidden';
+  // Guardar elemento que abriu o modal
+  modal._opener = document.activeElement;
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  // Devolver foco para quem abriu o modal
+  if (modal._opener) {
+    modal._opener.focus();
+    modal._opener = null;
+  }
+}
+
+// Trap de foco dentro dos modais (WCAG 2.1.2)
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const activeModal = document.querySelector('.modal-overlay.active');
+    if (activeModal) {
+      activeModal.classList.remove('active');
+      document.body.style.overflow = '';
+      if (activeModal._opener) activeModal._opener.focus();
+    }
+    return;
+  }
+  if (e.key !== 'Tab') return;
+  const activeModal = document.querySelector('.modal-overlay.active');
+  if (!activeModal) return;
+  const focusable = Array.from(activeModal.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )).filter(el => !el.closest('[style*="display:none"]') && !el.closest('[hidden]'));
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) { last.focus(); e.preventDefault(); }
+  } else {
+    if (document.activeElement === last) { first.focus(); e.preventDefault(); }
+  }
+});
+
+// Atualizar aria-expanded do hamburger
+const origToggleMobileMenu = window.toggleMobileMenu;
+window.toggleMobileMenu = function() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  const isOpen = menu.classList.contains('open');
+  // chamar original
+  if (typeof origToggleMobileMenu === 'function') origToggleMobileMenu();
+  else {
+    const newOpen = !isOpen;
+    menu.classList.toggle('open', newOpen);
+    btn.classList.toggle('open', newOpen);
+  }
+  // atualizar aria
+  const opened = menu.classList.contains('open');
+  if (btn) btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  announce(opened ? 'Menu aberto' : 'Menu fechado');
+};
+
+// Atualizar aria-pressed do dark mode
+const origToggleDarkMode2 = window.toggleDarkMode;
+window.toggleDarkMode = function() {
+  if (typeof origToggleDarkMode2 === 'function') origToggleDarkMode2();
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const btns = [document.getElementById('btn-dark-mode'), document.getElementById('btn-dark-mode-mobile')];
+  btns.forEach(btn => { if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); });
+  announce(isDark ? 'Modo escuro ativado' : 'Modo claro ativado');
+};
+
+// Anunciar mudança de etapa no formulário
+const origGoToStep = window.goToStep;
+window.goToStep = function(n) {
+  if (typeof origGoToStep === 'function') origGoToStep(n);
+  const stepNames = ['', 'Local do Incidente', 'Descrição do Incidente', 'Arquivos e Evidências', 'Revisão e Envio'];
+  announce(`Etapa ${n} de 4: ${stepNames[n]}`);
+  // Atualizar aria-selected nas tabs
+  for (let i = 1; i <= 4; i++) {
+    const tab = document.getElementById('step-tab-' + i);
+    if (tab) tab.setAttribute('aria-selected', i === n ? 'true' : 'false');
+  }
+  // Mover foco para o topo do step ativo
+  const activeForm = document.getElementById('form-step-' + n);
+  if (activeForm) {
+    const heading = activeForm.querySelector('h2');
+    if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus(); }
+  }
+};
+
+// Anunciar erros de validação
+const origSetError = window.setError;
+window.setError = function(fieldId, errId, msg) {
+  if (typeof origSetError === 'function') origSetError(fieldId, errId, msg);
+  // Anunciar erro para leitores de tela
+  if (msg) announce(msg, 'alert');
+};
+
+// Atualizar aria-invalid em campos com erro
+const origValidateStep = window.validateStep;
+window.validateStep = function(step) {
+  // Limpar aria-invalid
+  document.querySelectorAll('[aria-invalid="true"]').forEach(el => el.removeAttribute('aria-invalid'));
+  const result = origValidateStep ? origValidateStep(step) : true;
+  // Marcar campos inválidos
+  document.querySelectorAll('.form-input.error, .form-select.error, .form-textarea.error').forEach(el => {
+    el.setAttribute('aria-invalid', 'true');
+  });
+  if (!result) {
+    // Anunciar quantidade de erros
+    const erros = document.querySelectorAll('.field-error:not(:empty)').length;
+    announce(`${erros} erro${erros > 1 ? 's' : ''} encontrado${erros > 1 ? 's' : ''}. Verifique os campos marcados.`, 'alert');
+  }
+  return result;
+};
+
+// Anunciar upload de arquivos
+const origHandleFiles = window.handleFiles;
+window.handleFiles = function(event) {
+  if (typeof origHandleFiles === 'function') origHandleFiles(event);
+  const count = event.target.files.length;
+  announce(`${count} arquivo${count > 1 ? 's' : ''} selecionado${count > 1 ? 's' : ''}.`);
+};
+
+// Anunciar envio de complemento
+const origEnviarComplemento = window.enviarComplemento;
+window.enviarComplemento = function() {
+  if (typeof origEnviarComplemento === 'function') origEnviarComplemento();
+  const ok = document.getElementById('complemento-ok');
+  if (ok && ok.textContent) announce(ok.textContent);
+};
+
+// Melhorar FAQ: toggle aria-expanded e aria-hidden
+const origToggleFaq = window.toggleFaq;
+window.toggleFaq = function(el) {
+  if (typeof origToggleFaq === 'function') origToggleFaq(el);
+  const answer = el.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  el.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  if (answer) answer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+};
+
+// Inicializar atributos acessíveis após DOM pronto
+document.addEventListener('DOMContentLoaded', function() {
+  // Garantir que todos os elementos .faq-q sejam buttons
+  document.querySelectorAll('.faq-q').forEach(q => {
+    if (q.tagName !== 'BUTTON') return;
+    q.setAttribute('aria-expanded', 'false');
+    const answer = q.nextElementSibling;
+    if (answer) answer.setAttribute('aria-hidden', 'true');
+  });
+
+  // Garantir que dark mode btn tenha aria-pressed correto na carga
+  const savedTheme = localStorage.getItem('wdTheme') || 'light';
+  const isDark = savedTheme === 'dark';
+  const btns = [document.getElementById('btn-dark-mode'), document.getElementById('btn-dark-mode-mobile')];
+  btns.forEach(btn => { if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); });
+});
