@@ -631,12 +631,6 @@
   border-color: var(--dark);
 }
 
-.strength-bar > div {
-  transition:
-    width 0.4s var(--ease-out),
-    background 0.3s linear;
-}
-
 #offline-banner {
   transform: translateY(-100%);
   transition: transform var(--dur-base) var(--ease-out);

@@ -308,30 +308,29 @@
     clearTimeout(tooltipTimer);
 
     tooltipEl.textContent = texto;
-    // Renderiza fora da tela para medir antes de posicionar
     tooltipEl.style.visibility = 'hidden';
     tooltipEl.style.display = 'block';
     tooltipEl.className = 'campo-tooltip';
 
-    const rect   = targetEl.getBoundingClientRect();
+    const rect    = targetEl.getBoundingClientRect();
     const scrollY = window.scrollY;
-    const ttH    = tooltipEl.offsetHeight || 60;
-    const ttW    = tooltipEl.offsetWidth  || 260;
+    const ttH     = tooltipEl.offsetHeight || 60;
+    const ttW     = tooltipEl.offsetWidth  || 260;
 
-    // Sempre tenta abaixo primeiro (mais previsível em formulários)
-    let top  = rect.bottom + scrollY + 8;
-    let left = rect.left;
-    let below = true;
+    // Prefere acima — não tapa o botão de olho nem outros elementos abaixo
+    let top   = rect.top + scrollY - ttH - 8;
+    let below = false;
 
-    // Se não cabe abaixo, coloca acima
-    if (rect.bottom + ttH + 16 > window.innerHeight) {
-      top   = rect.top + scrollY - ttH - 8;
-      below = false;
+    // Se não cabe acima, coloca abaixo
+    if (rect.top - ttH - 16 < 0) {
+      top   = rect.bottom + scrollY + 8;
+      below = true;
     }
 
     // Evita sair da tela pela direita
     const maxLeft = window.innerWidth - ttW - 8;
-    if (left > maxLeft) left = Math.max(8, maxLeft);
+    let left = Math.min(rect.left, maxLeft);
+    if (left < 8) left = 8;
 
     tooltipEl.style.top        = top + 'px';
     tooltipEl.style.left       = left + 'px';
@@ -381,9 +380,11 @@
         label.appendChild(btn);
       }
 
-      // Mostra tooltip no foco do campo também
-      el.addEventListener('focus', () => mostrarTooltip(el, texto));
-      el.addEventListener('blur',  () => esconderTooltip(el));
+      // Mostra tooltip no foco e hover do campo
+      el.addEventListener('focus',      () => mostrarTooltip(el, texto));
+      el.addEventListener('blur',       () => esconderTooltip(el));
+      el.addEventListener('mouseenter', () => mostrarTooltip(el, texto));
+      el.addEventListener('mouseleave', () => esconderTooltip(el));
     });
   }
 
