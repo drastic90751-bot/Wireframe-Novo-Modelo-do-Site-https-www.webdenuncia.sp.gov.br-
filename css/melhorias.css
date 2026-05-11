@@ -319,10 +319,13 @@ h3 {
               background var(--duration-normal),
               transform var(--duration-fast);
 }
-.category-card:hover,
-.news-item:hover {
+.category-card:hover {
   border-left-color: var(--crap-contrast-accent);
   transform: translateX(2px);
+}
+/* news-item hover: sem transform para não conflitar com padding-left do style.css */
+.news-item:hover {
+  border-left-color: var(--crap-contrast-accent);
 }
 
 /* Ícones de formulário — repetição de tamanho */
@@ -417,15 +420,11 @@ label + .form-textarea {
   margin-top: var(--space-5);
 }
 
-/* Itens de notícia — proximidade entre título e descrição */
+/* Itens de notícia — apenas override de font-size, sem padding conflitante */
 .news-item {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--empty-border);
   font-size: var(--text-sm);
   line-height: 1.55;
-  cursor: pointer;
 }
-.news-item:last-child { border-bottom: none; }
 
 
 /* ── TOOLTIP DE TOKEN (Handoff visual) ──────────────────────
@@ -480,4 +479,193 @@ label + .form-textarea {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
   }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   CORREÇÕES — v3
+   1. Zoom pequeno (67%) — layout não quebra
+   2. Footer idêntico em todas as páginas (via CSS)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 1. ZOOM — min-width garante scroll horizontal em vez de quebrar */
+html {
+  min-width: 360px;   /* mobile mínimo */
+  overflow-x: auto;
+}
+body {
+  min-width: 360px;
+  overflow-x: auto;
+}
+
+/* Containers principais não colapsam abaixo de 900px lógicos */
+.page > .hero-tabs,
+.acompanhar-wrapper,
+.stepper,
+.denuncia-body {
+  min-width: min(100%, 860px);
+}
+
+/* Modal não estoura a tela em zoom pequeno */
+.modal-box {
+  max-width: min(600px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-lg {
+  max-width: min(720px, 96vw);
+}
+
+/* Nav não quebra em zoom */
+nav {
+  min-width: 360px;
+}
+.nav-links {
+  gap: clamp(4px, 1.2vw, 18px);
+}
+.nav-links a {
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  padding: clamp(6px, 0.8vw, 10px) clamp(8px, 1vw, 14px);
+  white-space: nowrap;
+}
+
+/* Footer grid não quebra */
+footer {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: clamp(16px, 2vw, 32px);
+  padding: clamp(24px, 3vw, 40px) clamp(16px, 4vw, 60px);
+}
+
+/* ── 2. FOOTER — força mesmo visual nas 3 páginas */
+footer h4 {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin-bottom: 12px;
+  opacity: .7;
+}
+footer p,
+footer a {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--mid);
+  margin-bottom: 6px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+footer a:hover {
+  color: var(--confirm);
+  text-decoration: underline;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   AVISO DE DISPOSITIVO SEGURO
+   ══════════════════════════════════════════════════════════ */
+.modal-section--device-warning {
+  background: rgba(202,138,4,.06);
+  border: 1.5px solid rgba(202,138,4,.25);
+  border-radius: var(--radius-md, 8px);
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+[data-theme='dark'] .modal-section--device-warning {
+  background: rgba(202,138,4,.08);
+  border-color: rgba(202,138,4,.3);
+}
+
+.device-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  border: 1.5px solid;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s, transform .1s;
+  min-height: 36px;
+  background: transparent;
+}
+.device-check-btn:hover { transform: translateY(-1px); }
+
+.device-check-btn--ok {
+  border-color: var(--success, #166534);
+  color: var(--success, #166534);
+}
+.device-check-btn--ok.active,
+.device-check-btn--ok:focus-visible {
+  background: var(--success, #166534);
+  color: #fff;
+}
+
+.device-check-btn--warn {
+  border-color: #b45309;
+  color: #b45309;
+}
+.device-check-btn--warn.active,
+.device-check-btn--warn:focus-visible {
+  background: #b45309;
+  color: #fff;
+}
+
+[data-theme='dark'] .device-check-btn--ok  { border-color: #4ade80; color: #4ade80; }
+[data-theme='dark'] .device-check-btn--ok.active  { background: #4ade80; color: #111; }
+[data-theme='dark'] .device-check-btn--warn { border-color: #fbbf24; color: #fbbf24; }
+[data-theme='dark'] .device-check-btn--warn.active { background: #fbbf24; color: #111; }
+
+
+/* ══════════════════════════════════════════════════════════
+   CORREÇÕES v4
+   ══════════════════════════════════════════════════════════ */
+
+/* FIX: Hero-action-grid — todos os botões mesma altura
+   No desktop vira flex-row; o stretch precisa estar no flex container */
+.hero-action-grid {
+  align-items: stretch !important;
+}
+/* Cada botão ocupa toda a altura do container flex */
+.hero-action-grid .hero-tab-btn {
+  flex: 1 1 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1.3 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  padding: 16px 12px !important;
+}
+/* Fazer Denúncia mantém destaque visual maior */
+.hero-action-grid .hero-tab-btn.primary {
+  padding: 20px 16px !important;
+  font-size: 1rem !important;
+}
+
+/* FIX: news-item — remove padding conflitante, usa só o do style.css */
+.news-item {
+  padding-left: 0 !important;
+  border-left: none !important;
+  transform: none !important;
+}
+.news-item:hover {
+  padding-left: 6px !important;
+  border-left: none !important;
+  transform: none !important;
+}
+/* Categoria cards mantêm o border-left animado (não é news-item) */
+.category-card {
+  border-left: 3px solid transparent;
+  transition: border-color var(--duration-normal), transform var(--duration-fast);
+}
+.category-card:hover {
+  border-left-color: var(--crap-contrast-accent);
+  transform: translateX(2px);
 }

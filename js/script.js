@@ -142,15 +142,22 @@ function clearErrors() {
   document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(e => e.classList.remove('error'));
 }
 
+let _firstErrorField = null;
+
 function setError(fieldId, errId, msg) {
   const field = document.getElementById(fieldId);
   const err = document.getElementById(errId);
-  if (field) field.classList.add('error');
+  if (field) {
+    field.classList.add('error');
+    // Marca o primeiro campo com erro para scroll automático
+    if (!_firstErrorField) _firstErrorField = field;
+  }
   if (err) err.textContent = msg;
 }
 
 function validateStep(step) {
   clearErrors();
+  _firstErrorField = null;
   let valid = true;
 
   if (step === 1) {

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="microinteracoes.css" />
     <link rel="stylesheet" href="ui-responsivo.css" />
     <link rel="stylesheet" href="css/melhorias.css" />
+    <link rel="stylesheet" href="css/ui-otimista.css" />
     <script src="js/script.js"></script>
     <style>
       #offline-banner {
@@ -419,6 +420,58 @@
             </p>
           </div>
         </div>
+        <div class="modal-section">
+          <div class="modal-icon-box safe">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z" />
+              <polyline points="8,12 11,15 16,9" />
+            </svg>
+          </div>
+          <div>
+            <h3>Seu Anonimato é Total e Confiável</h3>
+            <p style="font-size: 0.82rem; color: var(--mid); line-height: 1.6">
+              Todos os dados são criptografados. Não registramos IP nem informações pessoais.
+            </p>
+          </div>
+        </div>
+
+        <!-- AVISO DE DISPOSITIVO SEGURO -->
+        <div class="modal-section modal-section--device-warning" id="device-warning-section">
+          <div class="modal-icon-box" style="background: rgba(202,138,4,.12); border-color: rgba(202,138,4,.3);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2"/>
+              <line x1="12" y1="18" x2="12" y2="18" stroke-width="3"/>
+            </svg>
+          </div>
+          <div>
+            <h3 style="color: #b45309;">Este dispositivo é seguro?</h3>
+            <p style="font-size: 0.82rem; color: var(--mid); line-height: 1.6; margin-bottom: 8px">
+              Se você está usando o <strong>celular ou computador de outra pessoa</strong> — especialmente de alguém envolvido no caso — existe risco de rastreamento.
+            </p>
+            <p style="font-size: 0.82rem; color: var(--mid); line-height: 1.6; margin-bottom: 10px">
+              Recomendamos denunciar de um <strong>dispositivo próprio</strong>, em uma rede Wi-Fi de confiança (como casa de familiar ou biblioteca pública).
+            </p>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px">
+              <button class="device-check-btn device-check-btn--ok" id="btn-device-ok" onclick="marcarDispositivoSeguro()" aria-pressed="false">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="2,8 6,12 14,4"/></svg>
+                Meu dispositivo é seguro
+              </button>
+              <button class="device-check-btn device-check-btn--warn" id="btn-device-warn" onclick="marcarDispositivoInseguro()" aria-pressed="false">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><line x1="8" y1="3" x2="8" y2="9"/><circle cx="8" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
+                Não tenho certeza
+              </button>
+            </div>
+            <p id="device-warning-msg" style="display:none; font-size:0.78rem; color:#b45309; font-weight:600; margin-top:8px; line-height:1.5"></p>
+          </div>
+        </div>
+
         <div class="modal-actions">
           <button class="btn-emergency" onclick="closeModal('modal-aviso')">
             Voltar e Ligar 190
@@ -1369,6 +1422,7 @@
           aria-selected="true"
           aria-controls="form-step-1"
           tabindex="0"
+          data-step="1"
           onclick="stepTabClick(1)"
           onkeydown="stepTabKey(event, 1)"
         >
@@ -1885,83 +1939,41 @@
         <button class="btn-next" id="btn-next" onclick="nextStep()">Próxima Etapa</button>
       </div>
 
-      <footer>
+      <footer role="contentinfo">
         <div>
           <h4>Contactos</h4>
           <p>(91) 9517-4090</p>
-          <a href="https://www.webdenuncia.sp.gov.br" target="_blank" rel="noopener"
-            >webdenuncia.sp.gov.br</a
-          >
+          <p>(91) 9464-7900</p>
+          <a href="https://www.webdenuncia.sp.gov.br" target="_blank" rel="noopener">webdenuncia.sp.gov.br</a>
         </div>
         <div>
           <h4>Links Úteis</h4>
-          <a
-            href="#"
-            onclick="
-              openModal('modal-links');
-              return false;
-            "
-            >Polícia Civil</a
-          >
-          <a
-            href="#"
-            onclick="
-              openModal('modal-links');
-              return false;
-            "
-            >Ver todos</a
-          >
+          <a href="#" onclick="openModal('modal-links'); return false;">Polícia Civil</a>
+          <a href="#" onclick="openModal('modal-links'); return false;">Polícia Militar</a>
+          <a href="#" onclick="openModal('modal-links'); return false;">Ver todos</a>
         </div>
         <div>
           <h4>Segurança</h4>
-          <a
-            href="#"
-            onclick="
-              openModal('modal-seguranca');
-              return false;
-            "
-            >Privacidade</a
-          >
-          <a
-            href="#"
-            onclick="
-              openModal('modal-termos');
-              return false;
-            "
-            >Termos de Uso</a
-          >
+          <a href="#" onclick="openModal('modal-seguranca'); return false;">Política de Privacidade</a>
+          <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
         </div>
         <div>
           <h4>Sobre</h4>
-          <p>Governo do Estado de São Paulo</p>
+          <a href="#" onclick="openModal('modal-sobre'); return false;">Sobre o WebDenúncia</a>
+          <a href="#" onclick="openModal('modal-faq'); return false;">Perguntas Frequentes</a>
         </div>
         <div class="footer-logos-row">
           <div class="footer-logo">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <polyline points="12,7 12,12 15,14" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/>
             </svg>
-            Governo SP
+            Governo do Estado<br/>de São Paulo
           </div>
           <div class="footer-logo">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/>
             </svg>
-            Governo SP
+            Governo do Estado<br/>de São Paulo
           </div>
         </div>
       </footer>
@@ -1991,7 +2003,7 @@
                 id="acomp-protocolo"
                 autocomplete="off"
                 placeholder="Ex: 2026-ABC-123"
-                autocomplete="off"
+                onkeydown="if(event.key==='Enter'){document.getElementById('acomp-senha').focus();}"
               />
             </div>
             <div class="field-error" id="err-acomp-protocolo"></div>
@@ -2011,7 +2023,8 @@
                 <rect x="5" y="9" width="10" height="8" rx="1" />
                 <path d="M7 9V7a3 3 0 016 0v2" />
               </svg>
-              <input type="password" class="form-input" id="acomp-senha" placeholder="Sua senha" />
+              <input type="password" class="form-input" id="acomp-senha" placeholder="Sua senha"
+                onkeydown="if(event.key==='Enter'){consultarDenuncia();}" />
               <button class="btn-eye" onclick="toggleSenhaAcomp()" title="Mostrar/ocultar">
                 <svg
                   viewBox="0 0 24 24"
@@ -2260,83 +2273,41 @@
         <!-- /.status-card -->
       </div>
 
-      <footer>
+      <footer role="contentinfo">
         <div>
           <h4>Contactos</h4>
           <p>(91) 9517-4090</p>
-          <a href="https://www.webdenuncia.sp.gov.br" target="_blank" rel="noopener"
-            >webdenuncia.sp.gov.br</a
-          >
+          <p>(91) 9464-7900</p>
+          <a href="https://www.webdenuncia.sp.gov.br" target="_blank" rel="noopener">webdenuncia.sp.gov.br</a>
         </div>
         <div>
           <h4>Links Úteis</h4>
-          <a
-            href="#"
-            onclick="
-              openModal('modal-links');
-              return false;
-            "
-            >Polícia Civil</a
-          >
-          <a
-            href="#"
-            onclick="
-              openModal('modal-links');
-              return false;
-            "
-            >Ver todos</a
-          >
+          <a href="#" onclick="openModal('modal-links'); return false;">Polícia Civil</a>
+          <a href="#" onclick="openModal('modal-links'); return false;">Polícia Militar</a>
+          <a href="#" onclick="openModal('modal-links'); return false;">Ver todos</a>
         </div>
         <div>
           <h4>Segurança</h4>
-          <a
-            href="#"
-            onclick="
-              openModal('modal-seguranca');
-              return false;
-            "
-            >Privacidade</a
-          >
-          <a
-            href="#"
-            onclick="
-              openModal('modal-termos');
-              return false;
-            "
-            >Termos de Uso</a
-          >
+          <a href="#" onclick="openModal('modal-seguranca'); return false;">Política de Privacidade</a>
+          <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
         </div>
         <div>
           <h4>Sobre</h4>
-          <p>Governo do Estado de São Paulo</p>
+          <a href="#" onclick="openModal('modal-sobre'); return false;">Sobre o WebDenúncia</a>
+          <a href="#" onclick="openModal('modal-faq'); return false;">Perguntas Frequentes</a>
         </div>
         <div class="footer-logos-row">
           <div class="footer-logo">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <polyline points="12,7 12,12 15,14" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/>
             </svg>
-            Governo SP
+            Governo do Estado<br/>de São Paulo
           </div>
           <div class="footer-logo">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/>
             </svg>
-            Governo SP
+            Governo do Estado<br/>de São Paulo
           </div>
         </div>
       </footer>
@@ -2706,5 +2677,58 @@
       }
     </script>
     <script src="js/melhorias.js" defer></script>
+    <script src="js/ui-otimista.js" defer></script>
+<script>
+      // ── Aviso de dispositivo seguro ──
+      function marcarDispositivoSeguro() {
+        const msgEl = document.getElementById('device-warning-msg');
+        const btnOk = document.getElementById('btn-device-ok');
+        const btnWarn = document.getElementById('btn-device-warn');
+        btnOk.setAttribute('aria-pressed', 'true');
+        btnWarn.setAttribute('aria-pressed', 'false');
+        btnOk.classList.add('active');
+        btnWarn.classList.remove('active');
+        if (msgEl) {
+          msgEl.style.display = 'none';
+          msgEl.textContent = '';
+        }
+        // Libera o botão de continuar
+        const btnProceed = document.querySelector('#modal-aviso .btn-proceed');
+        if (btnProceed) {
+          btnProceed.disabled = false;
+          btnProceed.style.opacity = '';
+        }
+      }
+
+      function marcarDispositivoInseguro() {
+        const msgEl = document.getElementById('device-warning-msg');
+        const btnOk = document.getElementById('btn-device-ok');
+        const btnWarn = document.getElementById('btn-device-warn');
+        btnWarn.setAttribute('aria-pressed', 'true');
+        btnOk.setAttribute('aria-pressed', 'false');
+        btnWarn.classList.add('active');
+        btnOk.classList.remove('active');
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.textContent = '⚠ Recomendamos usar outro dispositivo. Se não for possível, considere abrir uma aba anônima (Ctrl+Shift+N) e fechar o navegador após concluir.';
+        }
+      }
+
+      // Ao abrir o modal-aviso, reseta o estado do aviso de dispositivo
+      const _origOpenModal = window.openModal;
+      if (_origOpenModal) {
+        window.openModal = function(id) {
+          _origOpenModal(id);
+          if (id === 'modal-aviso') {
+            const btnOk   = document.getElementById('btn-device-ok');
+            const btnWarn = document.getElementById('btn-device-warn');
+            const msgEl   = document.getElementById('device-warning-msg');
+            if (btnOk)   { btnOk.setAttribute('aria-pressed', 'false'); btnOk.classList.remove('active'); }
+            if (btnWarn) { btnWarn.setAttribute('aria-pressed', 'false'); btnWarn.classList.remove('active'); }
+            if (msgEl)   { msgEl.style.display = 'none'; msgEl.textContent = ''; }
+          }
+        };
+      }
+    </script>
   </body>
 </html>
