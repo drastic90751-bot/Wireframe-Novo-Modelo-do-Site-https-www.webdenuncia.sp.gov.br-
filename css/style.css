@@ -1091,7 +1091,7 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
 }
 .strength-bar {
   width: 100%;
-  height: 7px;
+  height: 14px;
   background: var(--border);
   border-radius: 4px;
   overflow: hidden;
@@ -1612,8 +1612,7 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   color: var(--confirm-text);
   border-color: var(--confirm);
   font-size: 1.05rem;
-  /* FITTS: CTA primário tem mais padding = área maior */
-  padding: 20px;
+  padding: 18px 12px;
   min-height: 52px;
   letter-spacing: 0.12em;
 }
@@ -1675,6 +1674,7 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+  align-items: stretch;
 }
 /* --- LEI DE FITTS: Category cards — alvos clicáveis frequentes ---
    Aumentados e com resposta de hover mais rápida */
@@ -1685,8 +1685,10 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   cursor: pointer;
+  height: 100%;
   /* DOHERTY: hover instantâneo */
   transition:
     border-color 0.1s ease,
