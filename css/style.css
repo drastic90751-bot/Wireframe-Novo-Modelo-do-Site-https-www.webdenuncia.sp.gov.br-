@@ -1792,8 +1792,8 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 3px;
-  background: var(--confirm);
+  height: 2px;
+  background: #6b7280;
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* DOHERTY: <400ms */
   width: var(--stepper-progress, 0%);
   z-index: 2;
@@ -2413,30 +2413,31 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   content: '';
   position: absolute;
   top: 27px;
-  left: 44px;
-  right: 44px;
-  max-width: calc(5 * 80px - 44px);
-  height: 4px;
-  background: var(--border);
+  left: 20px;
+  right: 20px;
+  max-width: calc(5 * 110px - 20px);
+  height: 3px;
+  background: #3a3a3a;
   z-index: 0;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-/* Linha de progresso animada (azul) — transição controlada 100% pelo JS */
+/* Linha de progresso animada (apagada) — transição controlada 100% pelo JS */
 .track-progress-line {
   position: absolute;
   top: 27px;
-  left: 44px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--step-done-bg), var(--confirm));
+  left: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, #4a5568, #6b7280);
   z-index: 1;
-  border-radius: 4px;
+  border-radius: 2px;
   width: 0%;
-  max-width: calc(5 * 80px - 88px);
-  box-shadow: 0 0 10px rgba(26, 111, 196, 0.35);
+  max-width: calc(5 * 110px - 40px);
+  box-shadow: none;
 }
 [data-theme='dark'] .track-progress-line {
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+  background: linear-gradient(90deg, #374151, #4b5563);
+  box-shadow: none;
 }
 
 /* Steps sempre visíveis — só o estado (cor/ícone) anima */
@@ -2856,9 +2857,14 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
     display: flex;
     flex-direction: row;
     gap: 12px;
+    align-items: stretch;
   }
   .hero-tab-btn {
     flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .sidebar {
     width: 260px;
