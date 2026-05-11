@@ -1,11 +1,9 @@
-
-
 (function () {
   'use strict';
 
-
-  function raf(fn) { requestAnimationFrame(fn); }
-
+  function raf(fn) {
+    requestAnimationFrame(fn);
+  }
 
   function pulseClass(el, cls, ms) {
     if (!el) return;
@@ -13,9 +11,8 @@
     setTimeout(() => el.classList.remove(cls), ms || 600);
   }
 
-
   function patchModais() {
-    const origOpen  = window.openModal;
+    const origOpen = window.openModal;
     const origClose = window.closeModal;
 
     window.openModal = function (id) {
@@ -39,10 +36,10 @@
       }, dur);
     };
     const specialClosers = [
-      { fn: 'closeTutorial',           id: 'modal-tutorial'  },
-      { fn: 'closeTutorialAndDenuncia',id: 'modal-tutorial'  },
-      { fn: 'fecharSucesso',           id: 'modal-sucesso'   },
-      { fn: 'irParaAcompanhar',        id: 'modal-sucesso'   },
+      { fn: 'closeTutorial', id: 'modal-tutorial' },
+      { fn: 'closeTutorialAndDenuncia', id: 'modal-tutorial' },
+      { fn: 'fecharSucesso', id: 'modal-sucesso' },
+      { fn: 'irParaAcompanhar', id: 'modal-sucesso' },
     ];
 
     specialClosers.forEach(({ fn, id }) => {
@@ -65,7 +62,7 @@
     window.openDenuncia = function (...args) {
       if (typeof origOpenDenuncia === 'function') origOpenDenuncia.apply(this, args);
       raf(() => {
-        ['modal-aviso', 'modal-tutorial'].forEach(id => {
+        ['modal-aviso', 'modal-tutorial'].forEach((id) => {
           const el = document.getElementById(id);
           if (el && el.style.display !== 'none' && !el.classList.contains('active')) {
             raf(() => el.classList.add('active'));
@@ -82,32 +79,33 @@
     };
   }
 
-
   function patchStepper() {
     let currentStepIndex = 1;
 
     function animateStep(fromIdx, toIdx) {
       const fromEl = document.getElementById('form-step-' + fromIdx);
-      const toEl   = document.getElementById('form-step-' + toIdx);
+      const toEl = document.getElementById('form-step-' + toIdx);
       if (!fromEl || !toEl) return;
 
       const goingForward = toIdx > fromIdx;
       toEl.style.display = 'block';
       toEl.classList.remove('active', 'exiting', 'entering-back');
       toEl.style.transform = goingForward ? 'translateX(20px)' : 'translateX(-20px)';
-      toEl.style.opacity   = '0';
+      toEl.style.opacity = '0';
       fromEl.classList.add('exiting');
       fromEl.classList.remove('active');
 
-      raf(() => raf(() => {
-        toEl.style.transform = '';
-        toEl.style.opacity   = '';
-        toEl.classList.add('active');
-        setTimeout(() => {
-          fromEl.style.display = 'none';
-          fromEl.classList.remove('exiting');
-        }, 240);
-      }));
+      raf(() =>
+        raf(() => {
+          toEl.style.transform = '';
+          toEl.style.opacity = '';
+          toEl.classList.add('active');
+          setTimeout(() => {
+            fromEl.style.display = 'none';
+            fromEl.classList.remove('exiting');
+          }, 240);
+        })
+      );
     }
     const origNext = window.nextStep;
     const origPrev = window.prevStep;
@@ -141,13 +139,12 @@
     }
   }
 
-
   function patchFaq() {
     window.toggleFaq = function (btn) {
-      const item    = btn.closest('.faq-item');
-      const answer  = item.querySelector('.faq-a');
-      const isOpen  = answer.classList.contains('open');
-      document.querySelectorAll('.faq-a.open').forEach(a => {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-a');
+      const isOpen = answer.classList.contains('open');
+      document.querySelectorAll('.faq-a.open').forEach((a) => {
         a.classList.remove('open');
         a.style.display = '';
         const q = a.previousElementSibling;
@@ -163,52 +160,49 @@
     };
   }
 
-
   function patchCopy() {
     const origCopy = window.copiarProtocolo;
     window.copiarProtocolo = function (...args) {
       if (typeof origCopy === 'function') origCopy.apply(this, args);
-      document.querySelectorAll('.btn-copy-text, .btn-copy-icon').forEach(btn => {
+      document.querySelectorAll('.btn-copy-text, .btn-copy-icon').forEach((btn) => {
         pulseClass(btn, 'copied', 500);
       });
     };
   }
 
-
   function patchErrorShake() {
-    const observer = new MutationObserver(mutations => {
-      mutations.forEach(m => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
         if (m.type === 'childList' || m.type === 'characterData') {
-          const errEl = m.target.nodeType === 3
-            ? m.target.parentElement
-            : m.target;
+          const errEl = m.target.nodeType === 3 ? m.target.parentElement : m.target;
           if (!errEl || !errEl.classList.contains('field-error')) return;
           if (errEl.textContent.trim()) {
             const group = errEl.closest('.form-group');
-            const input = group && (group.querySelector('.form-input') ||
-                                    group.querySelector('.form-select') ||
-                                    group.querySelector('.form-textarea'));
+            const input =
+              group &&
+              (group.querySelector('.form-input') ||
+                group.querySelector('.form-select') ||
+                group.querySelector('.form-textarea'));
             if (input) pulseClass(input, 'error-shake', 500);
           }
         }
       });
     });
 
-    document.querySelectorAll('.field-error').forEach(el => {
+    document.querySelectorAll('.field-error').forEach((el) => {
       observer.observe(el, { childList: true, characterData: true, subtree: true });
     });
   }
 
-
   function patchPageTransitions() {
     raf(() => {
-      document.querySelectorAll('.page.active').forEach(p => {
+      document.querySelectorAll('.page.active').forEach((p) => {
         p.style.opacity = '0';
         p.style.transform = 'translateY(12px)';
         raf(() => {
           p.style.transition = 'opacity 300ms ease, transform 300ms ease';
-          p.style.opacity    = '';
-          p.style.transform  = '';
+          p.style.opacity = '';
+          p.style.transform = '';
         });
       });
     });
@@ -217,31 +211,29 @@
     window.showPage = function (page, ...rest) {
       if (typeof origShowPage === 'function') origShowPage.call(this, page, ...rest);
       raf(() => {
-        document.querySelectorAll('.page.active').forEach(p => {
-          p.style.opacity   = '0';
+        document.querySelectorAll('.page.active').forEach((p) => {
+          p.style.opacity = '0';
           p.style.transform = 'translateY(12px)';
           raf(() => {
             p.style.transition = 'opacity 300ms ease, transform 300ms ease';
-            p.style.opacity    = '';
-            p.style.transform  = '';
+            p.style.opacity = '';
+            p.style.transform = '';
           });
         });
       });
     };
   }
 
-
   function patchUpload() {
     const area = document.getElementById('upload-area');
     if (!area) return;
 
     area.addEventListener('dragenter', () => area.classList.add('drag-over'));
-    area.addEventListener('dragleave', e => {
+    area.addEventListener('dragleave', (e) => {
       if (!area.contains(e.relatedTarget)) area.classList.remove('drag-over');
     });
     area.addEventListener('drop', () => area.classList.remove('drag-over'));
   }
-
 
   function init() {
     patchModais();
@@ -258,5 +250,4 @@
   } else {
     init();
   }
-
 })();

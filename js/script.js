@@ -184,11 +184,24 @@ function validateStep(step) {
     const senhaConf = document.getElementById('f-senha-conf').value;
 
     if (!revisao) {
-      document.getElementById('err-revisao').textContent = 'Confirme que revisou as informações.';
-      valid = false;
+      // Marca automaticamente e scrolla até lá com destaque visual
+      const cb = document.getElementById('revisao-check');
+      const label = cb?.closest('label') || cb?.parentElement;
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change'));
+      // Scroll suave até o checkbox
+      if (label) {
+        label.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Pisca o label para chamar atenção
+        label.style.transition = 'background 0.2s';
+        label.style.background = 'rgba(59,130,246,0.18)';
+        label.style.borderRadius = '4px';
+        setTimeout(() => { label.style.background = ''; }, 1200);
+      }
+      // Não bloqueia — só garantiu que foi marcado
     }
-    if (senha.length < 6) {
-      setError('f-senha', 'err-senha', 'A senha deve ter pelo menos 6 caracteres.');
+    if (senha.length < 8) {
+      setError('f-senha', 'err-senha', 'A senha deve ter pelo menos 8 caracteres.');
       valid = false;
     }
     if (senha !== senhaConf) {
@@ -226,6 +239,8 @@ function gerarProtocolo() {
   const nums = Math.floor(100 + Math.random() * 900);
   const proto = `${ano}-${letras}-${nums}`;
   sessionData.protocolo = proto;
+  // Persiste para sobreviver à navegação entre páginas
+  try { localStorage.setItem('wdProtocolo', proto); } catch(e) {}
   const el = document.getElementById('protocolo-gerado');
   if (el) el.textContent = proto;
   return proto;
@@ -255,23 +270,23 @@ function checkSenha() {
   if (val.length === 0) { strengthWrap.style.display = 'none'; return; }
   strengthWrap.style.display = 'flex';
 
+  // Score simples — não premia tamanho absurdo, premia variedade
   let score = 0;
-  if (val.length >= 6) score++;
-  if (val.length >= 10) score++;
+  if (val.length >= 8)  score++;
   if (/[A-Z]/.test(val)) score++;
   if (/[0-9]/.test(val)) score++;
   if (/[^A-Za-z0-9]/.test(val)) score++;
 
   const levels = [
-    { pct: '20%', color: '#dc2626', text: 'Muito fraca' },
-    { pct: '40%', color: '#ea580c', text: 'Fraca' },
-    { pct: '60%', color: '#ca8a04', text: 'Razoável' },
-    { pct: '80%', color: '#16a34a', text: 'Boa' },
-    { pct: '100%', color: '#15803d', text: 'Muito boa' },
+    { pct: '25%', color: '#dc2626', text: 'Fraca' },
+    { pct: '50%', color: '#ea580c', text: 'Razoável' },
+    { pct: '75%', color: '#ca8a04', text: 'Boa' },
+    { pct: '100%', color: '#16a34a', text: 'Forte ✓' },
   ];
-  const lv = levels[Math.min(score - 1, 4)] || levels[0];
+  const lv = levels[Math.min(score - 1, 3)] || levels[0];
   fill.style.width = lv.pct;
   fill.style.background = lv.color;
+  fill.style.transition = 'width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s ease';
   label.textContent = lv.text;
   label.style.color = lv.color;
 }
@@ -315,6 +330,7 @@ function enviarDenuncia() {
   };
 
   sessionData.senhaHash = senhaHash;
+  try { localStorage.setItem('wdSenhaHash', senhaHash); } catch(e) {}
   document.getElementById('sucesso-protocolo-num').textContent = proto;
   openModal('modal-sucesso');
 }
@@ -337,6 +353,7 @@ function resetForm() {
   filesUploaded = [];
   sessionData.protocolo = null;
   sessionData.senhaHash = null;
+  try { localStorage.removeItem('wdProtocolo'); localStorage.removeItem('wdSenhaHash'); } catch(e) {}
 }
 function consultarDenuncia() {
   const proto = document.getElementById('acomp-protocolo').value.trim().toUpperCase();
@@ -371,8 +388,10 @@ function consultarDenuncia() {
   document.getElementById('acomp-protocolo').classList.remove('error');
   document.getElementById('acomp-senha').classList.remove('error');
 
-  document.getElementById('status-protocol-info').textContent =
-    `Protocolo: ${proto} | Registrada em: ${new Date().toLocaleDateString('pt-BR')} | Senha: ••••••`;
+  // Preenche o novo cabeçalho do status-card
+  document.getElementById('status-protocol-info').textContent = proto;
+  const metaEl = document.getElementById('status-proto-meta');
+  if (metaEl) metaEl.textContent = `Registrada em: ${new Date().toLocaleDateString('pt-BR')} · Senha: ••••••`;
 
   document.getElementById('status-detalhes').innerHTML =
     `<strong>Categoria:</strong> ${denuncia.tipo || '—'}<br>
@@ -381,11 +400,12 @@ function consultarDenuncia() {
      <strong>Resumo:</strong> ${denuncia.descricao ? denuncia.descricao.substring(0, 80) + '...' : '—'}<br>
      <strong>Arquivos:</strong> ${denuncia.arquivos} arquivo(s)`;
 
-  document.getElementById('status-section').style.display = 'block';
-  document.getElementById('status-section').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('status-section').classList.remove('status-section-hidden');
+  document.getElementById('status-section').classList.add('status-section-visible');
+  document.getElementById('status-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Dispara a animação sequencial do dashboard após a seção aparecer
-  setTimeout(animarDashboard, 300);
+  // Dispara a animação sequencial do dashboard — sem delay, começa imediatamente
+  animarDashboard();
 }
 
 /* -------------------------------------------------------
@@ -394,34 +414,30 @@ function consultarDenuncia() {
    pop-in e a linha de progresso avança até a etapa atual.
    ------------------------------------------------------- */
 function animarDashboard() {
-  // Configuração do estado atual da denúncia (etapas 1-5, sendo 4 = "Investigação")
   const etapaAtual = 4; // 1=Registrada 2=Em Análise 3=Encaminhada 4=Investigação 5=Concluída
   const totalEtapas = 5;
 
-  // Reset: remove classes de estado de todos os steps
+  // Reset sem esconder — steps ficam visíveis em estado neutro
   for (let i = 1; i <= totalEtapas; i++) {
     const el = document.getElementById('track-' + i);
     if (!el) continue;
-    el.classList.remove('done', 'current', 'track-visible');
+    el.classList.remove('done', 'current', 'pending', 'loading');
+    el.classList.add('track-visible');
   }
-  // Reset linha de progresso
   const linha = document.getElementById('track-progress-line');
-  if (linha) linha.style.width = '0%';
+  if (linha) {
+    linha.style.transition = 'none';
+    linha.style.width = '0%';
+  }
 
-  // Animação step a step com delay escalonado
-  // Cada step aparece 180ms depois do anterior
+  // Pequena pausa inicial — como se estivesse "buscando dados"
+  const pausaInicial = 600;
+
   for (let i = 1; i <= totalEtapas; i++) {
     (function(idx) {
-      const delay = (idx - 1) * 220; // 220ms entre cada step
+      // Cada step demora 700ms a mais que o anterior (lento e satisfatório)
+      const delay = pausaInicial + (idx - 1) * 700;
 
-      // 1. Fade-in + slide-up do step
-      setTimeout(() => {
-        const el = document.getElementById('track-' + idx);
-        if (!el) return;
-        el.classList.add('track-visible');
-      }, delay);
-
-      // 2. Após aparecer, aplica a classe de estado (done/current/pending)
       setTimeout(() => {
         const el = document.getElementById('track-' + idx);
         if (!el) return;
@@ -430,20 +446,20 @@ function animarDashboard() {
           el.classList.add('done');
         } else if (idx === etapaAtual) {
           el.classList.add('current');
+        } else {
+          el.classList.add('pending');
         }
-        // idx > etapaAtual: fica sem classe (estado neutro/futuro)
 
-        // 3. Avança a linha de progresso junto com o último step "done"
+        // Barra verde avança junto — com transição longa e suave
         if (idx <= etapaAtual && linha) {
-          // Calcula a largura como % do espaço entre os steps
-          // A linha vai de icon 1 até icon etapaAtual
-          const segmentos = totalEtapas - 1; // 4 segmentos entre 5 steps
+          linha.style.transition = 'width 0.65s cubic-bezier(0.4, 0, 0.2, 1)';
+          const segmentos = totalEtapas - 1;
           const pct = idx < etapaAtual
             ? ((idx - 1) / segmentos) * 100
-            : ((etapaAtual - 1.5) / segmentos) * 100; // para no meio do step atual
+            : ((etapaAtual - 1.5) / segmentos) * 100;
           linha.style.width = pct + '%';
         }
-      }, delay + 120); // 120ms depois do fade-in — o pop do ícone acontece depois que apareceu
+      }, delay);
     })(i);
   }
 }
@@ -458,7 +474,8 @@ function mostrarErroGeral(msg) {
 }
 
 function encerrarSessao() {
-  document.getElementById('status-section').style.display = 'none';
+  document.getElementById('status-section').classList.remove('status-section-visible');
+  document.getElementById('status-section').classList.add('status-section-hidden');
   document.getElementById('acomp-protocolo').value = '';
   document.getElementById('acomp-senha').value = '';
   document.getElementById('acomp-erro-geral').style.display = 'none';
@@ -655,22 +672,53 @@ function closeTutorialAndDenuncia() {
 function salvarPreferenciaTutorial() {
   const checked = document.getElementById('tutorial-nao-mostrar').checked;
   if (checked) {
-    localStorage.setItem('wdTutorialSeen', '1');
+    sessionStorage.setItem('wdTutorialSeen', '1');
   } else {
-    localStorage.removeItem('wdTutorialSeen');
+    sessionStorage.removeItem('wdTutorialSeen');
   }
 }
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('wdTheme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateDarkModeBtn(savedTheme);
-  const tutorialSeen = localStorage.getItem('wdTutorialSeen');
+
+  // Limpa flag antiga que pode ter ficado presa — tutorial sempre aparece
+  // (o "não mostrar mais" só funciona dentro da mesma sessão de navegação)
+  const tutorialSeen = sessionStorage.getItem('wdTutorialSeen');
   if (!tutorialSeen) {
     setTimeout(() => openModal('modal-tutorial'), 400);
   }
   const today = new Date().toISOString().split('T')[0];
   const dateField = document.getElementById('f-data');
-  if (dateField) dateField.max = today;
+  if (dateField) {
+    const todayDate = new Date();
+    dateField.max = todayDate.toISOString().split('T')[0];
+    // Minimum: 5 years back (reasonable for incident reports)
+    const minDate = new Date(todayDate);
+    minDate.setFullYear(minDate.getFullYear() - 5);
+    dateField.min = minDate.toISOString().split('T')[0];
+    // Prevent typing future dates via keyboard too
+    dateField.addEventListener('change', function() {
+      const val = new Date(this.value);
+      const max = new Date(this.max);
+      const min = new Date(this.min);
+      if (val > max) this.value = this.max;
+      if (val < min) this.value = this.min;
+    });
+  }
+
+  // Restaura protocolo da sessão anterior (persiste ao navegar entre páginas)
+  try {
+    const savedProto = localStorage.getItem('wdProtocolo');
+    const savedHash  = localStorage.getItem('wdSenhaHash');
+    if (savedProto) {
+      sessionData.protocolo = savedProto;
+      sessionData.senhaHash = savedHash;
+      // Preenche o campo de protocolo na aba Acompanhar automaticamente
+      const inp = document.getElementById('acomp-protocolo');
+      if (inp) inp.value = savedProto;
+    }
+  } catch(e) {}
 
   goToStep(1);
 });
