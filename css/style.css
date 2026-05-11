@@ -603,17 +603,20 @@ footer a:hover {
 }
 
 /* ── Date input — dark theme & calendar styling ── */
-input[type='date'].form-input {
+input[type='date'].form-input,
+input[type='time'].form-input {
   color-scheme: light;
   cursor: pointer;
 }
-[data-theme='dark'] input[type='date'].form-input {
+[data-theme='dark'] input[type='date'].form-input,
+[data-theme='dark'] input[type='time'].form-input {
   color-scheme: dark;
   background: #1a1d21;
   color: var(--dark);
   border-color: var(--border);
 }
-[data-theme='dark'] input[type='date'].form-input:focus {
+[data-theme='dark'] input[type='date'].form-input:focus,
+[data-theme='dark'] input[type='time'].form-input:focus {
   border-color: var(--confirm);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   background: #2e3440;
@@ -1045,7 +1048,8 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   align-items: center;
 }
 .input-icon-wrap .form-input {
-  padding-left: 38px;
+  padding-right: 48px;
+  padding-left: 12px;
 }
 .input-icon-svg {
   position: absolute;
@@ -1549,6 +1553,7 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
+  align-items: stretch;
 }
 /* --- LEI DE FITTS: Hero CTA — o botão mais importante da página inicial ---
    Deve ser o maior e mais fácil de atingir */
@@ -1586,7 +1591,7 @@ input[type='date'].form-input::-webkit-calendar-picker-indicator:hover {
   font-size: 1.05rem;
   /* FITTS: CTA primário tem mais padding = área maior */
   padding: 20px;
-  min-height: 60px;
+  min-height: 52px;
   letter-spacing: 0.12em;
 }
 .hero-tab-btn.primary:hover {

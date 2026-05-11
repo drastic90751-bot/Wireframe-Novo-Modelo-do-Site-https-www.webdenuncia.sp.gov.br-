@@ -270,12 +270,16 @@ function copiarProtocolo() {
 }
 function checkSenha() {
   const val = document.getElementById('f-senha').value;
-  const strengthWrap = document.getElementById('senha-strength');
   const fill = document.getElementById('strength-fill');
   const label = document.getElementById('strength-label');
 
-  if (val.length === 0) { strengthWrap.style.display = 'none'; return; }
-  strengthWrap.style.display = 'flex';
+  if (val.length === 0) {
+    fill.style.width = '0%';
+    fill.style.background = 'transparent';
+    label.textContent = '—';
+    label.style.color = 'var(--light)';
+    return;
+  }
 
   // Score simples — não premia tamanho absurdo, premia variedade
   let score = 0;
@@ -437,13 +441,13 @@ function animarDashboard() {
     linha.style.width = '0%';
   }
 
-  // Pequena pausa inicial — como se estivesse "buscando dados"
-  const pausaInicial = 600;
+  // Pausa inicial dramática — "buscando dados do servidor..."
+  const pausaInicial = 900;
 
   for (let i = 1; i <= totalEtapas; i++) {
     (function(idx) {
-      // Cada step demora 700ms a mais que o anterior (lento e satisfatório)
-      const delay = pausaInicial + (idx - 1) * 700;
+      // Cada step demora 1100ms a mais que o anterior (lento e satisfatório)
+      const delay = pausaInicial + (idx - 1) * 1100;
 
       setTimeout(() => {
         const el = document.getElementById('track-' + idx);
@@ -459,7 +463,7 @@ function animarDashboard() {
 
         // Barra verde avança junto — com transição longa e suave
         if (idx <= etapaAtual && linha) {
-          linha.style.transition = 'width 0.65s cubic-bezier(0.4, 0, 0.2, 1)';
+          linha.style.transition = 'width 0.9s cubic-bezier(0.4, 0, 0.2, 1)';
           const segmentos = totalEtapas - 1;
           const pct = idx < etapaAtual
             ? ((idx - 1) / segmentos) * 100
