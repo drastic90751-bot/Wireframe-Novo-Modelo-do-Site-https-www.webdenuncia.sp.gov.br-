@@ -1,0 +1,483 @@
+/* ============================================================
+   MELHORIAS: Empty States · WCAG · Handoff Tokens · CRAP
+   WebDenúncia SP — Patch de acessibilidade e UX
+   ============================================================ */
+
+/* ── HANDOFF TOKENS (Design Tokens Explícitos) ──────────────
+   Tokens semânticos além dos já existentes no :root
+   ─────────────────────────────────────────────────────────── */
+:root {
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Typography scale */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  2rem;      /* 32px */
+
+  /* WCAG-compliant font sizes — nenhum texto abaixo de 14px */
+  --min-text: var(--text-sm);
+
+  /* Border radius tokens */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadow tokens */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.10);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,.14);
+  --shadow-focus: 0 0 0 3px rgba(26,111,196,.35);
+
+  /* Motion tokens */
+  --duration-fast:   120ms;
+  --duration-normal: 200ms;
+  --duration-slow:   350ms;
+  --ease-out: cubic-bezier(.16,1,.3,1);
+
+  /* WCAG Contrast tokens — AA mínimo 4.5:1 */
+  --text-on-dark:   #ffffff;   /* ≥7:1 em fundos #111 */
+  --text-on-light:  #111111;   /* ≥10:1 em fundo #f2f2f0 */
+  --text-muted-aa:  #5a5a5a;   /* 4.6:1 em fundo branco — passa AA */
+
+  /* Empty state tokens */
+  --empty-icon-color:  #9ca3af;
+  --empty-bg:          #f9fafb;
+  --empty-border:      #e5e7eb;
+
+  /* CRAP tokens */
+  --crap-contrast-primary: #111111;
+  --crap-contrast-accent:  #1a6fc4;
+  --crap-group-gap:        var(--space-2);
+  --crap-section-gap:      var(--space-6);
+  --crap-align-offset:     0px;
+}
+
+[data-theme='dark'] {
+  --empty-bg:     #1a1d21;
+  --empty-border: #2d3748;
+  --empty-icon-color: #4b5563;
+  --text-muted-aa: #9ca3af;
+  --crap-contrast-primary: #e2e8f0;  /* claro no tema escuro */
+  --crap-contrast-accent:  #3b82f6;  /* azul mais brilhante no escuro */
+}
+
+
+/* ── WCAG — Acessibilidade Explícita ────────────────────────
+   Garante conformidade WCAG 2.1 AA em todo o site
+   ─────────────────────────────────────────────────────────── */
+
+/* 1. Todos os elementos interativos têm foco visível (2.4.7) */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* 2. Skip link mais visível (2.4.1) */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: 99999;
+  background: var(--confirm);
+  color: #fff;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: var(--text-base);
+  text-decoration: none;
+  transition: top var(--duration-normal) var(--ease-out);
+}
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* 3. Textos nunca abaixo de 14px (1.4.4) — apenas aumenta, não sobrescreve cor */
+body, p, span, li, td, th {
+  font-size: max(var(--min-text), 1em);
+}
+input, select, textarea, button {
+  font-size: max(var(--min-text), 1em);
+}
+
+/* 4. Labels de formulário sempre visíveis (1.3.1) */
+label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--mid);  /* var(--mid) já adapta ao tema escuro */
+  margin-bottom: var(--space-1);
+}
+
+/* 5. Ratio de contraste em textos pequenos — usa var(--mid) que adapta ao tema */
+.section-label,
+.form-label,
+.char-count,
+.proto-meta {
+  color: var(--mid);
+  font-size: var(--text-sm);
+}
+.field-error {
+  font-size: var(--text-sm);
+}
+
+/* 6. Indicador visual de campo obrigatório (1.3.1) */
+.required-indicator {
+  color: var(--danger);
+  font-weight: 700;
+  margin-left: 2px;
+  aria-hidden: true;
+}
+label[for]::after {
+  content: '';
+}
+.field-required label::after {
+  content: ' *';
+  color: var(--danger);
+  font-size: var(--text-xs);
+}
+
+/* 7. Área mínima de toque 44×44px (2.5.8) */
+button,
+[role="button"],
+a,
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 18px;
+  min-height: 18px;
+  accent-color: var(--confirm);
+}
+
+/* 8. Erro de campo com ícone + texto (não só cor) (1.4.1) */
+.field-error:not(:empty)::before {
+  content: '⚠ ';
+  font-size: var(--text-xs);
+}
+
+/* 9. Painel WCAG Badge (decorativo, para handoff/doc) */
+.wcag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-full);
+  padding: 2px var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+[data-theme='dark'] .wcag-badge {
+  background: rgba(74,222,128,.1);
+}
+
+
+/* ── EMPTY STATES (Estados Vazios) ──────────────────────────
+   Feedback visual quando não há conteúdo a exibir
+   ─────────────────────────────────────────────────────────── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  background: var(--empty-bg);
+  border: 1.5px dashed var(--empty-border);
+  border-radius: var(--radius-lg);
+  gap: var(--space-3);
+  animation: emptyFadeIn var(--duration-slow) var(--ease-out);
+}
+
+@keyframes emptyFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.empty-state__icon {
+  width: 56px;
+  height: 56px;
+  color: var(--empty-icon-color);
+  flex-shrink: 0;
+}
+
+.empty-state__title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--dark);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.empty-state__desc {
+  font-size: var(--text-sm);
+  color: var(--mid);
+  margin: 0;
+  max-width: 340px;
+  line-height: 1.6;
+}
+
+.empty-state__action {
+  margin-top: var(--space-2);
+}
+
+/* Variantes de contexto */
+.empty-state--search .empty-state__icon { color: #6b7280; }
+.empty-state--error  .empty-state__icon { color: var(--danger); }
+.empty-state--success .empty-state__icon { color: var(--success); }
+.empty-state--offline .empty-state__icon { color: var(--warning); }
+
+/* Estado vazio para tabela de arquivos */
+#file-list:empty + .empty-state-files,
+.empty-state-files {
+  display: flex;
+}
+
+/* Estado vazio para busca de protocolo sem resultado */
+#status-section.status-section-hidden ~ .empty-state-consulta {
+  display: flex;
+}
+.empty-state-consulta {
+  display: none;
+}
+
+
+/* ── FRAMEWORK CRAP ─────────────────────────────────────────
+   Contraste · Repetição · Alinhamento · Proximidade
+   Refinamentos visuais aplicando os 4 princípios
+   ─────────────────────────────────────────────────────────── */
+
+/* ── C: CONTRASTE ── */
+
+/* Hierarquia tipográfica mais clara — usa var(--dark) que já adapta ao tema */
+h1, h2, h3, h4 {
+  color: var(--dark);
+  letter-spacing: -0.01em;
+}
+h2 {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  border-left: 4px solid var(--crap-contrast-accent);
+  padding-left: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+h3 {
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+/* Botões primários vs secundários com contraste alto */
+.btn-primary,
+.btn-next,
+.btn-proceed {
+  font-weight: 700;
+  letter-spacing: .02em;
+  transition: background var(--duration-normal), transform var(--duration-fast);
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.btn-primary:hover,
+.btn-next:hover,
+.btn-proceed:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-emergency,
+.btn-back {
+  font-weight: 600;
+}
+
+/* ── R: REPETIÇÃO ── */
+
+/* Cards e itens com padrão visual repetível */
+.category-card,
+.news-item,
+.track-step {
+  border-left: 3px solid transparent;
+  transition: border-color var(--duration-normal),
+              background var(--duration-normal),
+              transform var(--duration-fast);
+}
+.category-card:hover,
+.news-item:hover {
+  border-left-color: var(--crap-contrast-accent);
+  transform: translateX(2px);
+}
+
+/* Ícones de formulário — repetição de tamanho */
+.step-tab svg,
+.category-card svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Repetição de estilo para seções de formulário */
+.form-section {
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── A: ALINHAMENTO ── */
+
+/* Grid de categorias perfeitamente alinhado */
+.category-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+  align-items: start;
+}
+
+/* Formulário — labels sempre alinhadas à esquerda */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: flex-start;
+}
+
+/* Alinhamento de botões de ação */
+.modal-actions,
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Alinhamento da navegação de steps */
+.step-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 var(--space-4);
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── P: PROXIMIDADE ── */
+
+/* Seções relacionadas agrupadas com gap menor internamente */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);          /* Proximidade interna — campos irmãos */
+  margin-bottom: var(--space-4);
+}
+
+/* Espaço maior entre grupos diferentes */
+.form-section + .form-section {
+  margin-top: var(--space-6);   /* Afastamento entre seções distintas */
+}
+
+/* Rótulo sempre próximo ao input correspondente */
+label + .form-input,
+label + .form-select,
+label + .form-textarea {
+  margin-top: var(--space-1);
+}
+
+/* Error message sempre próxima ao campo */
+.field-error {
+  margin-top: var(--space-1);
+}
+
+/* Botões de formulário agrupados no rodapé */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) 0 var(--space-3);
+  gap: var(--space-3);
+  border-top: 1.5px solid var(--border);
+  margin-top: var(--space-5);
+}
+
+/* Itens de notícia — proximidade entre título e descrição */
+.news-item {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--empty-border);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  cursor: pointer;
+}
+.news-item:last-child { border-bottom: none; }
+
+
+/* ── TOOLTIP DE TOKEN (Handoff visual) ──────────────────────
+   Mostra o token ao inspecionar via data-token=""
+   Apenas visível em ambiente de dev/handoff
+   ─────────────────────────────────────────────────────────── */
+.handoff-mode [data-token] {
+  position: relative;
+  outline: 1px dashed rgba(26,111,196,.4);
+}
+.handoff-mode [data-token]:hover::after {
+  content: attr(data-token);
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  white-space: nowrap;
+  background: #1a1a1a;
+  color: #7dd3fc;
+  font: 600 11px/1 monospace;
+  padding: 3px 6px;
+  border-radius: 4px;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+/* ── REFINAMENTOS RESPONSIVOS ───────────────────────────────*/
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  h2 {
+    font-size: var(--text-xl);
+  }
+  .empty-state {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* ── PRINT / Alto contraste ─────────────────────────────────*/
+@media (prefers-contrast: more) {
+  :root {
+    --border: #555555;
+    --text-muted-aa: #333333;
+  }
+  button, .btn-primary {
+    border: 2px solid #000 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

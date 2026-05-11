@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="microinteracoes.css" />
     <link rel="stylesheet" href="ui-responsivo.css" />
+    <link rel="stylesheet" href="css/melhorias.css" />
     <script src="js/script.js"></script>
     <style>
       #offline-banner {
@@ -1176,9 +1177,10 @@
         </div>
         <div class="news-panel">
           <h3>Notícias e Alertas</h3>
+          <div id="news-list" role="list" aria-label="Lista de notícias e alertas">
           <div
             class="news-item"
-            role="button"
+            role="listitem"
             tabindex="0"
             onclick="abrirNoticia(0)"
             onkeydown="
@@ -1193,7 +1195,7 @@
           </div>
           <div
             class="news-item"
-            role="button"
+            role="listitem"
             tabindex="0"
             onclick="abrirNoticia(1)"
             onkeydown="
@@ -1208,7 +1210,7 @@
           </div>
           <div
             class="news-item"
-            role="button"
+            role="listitem"
             tabindex="0"
             onclick="abrirNoticia(2)"
             onkeydown="
@@ -1223,7 +1225,7 @@
           </div>
           <div
             class="news-item"
-            role="button"
+            role="listitem"
             tabindex="0"
             onclick="abrirNoticia(3)"
             onkeydown="
@@ -1235,6 +1237,19 @@
             aria-label="Ler notícia: WebDenúncia atinge 50.000 denúncias"
           >
             WebDenúncia atinge 50.000 denúncias registradas em SP.
+          </div>
+          </div><!-- /news-list -->
+
+          <!-- Empty State: exibido quando não há notícias (JS controla display) -->
+          <div id="news-empty" class="empty-state empty-state--news" style="display:none" role="status" aria-live="polite">
+            <svg class="empty-state__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="10" width="36" height="28" rx="3"/>
+              <line x1="14" y1="18" x2="34" y2="18"/>
+              <line x1="14" y1="24" x2="34" y2="24"/>
+              <line x1="14" y1="30" x2="24" y2="30"/>
+            </svg>
+            <p class="empty-state__title">Sem notícias no momento</p>
+            <p class="empty-state__desc">Novas notícias e alertas serão exibidos aqui assim que estiverem disponíveis.</p>
           </div>
         </div>
       </div>
@@ -2690,5 +2705,6 @@
         }
       }
     </script>
+    <script src="js/melhorias.js" defer></script>
   </body>
 </html>
