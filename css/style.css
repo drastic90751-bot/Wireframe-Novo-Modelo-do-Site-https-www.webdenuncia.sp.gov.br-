@@ -66,7 +66,7 @@
 [data-theme="dark"] .btn-primary:hover,
 [data-theme="dark"] .btn-proceed:hover { background: var(--confirm-hover); }
 [data-theme="dark"] .step.active { background: #3b82f6; color: #ffffff; }
-[data-theme="dark"] .step.done { background: #2d3748; color: var(--mid); }
+[data-theme="dark"] .step.done { background: var(--white); color: var(--mid); }
 [data-theme="dark"] .step.active .step-check { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.7); color: #ffffff; }
 [data-theme="dark"] .track-step.done .track-icon { background: var(--step-done-bg); border-color: var(--step-done-bg); }
 [data-theme="dark"] .track-step.current .track-icon { background: var(--confirm); border-color: var(--confirm); }
@@ -319,6 +319,7 @@ footer a:hover { color: var(--dark); }
   gap: 24px;
 }
 
+/* --- DOHERTY: Feedback imediato em inputs (transição ≤ 150ms para parecer instantâneo) --- */
 .form-input {
   width: 100%;
   padding: 11px 12px;
@@ -328,14 +329,18 @@ footer a:hover { color: var(--dark); }
   font-size: 1rem;
   color: var(--dark);
   outline: none;
-  transition: border-color .15s;
+  /* DOHERTY: resposta visual imediata ao foco */
+  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
   -webkit-appearance: none;
   border-radius: 0;
-
-  min-height: 44px;
+  /* LEI DE FITTS: altura mínima 48px — área de toque confortável */
+  min-height: 48px;
 }
-.form-input:focus { border-color: #005fcc; background: var(--white); box-shadow: 0 0 0 2px rgba(0,95,204,0.25); }
+.form-input:focus { border-color: #005fcc; background: var(--white); box-shadow: 0 0 0 3px rgba(0,95,204,0.18); }
 .form-input.error { border-color: var(--danger); }
+/* NIELSEN H9: Mensagem de sucesso inline quando o campo está válido */
+.form-input.valid { border-color: var(--success); }
+
 
 .form-select {
   width: 100%;
@@ -353,12 +358,14 @@ footer a:hover { color: var(--dark); }
   background-repeat: no-repeat;
   background-position: right 12px center;
   border-radius: 0;
-  transition: border-color .15s;
-
-  min-height: 44px;
+  /* DOHERTY: resposta imediata */
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  /* LEI DE FITTS: altura confortável */
+  min-height: 48px;
 }
-.form-select:focus { border-color: #005fcc; box-shadow: 0 0 0 2px rgba(0,95,204,0.25); }
+.form-select:focus { border-color: #005fcc; box-shadow: 0 0 0 3px rgba(0,95,204,0.18); }
 .form-select.error { border-color: var(--danger); }
+.form-select.valid { border-color: var(--success); }
 
 .form-textarea {
   width: 100%;
@@ -372,11 +379,14 @@ footer a:hover { color: var(--dark); }
   resize: vertical;
   min-height: 140px;
   line-height: 1.6;
-  transition: border-color .15s;
+  /* DOHERTY: resposta imediata ao foco */
+  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
   border-radius: 0;
 }
-.form-textarea:focus { border-color: #005fcc; background: var(--white); box-shadow: 0 0 0 2px rgba(0,95,204,0.25); }
+.form-textarea:focus { border-color: #005fcc; background: var(--white); box-shadow: 0 0 0 3px rgba(0,95,204,0.18); }
 .form-textarea.error { border-color: var(--danger); }
+/* NIELSEN H9: feedback positivo quando campo está correto */
+.form-textarea.valid { border-color: var(--success); }
 
 .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .form-group label {
@@ -390,6 +400,8 @@ footer a:hover { color: var(--dark); }
 .req { color: var(--danger); font-size: 0.8rem; }
 .opt { color: var(--mid); font-weight: 400; text-transform: none; font-size: 0.75rem; letter-spacing: 0; }
 
+/* --- NIELSEN H9: Diagnóstico e recuperação de erros ---
+   Mensagens de erro animadas para chamar atenção imediatamente */
 .field-error {
   font-size: 0.82rem;
   color: var(--danger);
@@ -399,10 +411,20 @@ footer a:hover { color: var(--dark); }
   display: flex;
   align-items: center;
   gap: 4px;
+  /* DOHERTY: aparece com animação rápida — não é surpresa silenciosa */
+  transition: opacity 0.15s ease;
 }
 .field-error:not(:empty)::before {
   content: '⚠ ';
   font-size: 0.9em;
+}
+/* DOHERTY: slide-in quando erro aparece */
+.field-error:not(:empty) {
+  animation: error-appear 0.15s ease;
+}
+@keyframes error-appear {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .field-hint {
   font-size: 0.85rem;
@@ -413,23 +435,28 @@ footer a:hover { color: var(--dark); }
 .char-count { font-size: 0.75rem; color: var(--mid); text-align: right; margin-top: 4px; }
 .char-count.warn { color: var(--danger); font-weight: 600; }
 
+/* --- LEI DE FITTS: Botão primário — grande, centralizado, fácil de atingir ---
+   Tamanho proporcional à importância da ação */
 .btn-primary {
   width: 100%;
-  padding: 14px;
+  /* FITTS: padding generoso aumenta a área clicável */
+  padding: 16px;
   background: var(--confirm);
   color: var(--confirm-text);
   border: none;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background .15s;
+  /* DOHERTY: hover responde em < 100ms — sensação de instantaneidade */
+  transition: background 0.1s ease, transform 0.1s ease;
   border-radius: 0;
-  min-height: 44px;
+  min-height: 52px;
 }
-.btn-primary:hover { background: var(--confirm-hover); }
+.btn-primary:hover { background: var(--confirm-hover); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
   padding: 10px 20px;
@@ -448,6 +475,8 @@ footer a:hover { color: var(--dark); }
 }
 .btn-secondary:hover { background: var(--dark); }
 
+/* --- LEI DE FITTS: Botão "Voltar" — secundário, menor que o CTA principal ---
+   Separado visualmente para evitar cliques acidentais */
 .btn-back {
   padding: 12px 20px;
   border: 2px solid var(--border);
@@ -459,29 +488,52 @@ footer a:hover { color: var(--dark); }
   text-transform: uppercase;
   cursor: pointer;
   color: var(--dark);
-  transition: border-color .15s, color .15s;
+  /* DOHERTY: transição rápida */
+  transition: border-color 0.12s ease, background 0.12s ease;
   border-radius: 0;
+  /* FITTS: menor que o CTA, mas ainda acessível (44px mínimo) */
   min-height: 44px;
+  min-width: 100px;
 }
-.btn-back:hover { border-color: var(--dark); color: var(--dark); }
+.btn-back:hover { border-color: var(--dark); background: var(--bg); }
 
+/* --- LEI DE FITTS: Botão "Próxima Etapa" — maior CTA do formulário ---
+   É o alvo mais importante: deve ser grande e fácil de atingir */
 .btn-next {
   flex: 1;
-  padding: 14px 20px;
+  /* FITTS: padding vertical maior = área de clique maior */
+  padding: 16px 24px;
   background: var(--confirm);
   color: var(--confirm-text);
   border: none;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background .15s;
+  /* DOHERTY: < 100ms para parecer instantâneo */
+  transition: background 0.1s ease, transform 0.1s ease;
   border-radius: 0;
-  min-height: 44px;
+  min-height: 52px;
+  /* NIELSEN H1: loading state via CSS (classe .loading adicionada pelo JS) */
+  position: relative;
+  overflow: hidden;
 }
-.btn-next:hover { background: var(--confirm-hover); }
+.btn-next:hover { background: var(--confirm-hover); transform: translateY(-1px); }
+.btn-next:active { transform: translateY(0); }
+/* DOHERTY: shimmer de loading quando .loading é adicionado */
+.btn-next.loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  animation: btn-shimmer 0.8s ease infinite;
+}
+@keyframes btn-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 
 .btn-link {
   background: none;
@@ -907,9 +959,11 @@ footer a:hover { color: var(--dark); }
   grid-template-columns: 1fr;
   gap: 10px;
 }
+/* --- LEI DE FITTS: Hero CTA — o botão mais importante da página inicial ---
+   Deve ser o maior e mais fácil de atingir */
 .hero-tab-btn {
   width: 100%;
-  padding: 16px 12px;
+  padding: 18px 12px;
   border: 2px solid var(--border);
   background: var(--white);
   font-family: 'Barlow Condensed', sans-serif;
@@ -919,14 +973,27 @@ footer a:hover { color: var(--dark); }
   text-transform: uppercase;
   cursor: pointer;
   color: var(--dark);
-  transition: border-color .15s, color .15s;
+  /* DOHERTY: transição < 100ms */
+  transition: border-color 0.1s ease, background 0.1s ease, transform 0.1s ease;
   text-align: center;
   border-radius: 0;
-  min-height: 44px;
+  /* FITTS: 52px mínimo para botões secundários */
+  min-height: 52px;
 }
-.hero-tab-btn:hover { border-color: var(--dark); color: var(--dark); }
-.hero-tab-btn.primary { background: var(--confirm); color: var(--confirm-text); border-color: var(--confirm); font-size: 1rem; padding: 18px; }
-.hero-tab-btn.primary:hover { background: var(--confirm-hover); }
+.hero-tab-btn:hover { border-color: var(--dark); background: var(--bg); }
+/* FITTS: botão primário "Fazer Denúncia" é notavelmente maior que os secundários */
+.hero-tab-btn.primary {
+  background: var(--confirm);
+  color: var(--confirm-text);
+  border-color: var(--confirm);
+  font-size: 1.05rem;
+  /* FITTS: CTA primário tem mais padding = área maior */
+  padding: 20px;
+  min-height: 60px;
+  letter-spacing: 0.12em;
+}
+.hero-tab-btn.primary:hover { background: var(--confirm-hover); transform: translateY(-1px); }
+.hero-tab-btn.primary:active { transform: translateY(0); }
 
 .sidebar {
   border: 2px solid var(--border);
@@ -959,21 +1026,29 @@ footer a:hover { color: var(--dark); }
   margin-bottom: 14px;
 }
 .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+/* --- LEI DE FITTS: Category cards — alvos clicáveis frequentes ---
+   Aumentados e com resposta de hover mais rápida */
 .category-card {
   border: 2px solid var(--border);
   background: var(--white);
-  padding: 16px 10px 14px;
+  padding: 18px 10px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: border-color .15s, transform .12s;
+  /* DOHERTY: hover instantâneo */
+  transition: border-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
   text-align: center;
-
-  min-height: 80px;
+  /* FITTS: altura mínima generosa */
+  min-height: 90px;
 }
-.category-card:hover { border-color: var(--dark); transform: translateY(-2px); }
+.category-card:hover {
+  border-color: var(--dark);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.category-card:active { transform: translateY(0); }
 
 .category-card:focus { outline: var(--focus-ring); outline-offset: 2px; }
 .category-card svg { width: 40px; height: 36px; stroke: var(--dark); stroke-width: 1.5; fill: none; }
@@ -1007,14 +1082,26 @@ footer a:hover { color: var(--dark); }
   color: var(--mid);
   cursor: pointer;
   line-height: 1.4;
-  min-height: 44px;
+  /* FITTS: área de toque generosa */
+  min-height: 48px;
   display: flex;
   align-items: center;
+  /* DOHERTY: resposta imediata ao hover */
+  transition: color 0.1s ease, padding-left 0.15s ease;
+  padding-left: 0;
 }
 .news-item:last-child { border-bottom: none; }
-.news-item:hover { color: var(--dark); }
+/* NIELSEN H1: feedback visual claro de interatividade */
+.news-item:hover { color: var(--dark); padding-left: 6px; }
 .news-item:focus { outline: var(--focus-ring); outline-offset: 2px; }
 
+/* ====================================================
+   HEURÍSTICAS DE NIELSEN — FITTS — DOHERTY
+   Aplicação prática no CSS
+   ==================================================== */
+
+/* --- NIELSEN H1: Visibilidade do Status do Sistema ---
+   Stepper com barra de progresso contínua e indicadores claros */
 .stepper {
   display: flex;
   background: var(--white);
@@ -1022,8 +1109,23 @@ footer a:hover { color: var(--dark); }
   flex-shrink: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-
+  position: relative;
 }
+
+/* Barra de progresso linear abaixo do stepper */
+.stepper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--confirm);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* DOHERTY: <400ms */
+  width: var(--stepper-progress, 0%);
+  z-index: 2;
+}
+
+
 .step {
   flex: 0 0 auto;
   min-width: 120px;
@@ -1039,18 +1141,23 @@ footer a:hover { color: var(--dark); }
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-  min-height: 48px;
+  /* LEI DE FITTS: altura mínima generosa para facilitar toque */
+  min-height: 52px;
   cursor: default;
-  transition: background .18s, color .18s, border-color .18s;
+  /* DOHERTY: transição rápida < 400ms garante resposta imediata */
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   user-select: none;
   background: var(--white);
+  position: relative;
 }
+/* NIELSEN H3: Controle — etapa concluída clicável tem cursor pointer e hint visual */
 .step.done { cursor: pointer; }
-.step.done:hover { background: #555 !important; }
+.step.done:hover { background: #f0f0ee !important; color: var(--dark); }
 .step.active { cursor: default; }
 .step:last-child { border-right: none; }
+/* NIELSEN H1: Status claro — só a etapa ativa fica em destaque escuro */
 .step.active { background: var(--dark); color: var(--white); border-right-color: var(--dark); }
-.step.done { background: #444444; color: var(--white); }
+.step.done { background: var(--white); color: var(--mid); }
 .step-check {
   width: 22px;
   height: 22px;
@@ -1062,7 +1169,7 @@ footer a:hover { color: var(--dark); }
   font-size: 0.7rem;
   flex-shrink: 0;
 }
-.step.done .step-check { background: transparent; border-color: rgba(255,255,255,0.7); color: #ffffff; }
+.step.done .step-check { background: transparent; border-color: var(--mid); color: var(--mid); }
 .step.active .step-check { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); color: #ffffff; }
 
 .step-form { display: none; flex: 1; }
@@ -1103,6 +1210,9 @@ footer a:hover { color: var(--dark); }
   font-size: 0.82rem;
 }
 
+/* --- LEI DE FITTS: Navegação do formulário ---
+   "Próxima Etapa" (CTA) muito maior que "Voltar" (ação secundária destrutiva)
+   A distância visual e diferença de tamanho previnem cliques acidentais */
 .step-nav {
   display: flex;
   justify-content: space-between;
@@ -1111,7 +1221,7 @@ footer a:hover { color: var(--dark); }
   border-top: 2px solid var(--border);
   background: var(--white);
   flex-shrink: 0;
-  gap: 10px;
+  gap: 12px;
 }
 
 .upload-area {
@@ -1227,26 +1337,114 @@ footer a:hover { color: var(--dark); }
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
 }
+
+/* Linha de fundo (cinza) */
 .progress-track::before {
   content: '';
   position: absolute;
   top: 21px;
   left: 44px;
   right: 44px;
-  height: 2px;
+  height: 3px;
   background: var(--border);
   z-index: 0;
+  border-radius: 2px;
 }
-.track-step { flex: 0 0 80px; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 1; }
-.track-icon { width: 42px; height: 42px; border: 2px solid var(--border); background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.track-icon svg { stroke: var(--border); fill: none; }
-.track-step.done .track-icon { border-color: var(--step-done-bg); background: var(--step-done-bg); }
+
+/* Linha de progresso animada (azul) — preenchida pelo JS via width */
+.track-progress-line {
+  position: absolute;
+  top: 21px;
+  left: 44px;
+  height: 3px;
+  background: var(--step-done-bg);
+  z-index: 1;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estado inicial de cada step antes da animação */
+.track-step {
+  flex: 0 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+  /* Começa invisível — JS adiciona .track-visible para animar entrada */
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+.track-step.track-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.track-icon {
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--border);
+  background: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Escala no pop-in */
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.track-icon svg { stroke: var(--border); fill: none; transition: stroke 0.3s ease; }
+
+/* Pop-in ao tornar-se done */
+.track-step.done .track-icon {
+  border-color: var(--step-done-bg);
+  background: var(--step-done-bg);
+  transform: scale(1.12);
+  animation: icon-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 .track-step.done .track-icon svg { stroke: white; }
-.track-step.current .track-icon { border-color: var(--confirm); background: var(--confirm); }
+
+/* Pulsar no step atual */
+.track-step.current .track-icon {
+  border-color: var(--confirm);
+  background: var(--confirm);
+  animation: icon-pulse 1.8s ease-in-out infinite;
+}
 .track-step.current .track-icon svg { stroke: white; }
-.track-step span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-align: center; color: var(--mid); line-height: 1.3; max-width: 74px; }
-.track-step.done span { color: var(--dark); }
-.track-step.current span { color: var(--dark); font-weight: 800; }
+
+@keyframes icon-pop {
+  0%   { transform: scale(0.7); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1.08); }
+}
+
+@keyframes icon-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26, 111, 196, 0.45); }
+  50%       { box-shadow: 0 0 0 8px rgba(26, 111, 196, 0); }
+}
+
+/* Labels */
+.track-step span {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--mid);
+  line-height: 1.3;
+  max-width: 74px;
+  transition: color 0.25s ease, font-weight 0.25s ease;
+}
+.track-step.done span    { color: var(--dark); }
+.track-step.current span { color: var(--confirm); font-weight: 800; }
 
 .status-details { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
 .detail-col h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; border-bottom: 2px solid var(--border); padding-bottom: 5px; }

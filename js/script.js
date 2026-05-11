@@ -383,6 +383,69 @@ function consultarDenuncia() {
 
   document.getElementById('status-section').style.display = 'block';
   document.getElementById('status-section').scrollIntoView({ behavior: 'smooth' });
+
+  // Dispara a animação sequencial do dashboard após a seção aparecer
+  setTimeout(animarDashboard, 300);
+}
+
+/* -------------------------------------------------------
+   Animação sequencial do Progress Track
+   Cada etapa aparece com fade+slide, depois o ícone faz
+   pop-in e a linha de progresso avança até a etapa atual.
+   ------------------------------------------------------- */
+function animarDashboard() {
+  // Configuração do estado atual da denúncia (etapas 1-5, sendo 4 = "Investigação")
+  const etapaAtual = 4; // 1=Registrada 2=Em Análise 3=Encaminhada 4=Investigação 5=Concluída
+  const totalEtapas = 5;
+
+  // Reset: remove classes de estado de todos os steps
+  for (let i = 1; i <= totalEtapas; i++) {
+    const el = document.getElementById('track-' + i);
+    if (!el) continue;
+    el.classList.remove('done', 'current', 'track-visible');
+  }
+  // Reset linha de progresso
+  const linha = document.getElementById('track-progress-line');
+  if (linha) linha.style.width = '0%';
+
+  // Animação step a step com delay escalonado
+  // Cada step aparece 180ms depois do anterior
+  for (let i = 1; i <= totalEtapas; i++) {
+    (function(idx) {
+      const delay = (idx - 1) * 220; // 220ms entre cada step
+
+      // 1. Fade-in + slide-up do step
+      setTimeout(() => {
+        const el = document.getElementById('track-' + idx);
+        if (!el) return;
+        el.classList.add('track-visible');
+      }, delay);
+
+      // 2. Após aparecer, aplica a classe de estado (done/current/pending)
+      setTimeout(() => {
+        const el = document.getElementById('track-' + idx);
+        if (!el) return;
+
+        if (idx < etapaAtual) {
+          el.classList.add('done');
+        } else if (idx === etapaAtual) {
+          el.classList.add('current');
+        }
+        // idx > etapaAtual: fica sem classe (estado neutro/futuro)
+
+        // 3. Avança a linha de progresso junto com o último step "done"
+        if (idx <= etapaAtual && linha) {
+          // Calcula a largura como % do espaço entre os steps
+          // A linha vai de icon 1 até icon etapaAtual
+          const segmentos = totalEtapas - 1; // 4 segmentos entre 5 steps
+          const pct = idx < etapaAtual
+            ? ((idx - 1) / segmentos) * 100
+            : ((etapaAtual - 1.5) / segmentos) * 100; // para no meio do step atual
+          linha.style.width = pct + '%';
+        }
+      }, delay + 120); // 120ms depois do fade-in — o pop do ícone acontece depois que apareceu
+    })(i);
+  }
 }
 
 function mostrarErroGeral(msg) {
@@ -751,3 +814,176 @@ document.addEventListener('DOMContentLoaded', function() {
   const btns = [document.getElementById('btn-dark-mode'), document.getElementById('btn-dark-mode-mobile')];
   btns.forEach(btn => { if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); });
 });
+
+/* =============================================================
+   HEURÍSTICAS DE NIELSEN + LIMIAR DE DOHERTY + LEI DE FITTS
+   Implementação prática em JavaScript
+   ============================================================= */
+
+/* --- NIELSEN H1: Visibilidade do Status + DOHERTY: resposta < 400ms ---
+   Atualiza a barra de progresso do stepper conforme avança as etapas */
+function atualizarProgressoStepper(step) {
+  // Progresso visual: etapa 1 = 25%, 2 = 50%, 3 = 75%, 4 = 100%
+  const pct = (step / 4) * 100;
+  document.documentElement.style.setProperty('--stepper-progress', pct + '%');
+}
+
+/* Intercepta goToStep para atualizar progresso */
+const _origGoToStepHeuristica = window.goToStep;
+window.goToStep = function(n) {
+  _origGoToStepHeuristica && _origGoToStepHeuristica(n);
+  atualizarProgressoStepper(n);
+};
+
+/* --- DOHERTY: Loading state no botão "Próxima Etapa" / "Enviar" ---
+   Feedback visual imediato ao clicar — elimina a percepção de lag */
+const _origNextStep = window.nextStep;
+window.nextStep = function() {
+  const btn = document.getElementById('btn-next');
+  if (!btn) { _origNextStep && _origNextStep(); return; }
+
+  // Adiciona shimmer imediatamente (< 16ms)
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  // Simula o custo de processamento (validação + navegação)
+  setTimeout(() => {
+    _origNextStep && _origNextStep();
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }, 200); // 200ms — dentro do limiar de Doherty (< 400ms)
+};
+
+/* --- NIELSEN H5: Prevenção de Erros + H9: Diagnóstico ---
+   Validação inline em tempo real com debounce de 400ms (limiar de Doherty)
+   O usuário recebe feedback antes de tentar avançar a etapa */
+
+let _debounceTimers = {};
+
+function validarCampoInline(fieldId, errId, validFn) {
+  clearTimeout(_debounceTimers[fieldId]);
+  // DOHERTY: aguarda 400ms de inatividade antes de validar
+  _debounceTimers[fieldId] = setTimeout(() => {
+    const field = document.getElementById(fieldId);
+    const err   = document.getElementById(errId);
+    if (!field || !err) return;
+
+    const result = validFn(field.value);
+    if (result.valid) {
+      field.classList.remove('error');
+      field.classList.add('valid');
+      err.textContent = '';
+    } else {
+      field.classList.remove('valid');
+      // Só mostra erro inline se o campo já foi tocado (evita ansiedade prematura)
+      if (field.dataset.touched === 'true') {
+        field.classList.add('error');
+        err.textContent = result.msg;
+      }
+    }
+  }, 400);
+}
+
+// Marca campo como "tocado" ao sair (blur) — NIELSEN H5
+function marcarTocado(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (field) field.dataset.touched = 'true';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Progresso inicial
+  atualizarProgressoStepper(1);
+
+  // Bairro — validação inline
+  const bairro = document.getElementById('f-bairro');
+  if (bairro) {
+    bairro.addEventListener('blur',  () => marcarTocado('f-bairro'));
+    bairro.addEventListener('input', () => validarCampoInline('f-bairro', 'err-bairro', v => ({
+      valid: v.trim().length >= 2,
+      msg: v.trim().length === 0 ? 'Informe o bairro.' : 'Bairro muito curto.'
+    })));
+  }
+
+  // Logradouro — validação inline
+  const logradouro = document.getElementById('f-logradouro');
+  if (logradouro) {
+    logradouro.addEventListener('blur',  () => marcarTocado('f-logradouro'));
+    logradouro.addEventListener('input', () => validarCampoInline('f-logradouro', 'err-logradouro', v => ({
+      valid: v.trim().length >= 3,
+      msg: v.trim().length === 0 ? 'Informe o logradouro.' : 'Logradouro muito curto.'
+    })));
+  }
+
+  // Estado — validação inline ao change
+  const estado = document.getElementById('f-estado');
+  if (estado) {
+    estado.addEventListener('change', () => {
+      estado.dataset.touched = 'true';
+      validarCampoInline('f-estado', 'err-estado', v => ({
+        valid: v !== '',
+        msg: 'Selecione o estado.'
+      }));
+    });
+  }
+
+  // Cidade — validação inline ao change
+  const cidade = document.getElementById('f-cidade');
+  if (cidade) {
+    cidade.addEventListener('change', () => {
+      cidade.dataset.touched = 'true';
+      validarCampoInline('f-cidade', 'err-cidade', v => ({
+        valid: v !== '',
+        msg: 'Selecione a cidade.'
+      }));
+    });
+  }
+
+  // Descrição — validação inline com contador (Etapa 2)
+  const descricao = document.getElementById('f-descricao');
+  if (descricao) {
+    descricao.addEventListener('blur',  () => marcarTocado('f-descricao'));
+    descricao.addEventListener('input', () => validarCampoInline('f-descricao', 'err-descricao', v => ({
+      valid: v.trim().length >= 30,
+      msg: v.trim().length === 0
+        ? 'Descreva o incidente.'
+        : `Ainda faltam ${30 - v.trim().length} caracteres.`
+    })));
+  }
+
+  // Senha — validação inline
+  const senha = document.getElementById('f-senha');
+  if (senha) {
+    senha.addEventListener('blur',  () => marcarTocado('f-senha'));
+    senha.addEventListener('input', () => validarCampoInline('f-senha', 'err-senha', v => ({
+      valid: v.length >= 6,
+      msg: `Senha precisa de ${6 - v.length} caractere(s) a mais.`
+    })));
+  }
+
+  // Confirmar senha — validação inline
+  const senhaConf = document.getElementById('f-senha-conf');
+  if (senhaConf) {
+    senhaConf.addEventListener('blur',  () => marcarTocado('f-senha-conf'));
+    senhaConf.addEventListener('input', () => {
+      const s = document.getElementById('f-senha');
+      validarCampoInline('f-senha-conf', 'err-senha-conf', v => ({
+        valid: v === (s ? s.value : ''),
+        msg: 'As senhas não conferem.'
+      }));
+    });
+  }
+
+  /* --- NIELSEN H3: Controle e Liberdade do Usuário ---
+     Alerta ao tentar sair acidentalmente do formulário com dados preenchidos */
+  window.addEventListener('beforeunload', function(e) {
+    const page = document.getElementById('page-denuncia');
+    if (!page || !page.classList.contains('active')) return;
+    const bairroVal = document.getElementById('f-bairro')?.value.trim();
+    const descVal   = document.getElementById('f-descricao')?.value.trim();
+    if (bairroVal || descVal) {
+      e.preventDefault();
+      e.returnValue = ''; // Mostra diálogo nativo do browser
+    }
+  });
+});
+

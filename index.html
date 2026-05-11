@@ -611,7 +611,7 @@
       <div class="form-row">
        <div class="form-group">
         <label>Estado <span class="req">*</span></label>
-        <select class="form-select" id="f-estado" aria-required="true" aria-describedby="err-estado" onchange="popularCidades(); setTimeout(mapToCidade, 100);">
+        <select class="form-select" id="f-estado" aria-required="true" aria-describedby="err-estado" onchange="popularCidades(); setTimeout(mapToEstado, 100);">
          <option value="">Selecione</option>
          <option value="SP">São Paulo</option>
          <option value="RJ">Rio de Janeiro</option>
@@ -953,27 +953,29 @@
      <h2>Status da Sua Denúncia</h2>
      <p class="protocol-info" id="status-protocol-info"></p>
      <p class="section-label" style="margin-bottom:14px">Dashboard de Acompanhamento</p>
-     <div class="progress-track">
-      <div class="track-step done">
+     <div class="progress-track" id="progress-track">
+      <div class="track-step" id="track-1">
        <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,7"/></svg></div>
        <span>Registrada</span>
       </div>
-      <div class="track-step done">
+      <div class="track-step" id="track-2">
        <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></div>
        <span>Em Análise</span>
       </div>
-      <div class="track-step done">
+      <div class="track-step" id="track-3">
        <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
        <span>Encaminhada</span>
       </div>
-      <div class="track-step current">
+      <div class="track-step" id="track-4">
        <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg></div>
        <span>Investigação</span>
       </div>
-      <div class="track-step">
+      <div class="track-step" id="track-5">
        <div class="track-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,7"/></svg></div>
        <span>Concluída</span>
       </div>
+      <!-- Linha de progresso animada -->
+      <div class="track-progress-line" id="track-progress-line"></div>
      </div>
      <div class="status-details">
       <div class="detail-col">
@@ -1226,6 +1228,7 @@
   var leafletMarker = null;
 
   var cidadeCoords = {
+    // São Paulo
     'São Paulo':              [-23.5505, -46.6333, 12],
     'Campinas':               [-22.9056, -47.0608, 12],
     'Santos':                 [-23.9608, -46.3336, 13],
@@ -1236,8 +1239,20 @@
     'Sorocaba':               [-23.5015, -47.4526, 12],
     'Mauá':                   [-23.6678, -46.4614, 13],
     'São José dos Campos':    [-23.1794, -45.8869, 12],
+    // Rio de Janeiro
     'Rio de Janeiro':         [-22.9068, -43.1729, 11],
+    'Niterói':                [-22.8832, -43.1036, 13],
+    'Duque de Caxias':        [-22.7856, -43.3117, 12],
+    'Nova Iguaçu':            [-22.7593, -43.4511, 12],
+    'Campos dos Goytacazes':  [-21.7545, -41.3244, 12],
+    'Petrópolis':             [-22.5049, -43.1817, 13],
+    // Minas Gerais
     'Belo Horizonte':         [-19.9167, -43.9345, 11],
+    'Uberlândia':             [-18.9113, -48.2622, 12],
+    'Contagem':               [-19.9317, -44.0536, 13],
+    'Juiz de Fora':           [-21.7642, -43.3503, 12],
+    'Betim':                  [-19.9678, -44.1983, 13],
+    'Montes Claros':          [-16.7287, -43.8618, 12],
   };
 
   function initLeafletMap() {
@@ -1289,6 +1304,24 @@
     var cidade = document.getElementById('f-cidade');
     if (!cidade || !cidade.value) return;
     var c = cidadeCoords[cidade.value];
+    if (c) {
+      leafletMap.flyTo([c[0], c[1]], c[2], { animate: true, duration: 1.2 });
+      if (leafletMarker) { leafletMap.removeLayer(leafletMarker); leafletMarker = null; }
+      document.getElementById('f-coordenadas').value = '';
+    }
+  }
+
+  var estadoCoords = {
+    'SP': [-22.9, -48.5, 7],
+    'RJ': [-22.3, -42.7, 8],
+    'MG': [-18.5, -44.5, 7],
+  };
+
+  function mapToEstado() {
+    if (!leafletMap) return;
+    var estado = document.getElementById('f-estado');
+    if (!estado || !estado.value) return;
+    var c = estadoCoords[estado.value];
     if (c) {
       leafletMap.flyTo([c[0], c[1]], c[2], { animate: true, duration: 1.2 });
       if (leafletMarker) { leafletMap.removeLayer(leafletMarker); leafletMarker = null; }
