@@ -13,6 +13,7 @@
   <title>WebDenúncia – Governo do Estado de São Paulo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="microinteracoes.css" />
   <link rel="stylesheet" href="ui-responsivo.css" />
@@ -594,10 +595,10 @@
 
   <main class="page" id="page-denuncia">
    <div class="stepper" role="tablist" aria-label="Etapas do formulário de denúncia">
-    <div class="step active" id="step-tab-1" role="tab" aria-selected="true" aria-controls="form-step-1"><div class="step-check">1</div>Local</div>
-    <div class="step" id="step-tab-2" role="tab" aria-selected="false" aria-controls="form-step-2"><div class="step-check">2</div>Descrição</div>
-    <div class="step" id="step-tab-3" role="tab" aria-selected="false" aria-controls="form-step-3"><div class="step-check">3</div>Arquivos</div>
-    <div class="step" id="step-tab-4" role="tab" aria-selected="false" aria-controls="form-step-4"><div class="step-check">4</div>Revisão</div>
+    <div class="step active" id="step-tab-1" role="tab" aria-selected="true" aria-controls="form-step-1" tabindex="0" onclick="stepTabClick(1)" onkeydown="stepTabKey(event,1)"><div class="step-check">1</div><span class="step-label">Local</span></div>
+    <div class="step" id="step-tab-2" role="tab" aria-selected="false" aria-controls="form-step-2" tabindex="0" onclick="stepTabClick(2)" onkeydown="stepTabKey(event,2)"><div class="step-check">2</div><span class="step-label">Descrição</span></div>
+    <div class="step" id="step-tab-3" role="tab" aria-selected="false" aria-controls="form-step-3" tabindex="0" onclick="stepTabClick(3)" onkeydown="stepTabKey(event,3)"><div class="step-check">3</div><span class="step-label">Arquivos</span></div>
+    <div class="step" id="step-tab-4" role="tab" aria-selected="false" aria-controls="form-step-4" tabindex="0" onclick="stepTabClick(4)" onkeydown="stepTabKey(event,4)"><div class="step-check">4</div><span class="step-label">Revisão</span></div>
    </div>
 
 
@@ -610,7 +611,7 @@
       <div class="form-row">
        <div class="form-group">
         <label>Estado <span class="req">*</span></label>
-        <select class="form-select" id="f-estado" aria-required="true" aria-describedby="err-estado" onchange="popularCidades()">
+        <select class="form-select" id="f-estado" aria-required="true" aria-describedby="err-estado" onchange="popularCidades(); setTimeout(mapToCidade, 100);">
          <option value="">Selecione</option>
          <option value="SP">São Paulo</option>
          <option value="RJ">Rio de Janeiro</option>
@@ -640,13 +641,17 @@
        <label>Complemento <span class="opt">(Opcional)</span></label>
        <input type="text" class="form-input" id="f-complemento" placeholder="Apto, bloco, referência..." />
       </div>
-      <div class="map-placeholder">
-       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-       <span>Mapa — integração com API disponível</span>
+      <div class="map-section">
+       <label class="map-label">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Localização no Mapa <span class="opt">(Opcional — clique para marcar)</span>
+       </label>
+       <div id="leaflet-map" style="width:100%;height:240px;border:2px solid var(--border);"></div>
+       <p class="field-hint" style="margin-top:6px;">Clique no mapa para marcar o local do incidente. Você também pode digitar as coordenadas abaixo.</p>
       </div>
       <div class="form-group">
        <label>Coordenadas Aproximadas <span class="opt">(Opcional)</span></label>
-       <input type="text" class="form-input" id="f-coordenadas" placeholder="-23.5505, -46.6333" inputmode="decimal" />
+       <input type="text" class="form-input" id="f-coordenadas" placeholder="-23.5505, -46.6333" inputmode="decimal" oninput="coordsToMap()" />
       </div>
      </div>
     </div>
@@ -1213,6 +1218,145 @@
      }
     };
    });
+  </script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  var leafletMap = null;
+  var leafletMarker = null;
+
+  var cidadeCoords = {
+    'São Paulo':              [-23.5505, -46.6333, 12],
+    'Campinas':               [-22.9056, -47.0608, 12],
+    'Santos':                 [-23.9608, -46.3336, 13],
+    'Guarulhos':              [-23.4538, -46.5333, 12],
+    'São Bernardo do Campo':  [-23.6939, -46.5650, 12],
+    'Ribeirão Preto':         [-21.1775, -47.8103, 12],
+    'Osasco':                 [-23.5329, -46.7919, 13],
+    'Sorocaba':               [-23.5015, -47.4526, 12],
+    'Mauá':                   [-23.6678, -46.4614, 13],
+    'São José dos Campos':    [-23.1794, -45.8869, 12],
+    'Rio de Janeiro':         [-22.9068, -43.1729, 11],
+    'Belo Horizonte':         [-19.9167, -43.9345, 11],
+  };
+
+  function initLeafletMap() {
+    if (leafletMap) return;
+    var lat = -23.5505, lng = -46.6333, zoom = 11;
+    var cidade = document.getElementById('f-cidade');
+    if (cidade && cidade.value && cidadeCoords[cidade.value]) {
+      var c = cidadeCoords[cidade.value];
+      lat = c[0]; lng = c[1]; zoom = c[2];
+    }
+    leafletMap = L.map('leaflet-map').setView([lat, lng], zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(leafletMap);
+
+    leafletMap.on('click', function(e) {
+      setMapMarker(e.latlng.lat, e.latlng.lng, false);
+      document.getElementById('f-coordenadas').value = e.latlng.lat.toFixed(6) + ', ' + e.latlng.lng.toFixed(6);
+    });
+    setTimeout(function(){ leafletMap.invalidateSize(); }, 200);
+  }
+
+  function setMapMarker(lat, lng, pan) {
+    if (leafletMarker) leafletMap.removeLayer(leafletMarker);
+    leafletMarker = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="width:22px;height:22px;background:#c0392b;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>',
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      })
+    }).addTo(leafletMap);
+    if (pan !== false) leafletMap.setView([lat, lng], Math.max(leafletMap.getZoom(), 14));
+  }
+
+  function coordsToMap() {
+    if (!leafletMap) return;
+    var val = document.getElementById('f-coordenadas').value;
+    var parts = val.split(',');
+    if (parts.length === 2) {
+      var la = parseFloat(parts[0].trim()), lo = parseFloat(parts[1].trim());
+      if (!isNaN(la) && !isNaN(lo)) setMapMarker(la, lo, true);
+    }
+  }
+
+  function mapToCidade() {
+    if (!leafletMap) return;
+    var cidade = document.getElementById('f-cidade');
+    if (!cidade || !cidade.value) return;
+    var c = cidadeCoords[cidade.value];
+    if (c) {
+      leafletMap.flyTo([c[0], c[1]], c[2], { animate: true, duration: 1.2 });
+      if (leafletMarker) { leafletMap.removeLayer(leafletMarker); leafletMarker = null; }
+      document.getElementById('f-coordenadas').value = '';
+    }
+  }
+
+  function stepTabClick(n) {
+    var tab = document.getElementById('step-tab-' + n);
+    if (!tab) return;
+    if (tab.classList.contains('done') || tab.classList.contains('active')) {
+      goToStep(n);
+    }
+  }
+
+  function stepTabKey(e, n) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      stepTabClick(n);
+      e.preventDefault();
+    } else if (e.key === 'ArrowRight') {
+      var next = document.getElementById('step-tab-' + (n + 1));
+      if (next) next.focus();
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft') {
+      var prev = document.getElementById('step-tab-' + (n - 1));
+      if (prev) prev.focus();
+      e.preventDefault();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var cidadeEl = document.getElementById('f-cidade');
+    if (cidadeEl) cidadeEl.addEventListener('change', mapToCidade);
+
+    var origOpenDenuncia = window.openDenuncia;
+    window.openDenuncia = function() {
+      origOpenDenuncia && origOpenDenuncia();
+      setTimeout(initLeafletMap, 350);
+    };
+
+    var origGoToStep = window.goToStep;
+    window.goToStep = function(n) {
+      origGoToStep && origGoToStep(n);
+      if (n === 1) setTimeout(function(){ if(leafletMap) leafletMap.invalidateSize(); }, 250);
+    };
+
+    var origNextStep = window.nextStep;
+    window.nextStep = function() {
+      var cur = window.currentStep || 1;
+      origNextStep && origNextStep();
+      var newStep = window.currentStep || 1;
+      if (newStep !== cur) updateStepperNav();
+    };
+
+    var origPrevStep = window.prevStep;
+    window.prevStep = function() {
+      origPrevStep && origPrevStep();
+      updateStepperNav();
+    };
+  });
+
+  function updateStepperNav() {
+    for (var i = 1; i <= 4; i++) {
+      var tab = document.getElementById('step-tab-' + i);
+      if (!tab) continue;
+      tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+    }
+  }
   </script>
  </body>
 </html>

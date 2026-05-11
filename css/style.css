@@ -65,8 +65,9 @@
 [data-theme="dark"] .btn-next:hover,
 [data-theme="dark"] .btn-primary:hover,
 [data-theme="dark"] .btn-proceed:hover { background: var(--confirm-hover); }
-[data-theme="dark"] .step.active { background: var(--step-active-bg); color: #ffffff; }
-[data-theme="dark"] .step.active .step-check { background: #ffffff; border-color: #ffffff; color: var(--step-active-bg); }
+[data-theme="dark"] .step.active { background: #3b82f6; color: #ffffff; }
+[data-theme="dark"] .step.done { background: #2d3748; color: var(--mid); }
+[data-theme="dark"] .step.active .step-check { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.7); color: #ffffff; }
 [data-theme="dark"] .track-step.done .track-icon { background: var(--step-done-bg); border-color: var(--step-done-bg); }
 [data-theme="dark"] .track-step.current .track-icon { background: var(--confirm); border-color: var(--confirm); }
 [data-theme="dark"] .track-step.current .track-icon svg { stroke: #ffffff; }
@@ -1039,10 +1040,17 @@ footer a:hover { color: var(--dark); }
   gap: 7px;
   white-space: nowrap;
   min-height: 48px;
+  cursor: default;
+  transition: background .18s, color .18s, border-color .18s;
+  user-select: none;
+  background: var(--white);
 }
+.step.done { cursor: pointer; }
+.step.done:hover { background: #555 !important; }
+.step.active { cursor: default; }
 .step:last-child { border-right: none; }
-.step.active { background: var(--dark); color: var(--white); }
-.step.done { color: var(--dark); }
+.step.active { background: var(--dark); color: var(--white); border-right-color: var(--dark); }
+.step.done { background: #444444; color: var(--white); }
 .step-check {
   width: 22px;
   height: 22px;
@@ -1054,8 +1062,8 @@ footer a:hover { color: var(--dark); }
   font-size: 0.7rem;
   flex-shrink: 0;
 }
-.step.done .step-check { background: var(--step-done-bg); border-color: var(--step-done-bg); color: #ffffff; }
-.step.active .step-check { background: var(--white); border-color: var(--white); color: var(--dark); }
+.step.done .step-check { background: transparent; border-color: rgba(255,255,255,0.7); color: #ffffff; }
+.step.active .step-check { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); color: #ffffff; }
 
 .step-form { display: none; flex: 1; }
 .step-form.active { display: flex; }
@@ -1391,3 +1399,17 @@ footer a:hover { color: var(--dark); }
   .form-input, .form-select, .form-textarea { border: 2px solid ButtonText; }
   .step.active { forced-color-adjust: none; }
 }
+
+.map-section { display: flex; flex-direction: column; gap: 6px; }
+.map-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#leaflet-map { border-radius: 0; z-index: 1; }
+.leaflet-container { font-family: 'Barlow', sans-serif; }
