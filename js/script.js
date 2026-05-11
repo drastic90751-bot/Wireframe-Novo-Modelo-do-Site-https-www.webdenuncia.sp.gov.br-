@@ -1,19 +1,9 @@
-// ============================================================
-// ESTADO DA SESSÃO
-// ============================================================
 let sessionData = {
   protocolo: null,
   senhaHash: null,
   formData: {}
 };
-
-// Banco de denúncias simuladas para acompanhamento
-// Ao enviar uma nova, é registrada aqui
 const denunciasDB = {};
-
-// ============================================================
-// NAVEGAÇÃO
-// ============================================================
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -48,10 +38,6 @@ function proceedToDenuncia() {
     window._categoriaPreSelecionada = null;
   }
 }
-
-// ============================================================
-// MODAIS
-// ============================================================
 function openModal(id) {
   document.getElementById(id).classList.add('active');
 }
@@ -59,21 +45,14 @@ function openModal(id) {
 function closeModal(id) {
   document.getElementById(id).classList.remove('active');
 }
-
-// Fechar modal clicando no overlay
 document.addEventListener('click', function(e) {
   if (e.target.classList.contains('modal-overlay')) {
     e.target.classList.remove('active');
   }
 });
-
-// ============================================================
-// FAQ ACCORDION
-// ============================================================
 function toggleFaq(el) {
   const answer = el.nextElementSibling;
   const isOpen = answer.classList.contains('open');
-  // Fechar todos
   document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
   document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
   if (!isOpen) {
@@ -81,10 +60,6 @@ function toggleFaq(el) {
     el.classList.add('open');
   }
 }
-
-// ============================================================
-// NOTÍCIAS
-// ============================================================
 const noticias = [
   {
     titulo: 'Alerta de Segurança — Região Central',
@@ -110,10 +85,6 @@ function abrirNoticia(idx) {
   document.getElementById('noticia-corpo').innerHTML = n.corpo;
   openModal('modal-noticia');
 }
-
-// ============================================================
-// STEPPER — FAZER DENÚNCIA
-// ============================================================
 let currentStep = 1;
 const totalSteps = 4;
 
@@ -139,8 +110,6 @@ function goToStep(n) {
   const at = document.getElementById('step-tab-' + n);
   if (af) af.classList.add('active');
   if (at) at.classList.add('active');
-
-  // Update check icons
   for (let i = 1; i <= totalSteps; i++) {
     const tab = document.getElementById('step-tab-' + i);
     const chk = tab ? tab.querySelector('.step-check') : null;
@@ -168,10 +137,6 @@ function nextStep() {
 function prevStep() {
   if (currentStep > 1) goToStep(currentStep - 1);
 }
-
-// ============================================================
-// VALIDAÇÃO POR ETAPA
-// ============================================================
 function clearErrors() {
   document.querySelectorAll('.field-error').forEach(e => e.textContent = '');
   document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(e => e.classList.remove('error'));
@@ -213,8 +178,6 @@ function validateStep(step) {
     }
   }
 
-  // Etapa 3 é opcional (arquivos), passa sem validar
-
   if (step === 4) {
     const revisao = document.getElementById('revisao-check').checked;
     const senha = document.getElementById('f-senha').value;
@@ -236,10 +199,6 @@ function validateStep(step) {
 
   return valid;
 }
-
-// ============================================================
-// SUMÁRIO ETAPA 4
-// ============================================================
 function populateSummary() {
   const cidade = document.getElementById('f-cidade');
   const cidadeText = cidade.options[cidade.selectedIndex] ? cidade.options[cidade.selectedIndex].text : '—';
@@ -261,10 +220,6 @@ function formatDate(dateStr) {
   const [y, m, d] = dateStr.split('-');
   return `${d}/${m}/${y}`;
 }
-
-// ============================================================
-// PROTOCOLO
-// ============================================================
 function gerarProtocolo() {
   const ano = new Date().getFullYear();
   const letras = randomLetras(3);
@@ -291,10 +246,6 @@ function copiarProtocolo() {
   const orig = btn ? btn.textContent : '';
   if (btn) { btn.textContent = 'Copiado!'; setTimeout(() => btn.textContent = orig, 1500); }
 }
-
-// ============================================================
-// SENHA — FORÇA E TOGGLE
-// ============================================================
 function checkSenha() {
   const val = document.getElementById('f-senha').value;
   const strengthWrap = document.getElementById('senha-strength');
@@ -334,28 +285,18 @@ function toggleSenhaAcomp() {
   const inp = document.getElementById('acomp-senha');
   if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
 }
-
-// ============================================================
-// ANONIMATO — TOGGLE CONTATO
-// ============================================================
 function toggleContato() {
   const radios = document.querySelectorAll('input[name="anonimato"]');
   let val = 'total';
   radios.forEach(r => { if (r.checked) val = r.value; });
   document.getElementById('contato-fields').style.display = val === 'contato' ? 'block' : 'none';
 }
-
-// ============================================================
-// ENVIAR DENÚNCIA
-// ============================================================
 function enviarDenuncia() {
   if (!validateStep(4)) return;
 
   const proto = sessionData.protocolo;
   const senha = document.getElementById('f-senha').value;
   const senhaHash = simpleHash(senha);
-
-  // Salvar no DB simulado
   const cidade = document.getElementById('f-cidade');
   const cidadeText = cidade.options[cidade.selectedIndex] ? cidade.options[cidade.selectedIndex].text : '';
   const bairro = document.getElementById('f-bairro').value.trim();
@@ -374,8 +315,6 @@ function enviarDenuncia() {
   };
 
   sessionData.senhaHash = senhaHash;
-
-  // Mostrar modal sucesso
   document.getElementById('sucesso-protocolo-num').textContent = proto;
   openModal('modal-sucesso');
 }
@@ -399,10 +338,6 @@ function resetForm() {
   sessionData.protocolo = null;
   sessionData.senhaHash = null;
 }
-
-// ============================================================
-// ACOMPANHAR — CONSULTA
-// ============================================================
 function consultarDenuncia() {
   const proto = document.getElementById('acomp-protocolo').value.trim().toUpperCase();
   const senha = document.getElementById('acomp-senha').value;
@@ -423,8 +358,6 @@ function consultarDenuncia() {
     valid = false;
   }
   if (!valid) return;
-
-  // Verificar no DB
   const denuncia = denunciasDB[proto];
   if (!denuncia) {
     mostrarErroGeral('Protocolo não encontrado. Verifique o número e tente novamente.');
@@ -435,8 +368,6 @@ function consultarDenuncia() {
     document.getElementById('acomp-senha').classList.add('error');
     return;
   }
-
-  // Sucesso — mostrar status
   document.getElementById('acomp-protocolo').classList.remove('error');
   document.getElementById('acomp-senha').classList.remove('error');
 
@@ -486,10 +417,6 @@ function enviarComplemento() {
   ok.style.display = 'block';
   setTimeout(() => { ok.style.display = 'none'; }, 3000);
 }
-
-// ============================================================
-// CONSULTAR DA SIDEBAR (Homepage)
-// ============================================================
 function consultarSidebar() {
   const proto = document.getElementById('sidebar-protocolo').value.trim();
   const senha = document.getElementById('sidebar-senha').value;
@@ -501,17 +428,11 @@ function consultarSidebar() {
     err.style.display = 'block';
     return;
   }
-
-  // Preencher campos da página de acompanhamento e navegar
   showPage('acompanhar');
   document.getElementById('acomp-protocolo').value = proto;
   document.getElementById('acomp-senha').value = senha;
   setTimeout(() => consultarDenuncia(), 100);
 }
-
-// ============================================================
-// CIDADES (Etapa 1)
-// ============================================================
 const cidadesPorEstado = {
   SP: ['São Paulo', 'Campinas', 'Santos', 'Guarulhos', 'São Bernardo do Campo', 'Ribeirão Preto', 'Osasco', 'Sorocaba', 'Mauá', 'São José dos Campos'],
   RJ: ['Rio de Janeiro', 'Niterói', 'Duque de Caxias', 'Nova Iguaçu', 'Campos dos Goytacazes', 'Petrópolis'],
@@ -531,10 +452,6 @@ function popularCidades() {
     });
   }
 }
-
-// ============================================================
-// ARQUIVOS (Etapa 3)
-// ============================================================
 let filesUploaded = [];
 
 function handleFiles(event) {
@@ -546,7 +463,6 @@ function addFiles(newFiles) {
   if (available <= 0) { alert('Limite de 10 arquivos atingido.'); return; }
   const toAdd = newFiles.slice(0, available);
   if (newFiles.length > available) alert(`Apenas ${available} arquivo(s) adicionado(s). Limite de 10 arquivos.`);
-  // Validar tamanho (100MB)
   toAdd.forEach(f => {
     if (f.size > 100 * 1024 * 1024) {
       alert(`"${f.name}" excede 100MB e não foi adicionado.`);
@@ -587,8 +503,6 @@ function formatSize(bytes) {
   if (bytes >= 1024) return (bytes / 1024).toFixed(0) + 'KB';
   return bytes + 'B';
 }
-
-// Drag and drop
 function dragOver(event) {
   event.preventDefault();
   document.getElementById('upload-area').classList.add('drag-over');
@@ -607,10 +521,6 @@ function handleFilesAcomp(event) {
   const div = document.getElementById('acomp-file-list');
   div.innerHTML = files.map(f => `<div style="padding:4px 0; border-bottom:1px solid var(--border)">${f.name} — ${formatSize(f.size)}</div>`).join('');
 }
-
-// ============================================================
-// CHAR COUNT
-// ============================================================
 function updateCharCount() {
   const ta = document.getElementById('f-descricao');
   const counter = document.getElementById('char-count');
@@ -619,10 +529,6 @@ function updateCharCount() {
   counter.textContent = 'Caracteres restantes: ' + rem;
   counter.classList.toggle('warn', rem < 200);
 }
-
-// ============================================================
-// PESSOAS ENVOLVIDAS
-// ============================================================
 function adicionarPessoa() {
   const container = document.getElementById('pessoas-container');
   if (!container) return;
@@ -643,10 +549,6 @@ function adicionarPessoa() {
   `;
   container.appendChild(row);
 }
-
-// ============================================================
-// HASH SIMPLES (para simulação de senha)
-// ============================================================
 function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -656,10 +558,6 @@ function simpleHash(str) {
   }
   return hash.toString(36);
 }
-
-// ============================================================
-// DARK MODE
-// ============================================================
 function toggleDarkMode() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const newTheme = isDark ? 'light' : 'dark';
@@ -682,10 +580,6 @@ function updateDarkModeBtn(theme) {
     if (label) label.textContent = 'Escuro';
   }
 }
-
-// ============================================================
-// TUTORIAL
-// ============================================================
 function closeTutorial() {
   closeModal('modal-tutorial');
 }
@@ -703,35 +597,20 @@ function salvarPreferenciaTutorial() {
     localStorage.removeItem('wdTutorialSeen');
   }
 }
-
-// ============================================================
-// INIT
-// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Restaurar tema salvo
   const savedTheme = localStorage.getItem('wdTheme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateDarkModeBtn(savedTheme);
-
-  // Mostrar tutorial se não foi visto
   const tutorialSeen = localStorage.getItem('wdTutorialSeen');
   if (!tutorialSeen) {
     setTimeout(() => openModal('modal-tutorial'), 400);
   }
-
-  // Definir data máxima como hoje
   const today = new Date().toISOString().split('T')[0];
   const dateField = document.getElementById('f-data');
   if (dateField) dateField.max = today;
 
   goToStep(1);
 });
-
-// ============================================================
-// WCAG: MELHORIAS DE ACESSIBILIDADE
-// ============================================================
-
-// Função para anunciar mensagens via live region
 function announce(msg, type = 'polite') {
   const el = document.getElementById(type === 'alert' ? 'live-alert' : 'live-announcer');
   if (el) {
@@ -739,19 +618,14 @@ function announce(msg, type = 'polite') {
     requestAnimationFrame(() => { el.textContent = msg; });
   }
 }
-
-// Gerenciar foco em modais (WCAG 2.1 - Focus Management)
 function openModal(id) {
   const modal = document.getElementById(id);
   modal.classList.add('active');
-  // Mover foco para primeiro elemento focável do modal
   setTimeout(() => {
     const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     if (focusable.length) focusable[0].focus();
   }, 50);
-  // Bloquear scroll do body
   document.body.style.overflow = 'hidden';
-  // Guardar elemento que abriu o modal
   modal._opener = document.activeElement;
 }
 
@@ -759,14 +633,11 @@ function closeModal(id) {
   const modal = document.getElementById(id);
   modal.classList.remove('active');
   document.body.style.overflow = '';
-  // Devolver foco para quem abriu o modal
   if (modal._opener) {
     modal._opener.focus();
     modal._opener = null;
   }
 }
-
-// Trap de foco dentro dos modais (WCAG 2.1.2)
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     const activeModal = document.querySelector('.modal-overlay.active');
@@ -792,27 +663,21 @@ document.addEventListener('keydown', function(e) {
     if (document.activeElement === last) { first.focus(); e.preventDefault(); }
   }
 });
-
-// Atualizar aria-expanded do hamburger
 const origToggleMobileMenu = window.toggleMobileMenu;
 window.toggleMobileMenu = function() {
   const btn = document.getElementById('hamburger-btn');
   const menu = document.getElementById('mobile-menu');
   const isOpen = menu.classList.contains('open');
-  // chamar original
   if (typeof origToggleMobileMenu === 'function') origToggleMobileMenu();
   else {
     const newOpen = !isOpen;
     menu.classList.toggle('open', newOpen);
     btn.classList.toggle('open', newOpen);
   }
-  // atualizar aria
   const opened = menu.classList.contains('open');
   if (btn) btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   announce(opened ? 'Menu aberto' : 'Menu fechado');
 };
-
-// Atualizar aria-pressed do dark mode
 const origToggleDarkMode2 = window.toggleDarkMode;
 window.toggleDarkMode = function() {
   if (typeof origToggleDarkMode2 === 'function') origToggleDarkMode2();
@@ -821,69 +686,51 @@ window.toggleDarkMode = function() {
   btns.forEach(btn => { if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); });
   announce(isDark ? 'Modo escuro ativado' : 'Modo claro ativado');
 };
-
-// Anunciar mudança de etapa no formulário
 const origGoToStep = window.goToStep;
 window.goToStep = function(n) {
   if (typeof origGoToStep === 'function') origGoToStep(n);
   const stepNames = ['', 'Local do Incidente', 'Descrição do Incidente', 'Arquivos e Evidências', 'Revisão e Envio'];
   announce(`Etapa ${n} de 4: ${stepNames[n]}`);
-  // Atualizar aria-selected nas tabs
   for (let i = 1; i <= 4; i++) {
     const tab = document.getElementById('step-tab-' + i);
     if (tab) tab.setAttribute('aria-selected', i === n ? 'true' : 'false');
   }
-  // Mover foco para o topo do step ativo
   const activeForm = document.getElementById('form-step-' + n);
   if (activeForm) {
     const heading = activeForm.querySelector('h2');
     if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus(); }
   }
 };
-
-// Anunciar erros de validação
 const origSetError = window.setError;
 window.setError = function(fieldId, errId, msg) {
   if (typeof origSetError === 'function') origSetError(fieldId, errId, msg);
-  // Anunciar erro para leitores de tela
   if (msg) announce(msg, 'alert');
 };
-
-// Atualizar aria-invalid em campos com erro
 const origValidateStep = window.validateStep;
 window.validateStep = function(step) {
-  // Limpar aria-invalid
   document.querySelectorAll('[aria-invalid="true"]').forEach(el => el.removeAttribute('aria-invalid'));
   const result = origValidateStep ? origValidateStep(step) : true;
-  // Marcar campos inválidos
   document.querySelectorAll('.form-input.error, .form-select.error, .form-textarea.error').forEach(el => {
     el.setAttribute('aria-invalid', 'true');
   });
   if (!result) {
-    // Anunciar quantidade de erros
     const erros = document.querySelectorAll('.field-error:not(:empty)').length;
     announce(`${erros} erro${erros > 1 ? 's' : ''} encontrado${erros > 1 ? 's' : ''}. Verifique os campos marcados.`, 'alert');
   }
   return result;
 };
-
-// Anunciar upload de arquivos
 const origHandleFiles = window.handleFiles;
 window.handleFiles = function(event) {
   if (typeof origHandleFiles === 'function') origHandleFiles(event);
   const count = event.target.files.length;
   announce(`${count} arquivo${count > 1 ? 's' : ''} selecionado${count > 1 ? 's' : ''}.`);
 };
-
-// Anunciar envio de complemento
 const origEnviarComplemento = window.enviarComplemento;
 window.enviarComplemento = function() {
   if (typeof origEnviarComplemento === 'function') origEnviarComplemento();
   const ok = document.getElementById('complemento-ok');
   if (ok && ok.textContent) announce(ok.textContent);
 };
-
-// Melhorar FAQ: toggle aria-expanded e aria-hidden
 const origToggleFaq = window.toggleFaq;
 window.toggleFaq = function(el) {
   if (typeof origToggleFaq === 'function') origToggleFaq(el);
@@ -892,18 +739,13 @@ window.toggleFaq = function(el) {
   el.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   if (answer) answer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
 };
-
-// Inicializar atributos acessíveis após DOM pronto
 document.addEventListener('DOMContentLoaded', function() {
-  // Garantir que todos os elementos .faq-q sejam buttons
   document.querySelectorAll('.faq-q').forEach(q => {
     if (q.tagName !== 'BUTTON') return;
     q.setAttribute('aria-expanded', 'false');
     const answer = q.nextElementSibling;
     if (answer) answer.setAttribute('aria-hidden', 'true');
   });
-
-  // Garantir que dark mode btn tenha aria-pressed correto na carga
   const savedTheme = localStorage.getItem('wdTheme') || 'light';
   const isDark = savedTheme === 'dark';
   const btns = [document.getElementById('btn-dark-mode'), document.getElementById('btn-dark-mode-mobile')];

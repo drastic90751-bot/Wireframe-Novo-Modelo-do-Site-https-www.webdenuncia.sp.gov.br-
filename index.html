@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="ui-responsivo.css" />
   <script src="js/script.js"></script>
   <style>
-   /* Banner offline */
+
    #offline-banner {
     display: none;
     position: fixed;
@@ -33,7 +33,7 @@
     letter-spacing: 0.03em;
    }
    #offline-banner.show { display: block; }
-   /* Banner instalação PWA */
+
    #install-banner {
     display: none;
     position: fixed;
@@ -67,34 +67,33 @@
   </style>
  </head>
  <body>
-  <!-- WCAG 2.4.1: Skip to main content -->
+
   <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
-  <!-- WCAG: Live region for announcements -->
+
   <div id="live-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
   <div id="live-alert" role="alert" aria-atomic="true" class="sr-only"></div>
-  <!-- BANNER OFFLINE -->
+
   <div id="offline-banner" role="alert" aria-live="assertive">
    Você está offline — os dados serão salvos e sincronizados quando a conexão for restaurada.
   </div>
 
-  <!-- BANNER INSTALAÇÃO PWA -->
+
   <div id="install-banner" role="complementary" aria-label="Instalar aplicativo">
    <p> <strong>Instale o WebDenúncia</strong> para usar mesmo sem internet.</p>
    <button class="btn-install" id="btn-install-pwa">Instalar</button>
    <button class="btn-dismiss" id="btn-dismiss-install" aria-label="Fechar">&#10005;</button>
   </div>
 
-  <!-- NAV -->
+
   <nav role="banner" aria-label="Navegação principal">
    <a class="nav-logo" href="#" onclick="showPage('inicio'); closeMobileMenu(); return false;">
-    <svg viewBox="0 0 28 32" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M14 1L2 6v10c0 7.5 5 13.5 12 15 7-1.5 12-7.5 12-15V6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <text x="14" y="22" text-anchor="middle" font-family="'Barlow Condensed', sans-serif" font-weight="800" font-size="12" fill="currentColor" letter-spacing="-0.5">SP</text>
+    <svg viewBox="0 0 48 32" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <text x="24" y="26" text-anchor="middle" font-family="'Barlow Condensed', Impact, sans-serif" font-weight="900" font-size="28" fill="currentColor" letter-spacing="-1">SP</text>
     </svg>
     <span>WEB<b>DENÚNCIA</b></span>
    </a>
 
-   <!-- Desktop nav links -->
+
    <div class="nav-links">
     <a href="#" id="nav-inicio" class="active" onclick="showPage('inicio'); return false;">Início</a>
     <a href="#" id="nav-denuncia" onclick="openDenuncia(); return false;">Fazer Denúncia</a>
@@ -106,7 +105,7 @@
     </button>
    </div>
 
-   <!-- Mobile: dark mode + hamburger -->
+
    <button class="btn-dark-mode btn-dark-mode-mobile-only" id="btn-dark-mode-mobile" onclick="toggleDarkMode()" title="Alternar modo escuro" style="display:none" aria-pressed="false" aria-label="Alternar modo escuro">
     <svg id="icon-sun-m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
     <svg id="icon-moon-m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -118,14 +117,14 @@
    </button>
   </nav>
 
-  <!-- Mobile dropdown menu -->
+
   <nav class="mobile-menu-panel" id="mobile-menu" aria-label="Menu mobile">
    <a href="#" id="mob-nav-inicio" class="active" onclick="showPage('inicio'); closeMobileMenu(); return false;">Início</a>
    <a href="#" id="mob-nav-denuncia" onclick="openDenuncia(); closeMobileMenu(); return false;">Fazer Denúncia</a>
    <a href="#" id="mob-nav-acompanhar" onclick="showPage('acompanhar'); closeMobileMenu(); return false;">Acompanhar</a>
   </nav>
 
-  <!-- MODAL: TUTORIAL -->
+
   <div class="modal-overlay" id="modal-tutorial" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
    <div class="modal-box" id="modal-tutorial-box">
     <div class="modal-header">
@@ -181,7 +180,7 @@
    </div>
   </div>
 
-  <!-- MODAL: AVISO EMERGÊNCIA -->
+
   <div class="modal-overlay" id="modal-aviso" role="alertdialog" aria-modal="true" aria-labelledby="aviso-title">
    <div class="modal-box">
     <h2 id="aviso-title">Aviso Importante Antes de Continuar</h2>
@@ -223,7 +222,7 @@
    </div>
   </div>
 
-  <!-- MODAL: SOBRE O SERVIÇO -->
+
   <div class="modal-overlay" id="modal-sobre" role="dialog" aria-modal="true" aria-labelledby="sobre-title">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -262,7 +261,7 @@
    </div>
   </div>
 
-  <!-- MODAL: FAQ -->
+
   <div class="modal-overlay" id="modal-faq" role="dialog" aria-modal="true" aria-labelledby="faq-title">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -305,7 +304,7 @@
    </div>
   </div>
 
-  <!-- MODAL: SEGURANÇA E PRIVACIDADE -->
+
   <div class="modal-overlay" id="modal-seguranca" role="dialog" aria-modal="true" aria-labelledby="seguranca-title">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -333,7 +332,7 @@
    </div>
   </div>
 
-  <!-- MODAL: TERMOS DE USO -->
+
   <div class="modal-overlay" id="modal-termos" role="dialog" aria-modal="true" aria-labelledby="termos-title">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -358,7 +357,7 @@
    </div>
   </div>
 
-  <!-- MODAL: LINKS ÚTEIS -->
+
   <div class="modal-overlay" id="modal-links" role="dialog" aria-modal="true" aria-labelledby="links-title">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -409,7 +408,7 @@
    </div>
   </div>
 
-  <!-- MODAL: NOTÍCIA -->
+
   <div class="modal-overlay" id="modal-noticia" role="dialog" aria-modal="true" aria-labelledby="noticia-titulo">
    <div class="modal-box modal-lg">
     <div class="modal-header">
@@ -423,7 +422,7 @@
    </div>
   </div>
 
-  <!-- MODAL: SUCESSO -->
+
   <div class="modal-overlay" id="modal-sucesso" role="dialog" aria-modal="true" aria-labelledby="sucesso-title">
    <div class="modal-box modal-lg">
     <div class="modal-header" style="justify-content:center;border-bottom:2px solid var(--border)">
@@ -469,9 +468,9 @@
    </div>
   </div>
 
-  <!-- ========== PAGE: INÍCIO ========== -->
+
   <main class="page active" id="page-inicio" role="main" tabindex="-1">
-   <!-- Emergency banner -->
+
    <div id="main-content" class="emergency-banner">
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="white" stroke="none"/></svg>
     Crime em andamento? Ligue <strong>&nbsp;190&nbsp;</strong> (Polícia Militar)
@@ -500,7 +499,7 @@
      <div class="category-grid">
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Tráfico')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Tráfico');event.preventDefault();}" aria-label="Fazer denúncia de Tráfico de Drogas">
        <svg viewBox="0 0 32 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Cápsula: metade esquerda preenchida (vermelha via CSS var), metade direita vazia -->
+
         <rect x="1" y="1" width="30" height="14" rx="7"/>
         <line x1="16" y1="1" x2="16" y2="15" stroke-width="1.8"/>
         <rect x="1" y="1" width="15" height="14" rx="7" fill="currentColor" opacity="0.18"/>
@@ -509,31 +508,14 @@
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Violência')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Violência');event.preventDefault();}" aria-label="Fazer denúncia de Violência Doméstica">
        <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Telhado triangular -->
-        <polyline points="2,13 14,2 26,13"/>
-        <!-- Corpo da casa (2 andares) -->
-        <rect x="4" y="13" width="20" height="13"/>
-        <!-- Piso do 2º andar -->
-        <line x1="4" y1="20" x2="24" y2="20"/>
-        <!-- Janela 2º andar esquerda -->
-        <rect x="7" y="15" width="4" height="4"/>
-        <!-- Janela 2º andar direita -->
-        <rect x="17" y="15" width="4" height="4"/>
-        <!-- Porta térreo -->
-        <rect x="11" y="22" width="6" height="4"/>
+        <polyline points="1,13 14,2 27,13"/>
+        <path d="M4,13 L4,26 L11,26 L11,19 L17,19 L17,26 L24,26 L24,13"/>
        </svg>
        <span>Violência Doméstica</span>
       </div>
       <div class="category-card" role="button" tabindex="0" onclick="openDenunciaCategoria('Crimes Ambientais')" onkeydown="if(event.key==='Enter'||event.key===' '){openDenunciaCategoria('Crimes Ambientais');event.preventDefault();}" aria-label="Fazer denúncia de Crimes Ambientais">
-       <svg viewBox="0 0 28 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Copa principal (círculo grande) -->
-        <circle cx="14" cy="11" r="9"/>
-        <!-- Ramos internos sugeridos -->
-        <path d="M14 11c-3-3-5-7-4-10M14 11c3-3 5-7 4-10" stroke-width="1.2" opacity="0.5"/>
-        <!-- Tronco -->
-        <line x1="14" y1="20" x2="14" y2="28"/>
-        <!-- Base do tronco -->
-        <line x1="9" y1="28" x2="19" y2="28"/>
+       <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9,24 C9,24 9,14 4,10 C4,10 10,8 12,14 C12,14 12,6 8,3 C8,3 16,4 15,14 C15,14 17,8 22,8 C22,8 20,15 15,16 C15,16 15,20 14,24"/>
        </svg>
        <span>Crimes Ambientais</span>
       </div>
@@ -609,7 +591,7 @@
    </footer>
   </main>
 
-  <!-- ========== PAGE: FAZER DENÚNCIA ========== -->
+
   <main class="page" id="page-denuncia">
    <div class="stepper" role="tablist" aria-label="Etapas do formulário de denúncia">
     <div class="step active" id="step-tab-1" role="tab" aria-selected="true" aria-controls="form-step-1"><div class="step-check">1</div>Local</div>
@@ -618,7 +600,7 @@
     <div class="step" id="step-tab-4" role="tab" aria-selected="false" aria-controls="form-step-4"><div class="step-check">4</div>Revisão</div>
    </div>
 
-   <!-- ETAPA 1 -->
+
    <div class="step-form active" id="form-step-1">
     <div class="step-label-side">Página Única — Evite Múltiplas Abas</div>
     <div class="denuncia-body">
@@ -670,7 +652,7 @@
     </div>
    </div>
 
-   <!-- ETAPA 2 -->
+
    <div class="step-form" id="form-step-2">
     <div class="step-label-side">Página Única — Evite Múltiplas Abas — Etapa 2</div>
     <div class="denuncia-body">
@@ -728,7 +710,7 @@
     </div>
    </div>
 
-   <!-- ETAPA 3 -->
+
    <div class="step-form" id="form-step-3">
     <div class="step-label-side">Página Única — Evite Múltiplas Abas — Etapa 3</div>
     <div class="denuncia-body">
@@ -774,7 +756,7 @@
     </div>
    </div>
 
-   <!-- ETAPA 4 -->
+
    <div class="step-form" id="form-step-4">
     <div class="step-label-side">Página Única — Evite Múltiplas Abas — Etapa 4</div>
     <div class="denuncia-body">
@@ -914,7 +896,7 @@
    </footer>
   </main>
 
-  <!-- ========== PAGE: ACOMPANHAR ========== -->
+
   <main class="page" id="page-acompanhar">
    <div class="acompanhar-wrapper">
     <div class="consulta-card">
@@ -1063,7 +1045,6 @@
   </main>
 
   <script>
-   // Mobile menu toggle
    function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     const btn = document.getElementById('hamburger-btn');
@@ -1081,8 +1062,6 @@
     document.getElementById('mobile-menu').classList.remove('open');
     document.getElementById('hamburger-btn').classList.remove('open');
    }
-
-   // Sync mobile dark mode buttons with desktop
    const origToggle = window.toggleDarkMode;
    window.toggleDarkMode = function() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1104,8 +1083,6 @@
      if (moonM) moonM.style.display = 'block';
     }
    }
-
-   // Update mobile nav active state when showPage is called
    const origShowPage = window.showPage;
    window.showPage = function(page) {
     origShowPage(page);
@@ -1113,8 +1090,6 @@
     const mobLink = document.getElementById('mob-nav-' + page);
     if (mobLink) mobLink.classList.add('active');
    };
-
-   // Init mobile dark mode state on load
    document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('wdTheme') || 'light';
     updateMobileDarkBtn(savedTheme);
@@ -1123,11 +1098,8 @@
   <script src="js/script.js"></script>
   <script src="microinteracoes.js"></script>
 
-  <!-- ============================================================
-     OFFLINE-FIRST: Service Worker + PWA Install
-  ============================================================ -->
+
   <script>
-   // ----- Registro do Service Worker -----
    if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
      navigator.serviceWorker.register('/sw.js', { scope: '/' })
@@ -1139,14 +1111,11 @@
       });
     });
    }
-
-   // ----- Banner Offline/Online -----
    const offlineBanner = document.getElementById('offline-banner');
 
    function updateOnlineStatus() {
     if (!navigator.onLine) {
      offlineBanner.classList.add('show');
-     // Ajusta o nav para não ficar sobreposto
      document.querySelector('nav') && (document.querySelector('nav').style.top = '36px');
     } else {
      offlineBanner.classList.remove('show');
@@ -1156,10 +1125,7 @@
 
    window.addEventListener('online', updateOnlineStatus);
    window.addEventListener('offline', updateOnlineStatus);
-   // Checar estado inicial
    updateOnlineStatus();
-
-   // ----- Lógica de Instalação PWA (beforeinstallprompt) -----
    let deferredPrompt = null;
    const installBanner = document.getElementById('install-banner');
    const btnInstall  = document.getElementById('btn-install-pwa');
@@ -1168,7 +1134,6 @@
    window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Só mostra se o usuário nunca dispensou
     if (!localStorage.getItem('wdInstallDismissed')) {
      installBanner.classList.add('show');
     }
@@ -1194,14 +1159,10 @@
     deferredPrompt = null;
     console.log('[PWA] Aplicativo instalado.');
    });
-
-   // ----- Salvar denúncias offline com IndexedDB -----
-   // Sobrescreve enviarDenuncia para salvar localmente se offline
    document.addEventListener('DOMContentLoaded', () => {
     const originalEnviar = window.enviarDenuncia;
     window.enviarDenuncia = function() {
      if (!navigator.onLine) {
-      // Coleta dados do formulário
       const cidade = document.getElementById('f-cidade');
       const cidadeText = cidade?.options[cidade.selectedIndex]?.text || '';
       const payload = {
@@ -1215,8 +1176,6 @@
        timestamp: Date.now(),
        synced:  false,
       };
-
-      // Salva no IndexedDB
       const req = indexedDB.open('webdenuncia-offline', 1);
       req.onupgradeneeded = (e) => {
        const db = e.target.result;
@@ -1229,17 +1188,14 @@
        const tx = db.transaction('pending', 'readwrite');
        tx.objectStore('pending').add(payload);
        tx.oncomplete = () => {
-        // Registra Background Sync se suportado
         if ('serviceWorker' in navigator && 'SyncManager' in window) {
          navigator.serviceWorker.ready.then((sw) => {
           sw.sync.register('sync-denuncia').catch(console.warn);
          });
         }
-        // Exibe modal de sucesso normalmente
         sessionData.protocolo = payload.protocolo;
         document.getElementById('sucesso-protocolo-num').textContent = payload.protocolo;
         openModal('modal-sucesso');
-        // Pequena nota extra
         const box = document.querySelector('#modal-sucesso .privacy-strip');
         if (box && !document.getElementById('offline-note')) {
          const note = document.createElement('p');
@@ -1251,7 +1207,6 @@
        };
       };
      } else {
-      // Online: fluxo original
       if (typeof originalEnviar === 'function') {
        originalEnviar.call(this);
       }

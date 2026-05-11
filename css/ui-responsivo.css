@@ -1,52 +1,34 @@
-/*
- * ══════════════════════════════════════════════════════════════
- *  WebDenúncia — UI Otimista + Design Responsivo
- *  Adicione ao <head> DEPOIS de style.css (e microinteracoes.css se usar):
- *  <link rel="stylesheet" href="ui-responsivo.css" />
- *
- *  Filosofia: "UI Otimista" — cada estado positivo é celebrado.
- *  O site já tem excelente acessibilidade. Este arquivo adiciona:
- *  1. Token de cor "esperança" (azul cívico) sem quebrar o dark mode
- *  2. Hierarquia visual mais clara em todas as larguras
- *  3. Layout refinado 320px → 480px → 640px → 900px → 1280px → 1600px
- *  4. Estados de sucesso / feedback / progresso mais expressivos
- *  5. Tipografia fluida com clamp()
- *  6. Componentes grid aprimorados
- * ══════════════════════════════════════════════════════════════
- */
 
-/* ════════════════════════════════════════════════════════════
-   § 0 · TOKENS DE DESIGN — camada sobre as vars do style.css
-   ════════════════════════════════════════════════════════════ */
+
 :root {
-  /* Azul cívico — cor de ação positiva */
+
   --civic:          #005fcc;
   --civic-light:    #e8f0fc;
   --civic-dark:     #004099;
 
-  /* Verde confirmação */
+
   --confirm:        #166534;
   --confirm-light:  #dcfce7;
 
-  /* Superfícies com profundidade */
+
   --surface-1:      #ffffff;
   --surface-2:      #f5f5f3;
   --surface-3:      #ebebea;
 
-  /* Sombras otimistas */
+
   --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
   --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
   --shadow-lg:  0 10px 28px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 
-  /* Raio suave para cartões (sem afetar inputs/botões que usam border-radius:0) */
+
   --radius-card: 4px;
   --radius-pill: 999px;
 
-  /* Espaçamento responsivo */
+
   --page-pad: clamp(16px, 4vw, 48px);
   --section-gap: clamp(20px, 4vw, 48px);
 
-  /* Tipografia fluida */
+
   --fs-xs:   clamp(0.72rem, 1.4vw, 0.82rem);
   --fs-sm:   clamp(0.82rem, 1.6vw, 0.92rem);
   --fs-base: clamp(0.92rem, 1.8vw, 1rem);
@@ -73,29 +55,20 @@
   --shadow-lg:  0 10px 28px rgba(0,0,0,.5);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 1 · BODY & SCROLL
-   ════════════════════════════════════════════════════════════ */
 body {
-  /* Previne overflow horizontal em mobile */
+
   overflow-x: hidden;
-  /* Scroll suave nativo */
+
   scroll-behavior: smooth;
 }
 
-/* Scrollbar customizada — webkit */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--mid); }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 2 · NAV — mais limpa e expressiva
-   ════════════════════════════════════════════════════════════ */
 nav {
-  /* Backdrop blur para profundidade */
+
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   background: rgba(255,255,255,0.95);
@@ -111,7 +84,6 @@ nav {
   letter-spacing: 0.02em;
 }
 
-/* Indicador ativo no desktop — linha embaixo mais refinada */
 @media (min-width: 900px) {
   .nav-links a {
     position: relative;
@@ -143,10 +115,6 @@ nav {
   [data-theme="dark"] .nav-links a:hover  { color: var(--civic); background: var(--civic-light); }
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 3 · EMERGENCY BANNER — mais impactante
-   ════════════════════════════════════════════════════════════ */
 .emergency-banner {
   background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
   font-size: var(--fs-xs);
@@ -163,17 +131,12 @@ nav {
   margin: 0 2px;
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 4 · HERO — layout mais generoso
-   ════════════════════════════════════════════════════════════ */
 #page-inicio .hero {
   padding: var(--page-pad);
   gap: var(--section-gap);
   background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
 }
 
-/* Botões de ação do hero */
 .hero-tab-btn {
   font-size: var(--fs-sm);
   padding: clamp(14px, 2.5vw, 20px) clamp(12px, 2vw, 16px);
@@ -190,7 +153,6 @@ nav {
   overflow: hidden;
 }
 
-/* Brilho sutil no primary */
 .hero-tab-btn.primary::before {
   content: '';
   position: absolute;
@@ -203,7 +165,6 @@ nav {
   background: linear-gradient(135deg, #dde1e7 0%, #c8cdd5 100%);
 }
 
-/* Sidebar de consulta */
 .sidebar {
   background: var(--surface-1);
   border-color: var(--border);
@@ -218,10 +179,6 @@ nav {
   margin-bottom: 4px;
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 5 · CATEGORIAS — cards com personalidade
-   ════════════════════════════════════════════════════════════ */
 .categories h2 {
   font-size: var(--fs-md);
   letter-spacing: 0.08em;
@@ -238,7 +195,6 @@ nav {
   overflow: hidden;
 }
 
-/* Faixa de cor no topo de cada card */
 .category-card::before {
   content: '';
   position: absolute;
@@ -251,7 +207,6 @@ nav {
 .category-card:hover { border-color: transparent; box-shadow: var(--shadow-md); }
 .category-card:hover::before { background: var(--civic); }
 
-/* Ícones com fundo suave */
 .category-card svg {
   background: var(--surface-2);
   padding: 8px;
@@ -267,15 +222,10 @@ nav {
   line-height: 1.4;
 }
 
-/* Grid responsivo refinado */
 .category-grid {
   gap: clamp(8px, 2vw, 14px);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 6 · PAINEL DE NOTÍCIAS
-   ════════════════════════════════════════════════════════════ */
 .news-panel {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
@@ -298,7 +248,6 @@ nav {
   transition: color 0.15s, padding-left 0.2s;
 }
 
-/* Indicador pontual */
 .news-item::before {
   content: '';
   width: 6px;
@@ -313,10 +262,6 @@ nav {
 .news-item:hover::before { background: var(--civic); }
 .news-item:hover { color: var(--dark); padding-left: 4px; }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 7 · INPUTS E FORMULÁRIOS — mais legíveis
-   ════════════════════════════════════════════════════════════ */
 .form-input,
 .form-select,
 .form-textarea {
@@ -334,7 +279,6 @@ nav {
   background: var(--surface-1);
 }
 
-/* Estado de sucesso no input */
 .form-input.valid,
 .form-textarea.valid {
   border-color: var(--confirm);
@@ -359,7 +303,6 @@ nav {
   font-size: var(--fs-xs);
 }
 
-/* Row responsiva — empilha em telas muito pequenas */
 .form-row {
   flex-wrap: wrap;
 }
@@ -368,12 +311,6 @@ nav {
   min-width: min(100%, 160px);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 8 · BOTÕES — hierarquia clara
-   ════════════════════════════════════════════════════════════ */
-
-/* Primary */
 .btn-primary {
   font-size: var(--fs-sm);
   letter-spacing: 0.12em;
@@ -390,7 +327,6 @@ nav {
   background: linear-gradient(135deg, #dde1e7 0%, #c8cdd5 100%);
 }
 
-/* Next */
 .btn-next {
   font-size: var(--fs-sm);
   letter-spacing: 0.1em;
@@ -412,7 +348,6 @@ nav {
   background: var(--civic-dark);
 }
 
-/* Proceed */
 .btn-proceed {
   font-size: var(--fs-sm);
   letter-spacing: 0.08em;
@@ -428,14 +363,12 @@ nav {
   color: #fff;
 }
 
-/* Emergency / back */
 .btn-emergency,
 .btn-back {
   font-size: var(--fs-xs);
   letter-spacing: 0.08em;
 }
 
-/* Add pessoa */
 .btn-add-pessoa {
   font-size: var(--fs-xs);
   letter-spacing: 0.06em;
@@ -449,10 +382,6 @@ nav {
   background: var(--civic-light);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 9 · STEPPER — mais claro e orientador
-   ════════════════════════════════════════════════════════════ */
 .stepper {
   padding: 0 var(--page-pad);
   gap: 0;
@@ -467,7 +396,6 @@ nav {
   border-right-color: var(--border);
 }
 
-/* Step ativo — azul cívico */
 .step.active {
   background: var(--civic);
   color: #fff;
@@ -479,7 +407,6 @@ nav {
   color: #fff;
 }
 
-/* Step concluído — verde suave */
 .step.done {
   color: var(--confirm);
 }
@@ -505,7 +432,6 @@ nav {
   color: #1a1d21;
 }
 
-/* Label vertical no desktop */
 .step-label-side {
   color: var(--civic);
   border-right-color: var(--civic);
@@ -513,10 +439,6 @@ nav {
   font-size: 0.6rem;
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 10 · AREA DE UPLOAD — mais convidativa
-   ════════════════════════════════════════════════════════════ */
 .upload-area {
   border-radius: var(--radius-card);
   background: var(--surface-2);
@@ -527,7 +449,6 @@ nav {
   position: relative;
 }
 
-/* Gradiente de fundo sutil */
 .upload-area::before {
   content: '';
   position: absolute;
@@ -552,7 +473,7 @@ nav {
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--civic);
-  position: relative; /* Acima do ::before */
+  position: relative;
 }
 
 .upload-area .upload-svg svg {
@@ -566,10 +487,6 @@ nav {
   background: linear-gradient(135deg, rgba(96,165,250,.1) 0%, transparent 60%);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 11 · PROTOCOL BOX — destaque especial
-   ════════════════════════════════════════════════════════════ */
 .protocol-box {
   border-color: var(--civic);
   background: var(--civic-light);
@@ -608,10 +525,6 @@ nav {
   color: #fff;
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 12 · SUMMARY BOX — revisão clara
-   ════════════════════════════════════════════════════════════ */
 .summary-box {
   border-radius: var(--radius-card);
   border-color: var(--border);
@@ -630,10 +543,6 @@ nav {
 
 .sum-row span:first-child { color: var(--dark); }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 13 · STEP NAV — fixo no fundo em mobile
-   ════════════════════════════════════════════════════════════ */
 .step-nav {
   padding: 12px var(--page-pad);
   background: var(--surface-1);
@@ -648,10 +557,6 @@ nav {
   }
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 14 · MODAIS — mais refinados
-   ════════════════════════════════════════════════════════════ */
 .modal-overlay {
   background: rgba(0,0,0,.55);
   backdrop-filter: blur(4px);
@@ -663,7 +568,6 @@ nav {
   border-width: 2px;
 }
 
-/* Em mobile, modal sobe mais */
 @media (max-width: 599px) {
   .modal-box {
     max-height: 96vh;
@@ -671,7 +575,6 @@ nav {
   }
 }
 
-/* Alça de arraste (visual apenas) em mobile */
 @media (max-width: 599px) {
   .modal-box::before {
     content: '';
@@ -703,7 +606,6 @@ nav {
   line-height: 1.75;
 }
 
-/* Info banner dentro de modal */
 .info-banner {
   border-radius: var(--radius-card);
   font-size: var(--fs-sm);
@@ -719,10 +621,6 @@ nav {
   color: var(--civic);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 15 · MODAL SUCESSO — celebração otimista
-   ════════════════════════════════════════════════════════════ */
 .success-circle {
   background: var(--civic);
   width: 52px;
@@ -780,10 +678,6 @@ nav {
   color: #fff;
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 16 · MODAL AVISO DE EMERGÊNCIA — reforço visual
-   ════════════════════════════════════════════════════════════ */
 .big-alert {
   font-size: clamp(1rem, 3vw, 1.2rem);
   letter-spacing: 0.04em;
@@ -803,10 +697,6 @@ nav {
 
 .modal-icon-box.safe svg { stroke: var(--confirm); }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 17 · PROGRESS TRACK — linha de status mais clara
-   ════════════════════════════════════════════════════════════ */
 .track-step.done .track-icon {
   background: var(--confirm);
   border-color: var(--confirm);
@@ -838,7 +728,6 @@ nav {
   height: 3px;
 }
 
-/* Linha de progresso preenchida */
 .progress-track::after {
   content: '';
   position: absolute;
@@ -849,17 +738,12 @@ nav {
   z-index: 0;
 }
 
-/* Largura baseada nos passos concluídos — JS pode setar data-progress="N" */
 .progress-track[data-progress="0"]::after { width: 0; }
 .progress-track[data-progress="1"]::after { width: calc(25% - 8px); }
 .progress-track[data-progress="2"]::after { width: calc(50% - 8px); }
 .progress-track[data-progress="3"]::after { width: calc(75% - 8px); }
 .progress-track[data-progress="4"]::after { width: calc(100% - 88px); }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 18 · PÁGINA ACOMPANHAR — destaque no card
-   ════════════════════════════════════════════════════════════ */
 .consulta-card {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-md);
@@ -928,10 +812,6 @@ nav {
   background: var(--confirm);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 19 · FOOTER — limpo e legível
-   ════════════════════════════════════════════════════════════ */
 footer {
   background: var(--surface-1);
   padding: var(--page-pad);
@@ -958,10 +838,6 @@ footer a:hover { color: var(--civic); }
   font-size: var(--fs-xs);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 20 · FAQ LINKS — mais limpos
-   ════════════════════════════════════════════════════════════ */
 .faq-q {
   font-size: var(--fs-sm);
   letter-spacing: 0.03em;
@@ -991,10 +867,6 @@ footer a:hover { color: var(--civic); }
   font-size: var(--fs-sm);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 21 · RADIO OPTIONS — seleção clara
-   ════════════════════════════════════════════════════════════ */
 .radio-option {
   border-radius: var(--radius-card);
   transition: border-color 0.15s, background 0.15s;
@@ -1014,10 +886,6 @@ footer a:hover { color: var(--civic); }
   border-color: var(--civic);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 22 · PASSWORD STRENGTH — cores com sentido
-   ════════════════════════════════════════════════════════════ */
 .strength-bar {
   border-radius: 3px;
   height: 7px;
@@ -1027,19 +895,14 @@ footer a:hover { color: var(--civic); }
   border-radius: 3px;
 }
 
-/* Fraca */
 #strength-fill[data-level="1"] { background: var(--danger); }
-/* Média */
+
 #strength-fill[data-level="2"] { background: #d97706; }
-/* Boa */
+
 #strength-fill[data-level="3"] { background: #16a34a; }
-/* Forte */
+
 #strength-fill[data-level="4"] { background: var(--civic); }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 23 · NOTA BOX + SUMMARY — refinamento
-   ════════════════════════════════════════════════════════════ */
 .notes-box {
   border-radius: var(--radius-card);
   border-color: var(--border);
@@ -1078,10 +941,6 @@ footer a:hover { color: var(--civic); }
   border-color: var(--confirm);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 24 · OFFLINE BANNER — topo mais elegante
-   ════════════════════════════════════════════════════════════ */
 #offline-banner {
   font-size: var(--fs-xs);
   letter-spacing: 0.06em;
@@ -1106,12 +965,6 @@ footer a:hover { color: var(--civic); }
   background: var(--civic-dark);
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 25 · BREAKPOINTS EXTRA — 480px e 1280px+
-   ════════════════════════════════════════════════════════════ */
-
-/* 480px — smartphone médio/grande */
 @media (min-width: 480px) {
   .hero-action-grid {
     grid-template-columns: 1fr 1fr;
@@ -1131,7 +984,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-/* 640px — tablet pequeno */
 @media (min-width: 640px) {
   .hero-action-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1156,7 +1008,7 @@ footer a:hover { color: var(--civic); }
   }
 
   .modal-box::before {
-    display: none; /* Remove alça em tablet */
+    display: none;
   }
 
   .form-row {
@@ -1168,7 +1020,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-/* 900px (já coberto pelo style.css) — refinamentos */
 @media (min-width: 900px) {
   body {
     font-size: var(--fs-base);
@@ -1202,7 +1053,7 @@ footer a:hover { color: var(--civic); }
     max-width: 760px;
   }
 
-  /* Denuncia body: step label + form lado a lado */
+
   .denuncia-body {
     padding: 28px var(--page-pad);
     gap: 24px;
@@ -1225,7 +1076,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-/* 1280px — desktop largo */
 @media (min-width: 1280px) {
   :root {
     --page-pad: 56px;
@@ -1237,21 +1087,21 @@ footer a:hover { color: var(--civic); }
     width: 100%;
   }
 
-  /* Wrapper de conteúdo principal */
+
   .main-content {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
   }
 
-  /* Formulário mais largo */
+
   .denuncia-body {
     max-width: 1100px;
     margin: 0 auto;
     width: 100%;
   }
 
-  /* Footer com mais colunas */
+
   footer {
     max-width: 1400px;
     margin: 0 auto;
@@ -1259,7 +1109,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-/* 1600px — ultra wide */
 @media (min-width: 1600px) {
   :root {
     --page-pad: 72px;
@@ -1278,10 +1127,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 26 · PRINT — remoção de elementos desnecessários
-   ════════════════════════════════════════════════════════════ */
 @media print {
   nav,
   .step-nav,
@@ -1298,23 +1143,15 @@ footer a:hover { color: var(--civic); }
   .status-card, .consulta-card { box-shadow: none !important; }
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   § 27 · ACESSIBILIDADE — reforços finais
-   ════════════════════════════════════════════════════════════ */
-
-/* Focus ring com cor cívica */
 :focus-visible {
   outline: 3px solid var(--civic);
   outline-offset: 2px;
 }
 
-/* Contraste do focus no dark */
 [data-theme="dark"] :focus-visible {
   outline-color: var(--civic);
 }
 
-/* Redução de movimento — respeita sempre */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1323,7 +1160,6 @@ footer a:hover { color: var(--civic); }
   }
 }
 
-/* High contrast mode */
 @media (forced-colors: active) {
   .btn-next,
   .btn-proceed { forced-color-adjust: none; background: Highlight; color: HighlightText; }
