@@ -263,11 +263,11 @@ function checkSenha() {
   if (/[^A-Za-z0-9]/.test(val)) score++;
 
   const levels = [
-    { pct: '20%', color: '#aaaaaa', text: 'Muito fraca' },
-    { pct: '40%', color: '#888888', text: 'Fraca' },
-    { pct: '60%', color: '#666666', text: 'Razoável' },
-    { pct: '80%', color: '#444444', text: 'Boa' },
-    { pct: '100%', color: '#1a1a1a', text: 'Muito boa' },
+    { pct: '20%', color: '#dc2626', text: 'Muito fraca' },
+    { pct: '40%', color: '#ea580c', text: 'Fraca' },
+    { pct: '60%', color: '#ca8a04', text: 'Razoável' },
+    { pct: '80%', color: '#16a34a', text: 'Boa' },
+    { pct: '100%', color: '#15803d', text: 'Muito boa' },
   ];
   const lv = levels[Math.min(score - 1, 4)] || levels[0];
   fill.style.width = lv.pct;
